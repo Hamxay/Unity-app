@@ -1,0 +1,68 @@
+{% extends 'account/base.html' %}
+{% load static %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% block title %}
+    Sign In
+{% endblock title %}
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6 col-xl-5">
+            <div class="card mt-4">
+                <div class="card-body p-4">
+                    <div class="text-center mt-2">
+                        <h5 class="text-primary">Welcome Back !</h5>
+                        <p class="text-muted">Sign in to continue to Project Unity Admin.</p>
+                    </div>
+                    <div class="p-2 mt-4">
+                        {% include 'partials/messages.html' %}
+                        <form class="needs-validation"
+                              novalidate
+                              method="POST"
+                              action="{% url 'account_login' %}">
+                            {% if field.help_text %}
+                                <div class="alert alert-danger mb-4" role="alert">
+                                    <strong>{{ field.help_text }}</strong>
+                                </div>
+                            {% endif %}
+                            {% csrf_token %}
+                            <div class="mb-3">{{ form.login|as_crispy_field }}</div>
+                            <div class="mb-3 position-relative">
+                                <div class="float-end">
+                                    <a href="{% url 'account_reset_password' %}" class="text-muted">Forgot password?</a>
+                                </div>
+                                {{ form.password|as_crispy_field }}
+                                <button class="btn btn-link position-absolute mt-4 end-0 top-0 text-decoration-none text-muted"
+                                        type="button"
+                                        id="password-addon">
+                                    <i class="ri-eye-fill align-middle"></i>
+                                </button>
+                            </div>
+                            <div class="form-check">{{ form.remember|as_crispy_field }}</div>
+                            <div class="mt-4">
+                                <button class="btn btn-success w-100" type="submit">Sign In</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- end card body -->
+            </div>
+            <!-- end card -->
+        </div>
+    </div>
+    <!-- end row -->
+{% endblock content %}
+{% block extra_js %}
+    <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+    <script>
+$(document).ready(function(){
+    $('#password-addon').click(function(){
+        if($('#id_password').attr('type') === 'password' ){
+            $('#id_password').attr('type', 'text')
+        } else {
+            $('#id_password').attr('type', 'password')
+        }
+    })
+})    
+    </script>
+{% endblock extra_js %}

@@ -1,0 +1,165 @@
+{% extends "partials/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}
+    Profile Settings
+{% endblock title %}
+{% block extra_css %}
+{% endblock extra_css %}
+{% block content %}
+    <!-- ============================================================== -->
+    <!-- Start right Content here -->
+    <!-- ============================================================== -->
+    <div class="main-content">
+        <div class="page-content">
+            <div class="container-fluid">
+                {% block pagetitle %}
+                    {% include "partials/page-title.html" with pagetitle="Account" title="Profile" %}
+                {% endblock pagetitle %}
+                <form method="post" enctype="multipart/form-data">
+                    <div class="row mt-4">
+                        {% include "partials/messages.html" %}
+                        <div class="col-xxl-3">
+                            <div class="card">
+                                <div class="card-body p-4">
+                                    <div class="text-center">
+                                        <div class="profile-user position-relative d-inline-block mx-auto  mb-4">
+                                            {% if user.photo %}
+                                                <img src=" {{ user.photo.url }} "
+                                                     class="rounded-circle avatar-xl img-thumbnail user-profile-image"
+                                                     alt="user-profile-image"/>
+                                            {% else %}
+                                                <img src="{% static 'images/users/user-dummy-img.jpg' %}"
+                                                     class="rounded-circle avatar-xl img-thumbnail user-profile-image"
+                                                     alt="user-profile-image"/>
+                                            {% endif %}
+                                            <div class="avatar-xs p-0 rounded-circle profile-photo-edit">
+                                                <input id="profile-img-file-input"
+                                                       type="file"
+                                                       name="photo"
+                                                       class="profile-img-file-input"
+                                                       accept="image/*">
+                                                <label for="profile-img-file-input" class="profile-photo-edit avatar-xs">
+                                                    <span class="avatar-title rounded-circle bg-light text-body">
+                                                        <i class="ri-camera-fill"></i>
+                                                    </span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <h5 class="fs-17 mb-1">{{ user.get_full_name }}</h5>
+                                        <p class="text-muted mb-0">{{ user.get_role_display }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--end card-->
+                        </div>
+                        <!--end col-->
+                        <div class="col-xxl-9">
+                            <div class="card">
+                                <div class="card-body p-4">
+                                    <div class="tab-content">
+                                        <div class="tab-pane active" id="personalDetails" role="tabpanel">
+                                            {% csrf_token %}
+                                            <div class="row">
+                                                <div class="col-lg-6">
+                                                    <div class="mb-3">{{ form.first_name|as_crispy_field }}</div>
+                                                </div>
+                                                <!--end col-->
+                                                <div class="col-lg-6">
+                                                    <div class="mb-3">{{ form.last_name|as_crispy_field }}</div>
+                                                </div>
+                                                <!--end col-->
+                                                <div class="col-lg-6">
+                                                    <div class="mb-3">{{ form.mobile|as_crispy_field }}</div>
+                                                </div>
+                                                <!--end col-->
+                                                <div class="col-lg-6">
+                                                    <div class="mb-3">
+                                                        <label for="emailInput" class="form-label">Email</label>
+                                                        <input type="text"
+                                                               id="emailInput"
+                                                               class="form-control"
+                                                               value=" {{ user.email }} "
+                                                               disabled/>
+                                                    </div>
+                                                </div>
+                                                <!--end col-->
+                                                <div class="col-lg-6">
+                                                    <div class="mb-3">
+                                                        <label for="JoiningdatInput" class="form-label">
+                                                            Joining
+                                                            Date
+                                                        </label>
+                                                        <input type="text"
+                                                               class="form-control"
+                                                               value=" {{ user.date_joined }} "
+                                                               disabled/>
+                                                    </div>
+                                                </div>
+                                                <!--end col-->
+                                                <div class="col-lg-6">
+                                                    <div class="mb-3">
+                                                        <label for="designationInput" class="form-label">Designation</label>
+                                                        <input type="text"
+                                                               class="form-control"
+                                                               id="designationInput"
+                                                               placeholder="Designation"
+                                                               value=" {{ user.get_role_display }} "
+                                                               disabled>
+                                                    </div>
+                                                </div>
+                                                <!--end col-->
+                                                <div class="col-lg-12">
+                                                    <div class="mb-3 pb-2">{{ form.address|as_crispy_field }}</div>
+                                                </div>
+                                                <!--end col-->
+                                                <div class="col-lg-6">
+                                                    <div class="mb-3">{{ form.city|as_crispy_field }}</div>
+                                                </div>
+                                                <!--end col-->
+                                                <div class="col-lg-6">
+                                                    <div class="mb-3">{{ form.state|as_crispy_field }}</div>
+                                                </div>
+                                                <!--end col-->
+                                                <div class="col-lg-6">
+                                                    <div class="mb-3">{{ form.country|as_crispy_field }}</div>
+                                                </div>
+                                                <!--end col-->
+                                                <div class="col-lg-6">
+                                                    <div class="mb-3">{{ form.zip_code|as_crispy_field }}</div>
+                                                </div>
+                                                <!--end col-->
+                                                <div class="col-lg-12">
+                                                    <div class="hstack gap-2 justify-content-end">
+                                                        <button type="submit" class="btn btn-primary">Update</button>
+                                                        <button type="button" class="btn btn-soft-success" onclick="cancelUpdate()">Cancel</button>
+                                                    </div>
+                                                </div>
+                                                <!--end col-->
+                                            </div>
+                                            <!--end row-->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--end col-->
+                    </div>
+                    <!--end row-->
+                </form>
+            </div>
+            <!-- container-fluid -->
+        </div>
+        <!-- End Page-content -->
+    </div>
+    <!-- end main content-->
+{% endblock content %}
+{% block extra_js %}
+    <!-- profile-setting init js -->
+    <script src="{% static 'js/pages/profile-setting.init.js'%}"></script>
+    <script>
+        function cancelUpdate() {
+            window.location.href = "{% url 'dashboards:dashboard' %}";
+        }
+    </script>
+{% endblock extra_js %}

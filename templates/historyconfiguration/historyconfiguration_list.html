@@ -1,0 +1,82 @@
+{% extends "partials/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}
+Model Configurations
+{% endblock title %}
+{% block extra_css %}
+    <!-- Plugins css -->
+    <link href="{% static 'libs/dropzone/dist/dropzone.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Adjust margin for smaller screens */
+        @media (max-width: 768px) {
+            .header {
+                margin-top: 10% !important;
+            }
+        }
+        .thead-sticky {
+            position: sticky;
+            top: 0; /* Adjust this value as needed */
+            background-color: #343a40; /* Background color of thead, adjust as needed */
+            color: white; /* Text color */
+            z-index: 2;
+        }
+        /* Style for the div containing the table to have max-height and scroll */
+        .table-container {
+            max-height: 450px; /* Adjust max-height as needed */
+            overflow-y: auto; /* Enable vertical scrolling */
+        }
+    </style>
+{% endblock extra_css %}
+{% block content %}
+<div class="main-content">
+    <div class="page-content">
+        <div class="container-fluid">
+            <div class="container header">
+                {% include "partials/messages.html" %}
+                <h2 class="mb-4 text-center">Model Configurations</h2>
+                <form method="post" class="bg-light p-4 rounded shadow">
+                    {% csrf_token %}
+                    {{ formset.management_form }}
+                    <div class="table-container"> <!-- Added table-container class here -->
+                        <table class="table table-bordered table-hover">
+                            <thead class="thead-sticky thead-dark">
+                                <tr>
+                                    <th>Model Name</th>
+                                    <th>History Enable</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for config in configurations %}
+                                <tr>
+                                    <td>{{ config.model_name }}</td>
+                                    <td>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" 
+                                                   id="enable_{{ config.pk }}" 
+                                                   name="enable_{{ config.pk }}" 
+                                                   value="True"
+                                                   {% if config.enable %} checked {% endif %}>
+                                            <label class="custom-control-label" for="enable_{{ config.pk }}"></label>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary mt-3">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Bootstrap JS and dependencies -->
+<!-- <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> -->
+</body>
+{% endblock content %}

@@ -1,0 +1,309 @@
+{% extends "partials/base.html" %}
+{% load static %}
+{% block title %}
+    Attribute List
+{% endblock title %}
+{% block extra_css %}
+    <link rel="stylesheet"
+          href="{% static 'js/DataTables/datatables.min.css' %}">
+{% endblock extra_css %}
+{% block content %}
+    <!-- ============================================================== -->
+    <!-- Start right Content here -->
+    <!-- ============================================================== -->
+    <div class="main-content">
+        <div class="page-content">
+            <div class="container-fluid">
+                {% block pagetitle %}
+                    {% include "partials/page-title.html" with pagetitle="Attribute" title="Attribute List" %}
+                {% endblock pagetitle %}
+                {% include "partials/messages.html" %}
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card"  id="tasksList">
+                            <div class="card-header border-0">
+                                <div class="d-flex align-items-center">
+                                    <h5 class="card-title mb-0 flex-grow-1">All Attributes</h5>
+                                    <div class="flex-shrink-0">
+                                        <a role="button"
+                                            href="{% url 'attribute:attribute_create' %}"
+                                            class="btn btn-danger add-btn">
+                                            <i class="ri-add-line align-bottom me-1"></i> Create Attribute
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body border border-dashed border-end-0 border-start-0">
+                                <form>
+                                    <div class="row g-3">
+                                        <div class="col-xxl-5 col-sm-12">
+                                            <div class="search-box">
+                                                <input type="text"
+                                                       class="form-control search bg-light border-light"
+                                                       placeholder="Search..."
+                                                       id="id_search">
+                                                <i class="ri-search-line search-icon"></i>
+                                            </div>
+                                        </div>
+                                        <!--end col-->
+                                    </div>
+                                    <!--end row-->
+                                </form>
+                            </div>
+                            <!--end card-body-->
+                            <div class="card-body">
+                                <div class="table-responsive table-card mb-4">
+                                    <table class="table align-middle table-nowrap mb-0"
+                                           id="AttributeTable">
+                                           <thead class="table-light text-muted">
+                                               <tr>
+                                                <th>Action</th>
+                                                <th data-data="id" data-name="id">ID</th>
+                                                <th data-data="code" data-name="code">Code</th>
+                                                <th data-data="class_id" data-name="class_id">Class ID</th>
+                                                <th data-data="source_name" data-name="source_name">Source Name</th>
+                                                <th data-data="target_name" data-name="target_name">Target Name</th>
+                                                <th data-data="source_description" data-name="source_description">Source Description</th>
+                                                <th data-data="target_description" data-name="target_description">Target Description</th>
+                                                <th data-data="source_ordinal_position" data-name="source_ordinal_position">Source Ordinal Position</th>
+                                                <th data-data="target_ordinal_position" data-name="target_ordinal_position">Target Ordinal Position</th>
+                                                <th data-data="source_data_type" data-name="source_data_type">Source Data Type</th>
+                                                <th data-data="target_data_type" data-name="target_data_type">Target Data Type</th>
+                                                <th data-data="source_max_length" data-name="source_max_length">Source Max Length</th>
+                                                <th data-data="target_max_length" data-name="target_max_length">Target Max Length</th>
+                                                <th data-data="source_precision" data-name="source_precision">Source Precision</th>
+                                                <th data-data="target_precision" data-name="target_precision">Target Precision</th>
+                                                <th data-data="source_scale" data-name="source_scale">Source Scale</th>
+                                                <th data-data="target_scale" data-name="target_scale">Target Scale</th>
+                                                <th data-data="is_primary_key" data-name="is_primary_key">Is Primary Key</th>
+                                                <th data-data="is_snapshot_key" data-name="is_snapshot_key">Is Snapshot Key</th>
+                                                <th data-data="is_nullable" data-name="is_nullable">Is Nullable</th>
+                                                <th data-data="ignore_on_ingest" data-name="ignore_on_ingest">Ignore On Ingest</th>
+                                                <th data-data="created_date" data-name="created_date">Created Date</th>
+                                                <th data-data="created_by" data-name="created_by">Created By</th>
+                                                <th data-data="updated_date" data-name="updated_date">Updated Date</th>
+                                                <th data-data="updated_by" data-name="updated_by">Updated By</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="list form-check-all">
+                                        </tbody>
+                                    </table>
+                                    <!--end table-->
+                                </div>
+                            </div>
+                            <!--end card-body-->
+                        </div>
+                        <!--end card-->
+                    </div>
+                    <!--end col-->
+                </div>
+                <!--end row-->
+                <div class="modal fade flip"
+                     id="deleteOrder"
+                     tabindex="-1"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-body p-5 text-center">
+                                <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="loop" colors="primary:#405189,secondary:#f06548" style="width:90px;height:90px"></lord-icon>
+                                <div class="mt-4 text-center">
+                                    <h4>You are about to delete ?</h4>
+                                    <p class="text-muted fs-14 mb-4">
+                                        Deleting your task will remove all of
+                                        your information from our database.
+                                    </p>
+                                    <div class="hstack gap-2 justify-content-center remove">
+                                        <button class="btn btn-link btn-ghost-success fw-medium text-decoration-none"
+                                                data-bs-dismiss="modal">
+                                            <i class="ri-close-line me-1 align-middle"></i> Close
+                                        </button>
+                                        <a class="btn btn-danger" id="delete-record">Yes, Delete It</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--end delete modal -->
+            </div>
+            <!-- container-fluid -->
+        </div>
+        <!-- End Page-content -->
+        {% block footer %}
+            {% include "partials/footer.html" %}
+        {% endblock footer %}
+    </div>
+    <!-- end main content-->
+{% endblock content %}
+{% block extra_js %}
+<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+<!--datatable js-->
+<script src="{% static 'js/DataTables/datatables.min.js' %}"></script>
+<script src="{% static 'js/moment-2.29.2.min.js' %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<script type="text/javascript">
+var table = $('#AttributeTable').DataTable( {
+    serverSide: true,
+    processing: true,
+    order: [[22, 'desc']],
+    "ajax": {
+        "url": "/api/attribute/?format=datatables"
+    },
+    "dom": 'lrtip',
+    "columnDefs": [
+    {
+        targets: 1,
+        visible: false
+    },
+    {
+        targets: 2,
+        defaultContent: "-"
+    },
+    {
+        targets: 3,
+        defaultContent: "-"
+    },
+    {
+        targets: 4,
+        defaultContent: "-"
+    },
+    {
+        targets: 5,
+        defaultContent: "-"
+    },
+    {
+        targets: 6,
+        defaultContent: "-"
+    },
+    {
+        targets: 7,
+        defaultContent: "-"
+    },
+    {
+        targets: 8,
+        defaultContent: "-"
+    },
+    {
+        targets: 9,
+        defaultContent: "-"
+    },
+    {
+        targets: 10,
+        defaultContent: "-"
+    },
+    {
+        targets: 11,
+        defaultContent: "-"
+    },
+    {
+        targets: 12,
+        defaultContent: "-"
+    },
+    {
+        targets: 13,
+        defaultContent: "-"
+    },
+    {
+        targets: 14,
+        defaultContent: "-"
+    },
+    {
+        targets: 15,
+        defaultContent: "-"
+    },
+    {
+        targets: 16,
+        defaultContent: "-"
+    },
+    {
+        targets: 17,
+        defaultContent: "-"
+    },
+    {
+        targets: 18,
+        defaultContent: "-"
+    },
+    {
+        targets: 19,
+        defaultContent: "-"
+    },
+    {
+        targets: 20,
+        defaultContent: "-"
+    },
+    {
+        targets: 21,
+        defaultContent: "-"
+    },
+    {
+        targets: 22,
+        render: (data, type, row)=>{
+            return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
+        }
+    },
+    {
+        targets: 23,
+        defaultContent: "-"
+    },
+    {
+        targets: 24,
+        render: (data, type, row)=>{
+            return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
+        }
+    },
+    {
+        targets: 25,
+        defaultContent: "-"
+    },
+    {
+        targets: 0,  // 0 the first, 1 the second, etc.
+        sortable: false,
+        searchable: false,
+        // The `data` parameter refers to the data for the cell.
+        // The `rows`argument is an object representing all the data for the current row.
+        render: ( data, type, row ) => {
+            let viewURL = "{% url 'attribute:historicalattribute_list' pk=0 %}"
+            let editURL = "{% url 'attribute:attribute_update' pk=0 %}"
+            let deleteURL = "{% url 'attribute:attribute_delete' pk=0 %}"
+            
+            let actions =  `<ul class="list-inline hstack gap-2 mb-0">`
+                
+            actions += `
+            <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="History">
+            <a href="${viewURL.replace('0', row.id)}" class="text-primary d-inline-block">
+                <i class="mdi mdi-history fs-16"></i>
+            </a>
+            </li>`
+            actions += `<li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
+                <a href="${editURL.replace('0', row.id)}" class="text-primary d-inline-block edit-item-btn">
+                    <i class="ri-pencil-fill fs-16"></i>
+                </a>
+            </li>`
+        
+            actions += `<li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
+            <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder" data-url="${deleteURL.replace('0', row.id)}">
+            <i class="ri-delete-bin-5-fill fs-16"></i>
+                </a>
+            </li>`
+
+            actions += `</ul>`
+            return actions
+        },
+    }]
+});
+
+$(document).ready(function(){
+ 
+    // Update the Delete URL in Delete Confirm Modal
+    $('#AttributeTable').on('click', '.delete-btn', (event) => {
+        $('#delete-record').attr('href', $(event.currentTarget).data('url'))
+    })
+    
+    // Filters for table
+    $('#id_search').on('keyup', function () {
+        table.search( this.value ).draw();
+    } );
+    
+})
+</script>
+{% endblock extra_js %}

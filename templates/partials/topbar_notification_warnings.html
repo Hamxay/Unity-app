@@ -1,0 +1,24 @@
+{% load static %}
+{% for warning in warnings|slice:":10" %}
+    <div class="text-reset notification-item d-block dropdown-item">
+        <div class="d-flex">
+            <img src="{% static 'images/users/attention-1.png' %}"
+                 class="me-3 rounded-circle avatar-xs"
+                 alt="user-pic">
+            <div class="flex-1">
+                <a href="#!" class="stretched-link">
+                    <h6 class="mt-0 mb-1 fs-13 fw-semibold">{{ warning.subject }}</h6>
+                </a>
+                <div class="fs-13 text-muted">
+                    <p class="mb-1">{{ warning.message }}</p>
+                </div>
+                <p class="mb-0 fs-11 fw-medium text-uppercase text-muted">
+                    <span><i class="mdi mdi-clock-outline"></i> {{ warning.created|date:"D-M-Y" }}</span>
+                </p>
+            </div>
+            <div class="px-2 fs-15">
+                <input class="form-check-input" type="checkbox">
+            </div>
+        </div>
+    </div>
+{% endfor %}

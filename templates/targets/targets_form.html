@@ -1,0 +1,126 @@
+{% extends "partials/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}
+    Create Targets
+{% endblock title %}
+{% block extra_css %}
+    <!-- Plugins css -->
+    <link href="{% static 'libs/dropzone/dist/dropzone.css' %}"
+          rel="stylesheet"
+          type="text/css"/>
+{% endblock extra_css %}
+{% block content %}
+    <!-- ============================================================== -->
+    <!-- Start right Content here -->
+    <!-- ============================================================== -->
+    <div class="main-content">
+        <div class="page-content">
+            <div class="container-fluid">
+                {% block pagetitle %}
+                    {% if object %}
+                        {% include "partials/page-title.html" with pagetitle="Targets" title="Update Targets" %}
+                    {% else %}
+                        {% include "partials/page-title.html" with pagetitle="Targets" title="Create Targets" %}
+                    {% endif %}
+                {% endblock pagetitle %}
+                <form action="" method="post" id="TargetsForm">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-lg-8 offset-lg-2">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">{{ form.kpi|as_crispy_field }}</div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">{{ form.base_line|as_crispy_field }}</div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">{{ form.lower_bound|as_crispy_field }}</div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">{{ form.upper_bound|as_crispy_field }}</div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <div id="div_effective_start_date" class="form-group">
+                                                    <label for="effective_start_date" class="">Effective Start Date</label>
+                                                    <div>
+                                                        <input type="text"
+                                                               name="effective_start_date"
+                                                               class="dateinput form-control"
+                                                               data-date-format="Y-m-d"
+                                                               data-provider="flatpickr"
+                                                               id="effective_start_date">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">
+                                                <div id="div_effective_end_date" class="form-group">
+                                                    <label for="effective_end_date" class="">Effective End Date</label>
+                                                    <div>
+                                                        <input type="text"
+                                                               name="effective_end_date"
+                                                               class="dateinput form-control"
+                                                               data-date-format="Y-m-d"
+                                                               data-provider="flatpickr"
+                                                               id="effective_end_date">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">{{ form.created_by|as_crispy_field }}</div>
+                                        </div>
+                                        {% if object %}
+                                        <div class="col-lg-6">
+                                            <div class="mb-3">{{ form.updated_by|as_crispy_field }}</div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <!-- end card body -->
+                            </div>
+                            <!-- end card -->
+                            <div class="text-end mb-4">
+                                <a href="{% url 'targets:targets_list' %}"
+                                   class="btn btn-light w-sm">Cancel</a>
+                                <button type="submit" class="btn btn-success w-sm">
+                                    {% if object %}
+                                        Update
+                                    {% else %}
+                                        Create
+                                    {% endif %}
+                                </button>
+                            </div>
+                        </div>
+                        <!-- end col -->
+                    </div>
+                    <!-- end row -->
+                </form>
+            </div>
+            <!-- container-fluid -->
+        </div>
+        <!-- End Page-content -->
+        {% block footer %}
+            {% include "partials/footer.html" %}
+        {% endblock footer %}
+    </div>
+    <!-- end main content-->
+{% endblock content %}
+{% block extra_content %}
+{% endblock extra_content %}
+{% block extra_js %}
+    <!-- ckeditor -->
+    <script src="{% static 'libs/@ckeditor/ckeditor5-build-classic/build/ckeditor.js'%}"></script>
+    <!-- dropzone js -->
+    <script src="{% static 'libs/dropzone/dist/dropzone-min.js'%}"></script>
+    <!-- project-create init -->
+    <script src="{% static 'js/pages/project-create.init.js'%}"></script>
+    <!-- jquery.js-->
+    <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+{% endblock extra_js %}

@@ -1,0 +1,120 @@
+{% extends "partials/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}
+    Logs Details
+{% endblock title %}
+{% block extra_css %}
+{% endblock extra_css %}
+{% block content %}
+    <!-- ============================================================== -->
+    <!-- Start right Content here -->
+    <!-- ============================================================== -->
+    <div class="main-content">
+        <div class="page-content">
+            <div class="container-fluid">
+                {% block pagetitle %}
+                    {% include "partials/page-title.html" with pagetitle="Logs" title="Logs Details" %}
+                {% endblock pagetitle %}
+                <div class="row">
+                    <div class="col-xl-9">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="d-flex align-items-center">
+                                    <h5 class="card-title flex-grow-1 mb-0">Logs</h5>
+                                    <div class="flex-shrink-0"></div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="pt-3">
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                            <table class="table table-borderless">
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <td>{{ apiingestionbatchstatuslog.id }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Meta Load DT</th>
+                                                    <td>{{ apiingestionbatchstatuslog.meta_load_dt }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Meta Run Step Log ID</th>
+                                                    <td>{{ apiingestionbatchstatuslog.meta_run_step_log_id }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Class ID</th>
+                                                    <td>{{ apiingestionbatchstatuslog.class_id }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Class Name</th>
+                                                    <td>{{ apiingestionbatchstatuslog.class_name }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Batch ID</th>
+                                                    <td>{{ apiingestionbatchstatuslog.batch_id }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Batch Filter</th>
+                                                    <td>{{ apiingestionbatchstatuslog.batch_filter }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Batch Stg File Add Field Value</th>
+                                                    <td>{{ apiingestionbatchstatuslog.batch_stg_file_add_field_value }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>API Extract Status ID</th>
+                                                    <td>{{ apiingestionbatchstatuslog.api_extract_status_id }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>API Extract Run Start DT</th>
+                                                    <td>{{ apiingestionbatchstatuslog.api_extract_run_start_dt }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>API Extract Run End DT</th>
+                                                    <td>{{ apiingestionbatchstatuslog.api_extract_run_end_dt }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>API Extract Error Message</th>
+                                                    <td>{{ apiingestionbatchstatuslog.api_extract_error_message }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Convert Json To Stg File Has Error</th>
+                                                    <td>{{ apiingestionbatchstatuslog.convert_json_to_stg_file_has_error }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Convert Json To Stg File Error Message</th>
+                                                    <td>{{ apiingestionbatchstatuslog.convert_json_to_stg_file_error_message }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Created Date</th>
+                                                    <td>{{ apiingestionbatchstatuslog.created_date }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Updated Date</th>
+                                                    <td>{{ apiingestionbatchstatuslog.updated_date }}</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--end card-->
+                    </div>
+                    <!--end col-->
+                </div>
+                <!--end row-->
+            </div>
+            <!-- container-fluid -->
+        </div>
+        <!-- End Page-content -->
+        {% block footer %}
+            {% include "partials/footer.html" %}
+        {% endblock footer %}
+    </div>
+    <!-- end main content-->
+{% endblock content %}
+{% block extra_js %}
+    <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+{% endblock extra_js %}

@@ -1,0 +1,261 @@
+{% extends "partials/base.html" %}
+{% load static %}
+{% block title %}
+    Class History List
+{% endblock title %}
+{% block extra_css %}
+    <link rel="stylesheet"
+          href="{% static 'js/DataTables/datatables.min.css' %}">
+{% endblock extra_css %}
+{% block content %}
+    <!-- ============================================================== -->
+    <!-- Start right Content here -->
+    <!-- ============================================================== -->
+    <div class="main-content">
+        <div class="page-content">
+            <div class="container-fluid">
+                {% block pagetitle %}
+                    {% include "partials/page-title.html" with pagetitle="Class History" title="Class History List" %}
+                {% endblock pagetitle %}
+                {% include "partials/messages.html" %}
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card"  id="tasksList">
+                            <div class="card-header border-0">
+                                <div class="d-flex align-items-center">
+                                    <h5 class="card-title mb-0 flex-grow-1">All Class Histories</h5>
+                                </div>
+                            </div>
+                            <div class="card-body border border-dashed border-end-0 border-start-0">
+                                <form>
+                                    <div class="row g-3">
+                                        <div class="col-xxl-5 col-sm-12">
+                                            <div class="search-box">
+                                                <input type="text"
+                                                       class="form-control search bg-light border-light"
+                                                       placeholder="Search..."
+                                                       id="id_search">
+                                                <i class="ri-search-line search-icon"></i>
+                                            </div>
+                                        </div>
+                                        <!--end col-->
+                                    </div>
+                                    <!--end row-->
+                                </form>
+                            </div>
+                            <!--end card-body-->
+                            <div class="card-body">
+                                <div class="table-responsive table-card mb-4">
+                                    <table class="table align-middle table-nowrap mb-0"
+                                           id="ClassHistoryTable">
+                                        <thead class="table-light text-muted">
+                                            <tr>
+                                                <th>Action</th>
+                                                <th data-data="id" data-name="id">ID</th>
+                                                <th data-data="history_id" data-name="history_id">History ID</th>
+                                                <th data-data="history_type" data-name="history_type">History Type</th>
+                                                <th data-data="Code" data-name="Code">Code</th>
+                                                <th data-data="InterfaceId" data-name="InterfaceId">InterfaceId</th>
+                                                <th data-data="Name" data-name="Name">Name</th>
+                                                <th data-data="Description" data-name="Description">Description</th>
+                                                <th data-data="Prefix" data-name="Prefix">Prefix</th>
+                                                <th data-data="Version" data-name="Version">Version</th>
+                                                <th data-data="TargetAlias" data-name="TargetAlias">TargetAlias</th>
+                                                <th data-data="IgnoreOnIngest" data-name="IgnoreOnIngest">IgnoreOnIngest</th>
+                                                <th data-data="Mask" data-name="Mask">Mask</th>
+                                                <th data-data="Filter" data-name="Filter">Filter</th>
+                                                <th data-data="SlideWindowAttribute" data-name="SlideWindowAttribute">SlideWindowAttribute</th>
+                                                <th data-data="SlideWindowDays" data-name="SlideWindowDays">SlideWindowDays</th>
+                                                <th data-data="created_date" data-name="created_date">Created Date</th>
+                                                <th data-data="created_by" data-name="created_by">Created By</th>
+                                                <th data-data="updated_date" data-name="updated_date">Updated Date</th>
+                                                <th data-data="updated_by" data-name="updated_by">Updated By</th>
+                                            </tr>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="list form-check-all">
+                                        </tbody>
+                                    </table>
+                                    <!--end table-->
+                                </div>
+                            </div>
+                            <!--end card-body-->
+                        </div>
+                        <!--end card-->
+                    </div>
+                    <!--end col-->
+                </div>
+                <!--end row-->
+                <div class="modal fade flip"
+                     id="restoreTable"
+                     tabindex="-1"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-body p-5 text-center">
+                                <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="loop" colors="primary:#405189,secondary:#f06548" style="width:90px;height:90px"></lord-icon>
+                                <div class="mt-4 text-center">
+                                    <h4>You are about to Restore the Table ?</h4>
+                                    <div class="hstack gap-2 justify-content-center remove">
+                                        <button class="btn btn-link btn-ghost-success fw-medium text-decoration-none"
+                                                data-bs-dismiss="modal">
+                                            <i class="ri-close-line me-1 align-middle"></i> Close
+                                        </button>
+                                        <a class="btn btn-danger" id="restore-record">Yes, Restore It</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--end delete modal -->
+            </div>
+            <!-- container-fluid -->
+        </div>
+        <!-- End Page-content -->
+        {% block footer %}
+            {% include "partials/footer.html" %}
+        {% endblock footer %}
+    </div>
+    <!-- end main content-->
+{% endblock content %}
+{% block extra_js %}
+<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+<!--datatable js-->
+<script src="{% static 'js/DataTables/datatables.min.js' %}"></script>
+<script src="{% static 'js/moment-2.29.2.min.js' %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<script type="text/javascript">
+var table = $('#ClassHistoryTable').DataTable( {
+    serverSide: true,
+    processing: true,
+    order: [[18, 'desc']],
+    "ajax": {
+        "url": `/api/class/history/{{object}}/?format=datatables`,
+    },
+    "dom": 'lrtip',
+    "columnDefs": [
+    {
+        targets: 1,  // History ID
+        visible: false
+    },
+    {
+        targets: 2,  // History Type
+        defaultContent: "-"
+    },
+    {
+        targets: 3,  
+        render: function(data, type, row){
+            let className = 'btn-soft-primary';
+            let text = "Unknown";
+            if(row.history_type === "+") className = 'btn-soft-success', text = "Added";
+            if(row.history_type === "-") className = 'btn-soft-danger', text = "Deleted";
+            if(row.history_type === "~") className = 'btn-soft-info', text = "Updated";
+            return `<button type="button" class="btn btn-sm ${className}">${text}</button>`;
+        }
+    },
+    {
+        targets: 4,  // Code
+        defaultContent: "-"
+    },
+    {
+        targets: 5,  // InterfaceId
+        defaultContent: "-"
+    },
+    {
+        targets: 6,  // Name
+        defaultContent: "-"
+    },
+    {
+        targets: 7,  // Description
+        defaultContent: "-"
+    },
+    {
+        targets: 8,  // Prefix
+        defaultContent: "-"
+    },
+    {
+        targets: 9,  // Version
+        defaultContent: "-"
+    },
+    {
+        targets: 10,  // TargetAlias
+        defaultContent: "-"
+    },
+    {
+        targets: 11,  // IgnoreOnIngest
+        defaultContent: "-"
+    },
+    {
+        targets: 12,  // Mask
+        defaultContent: "-"
+    },
+    {
+        targets: 13,  // Filter
+        defaultContent: "-"
+    },
+    {
+        targets: 14,  // SlideWindowAttribute
+        defaultContent: "-"
+    },
+    {
+        targets: 15,  // SlideWindowDays
+        defaultContent: "-"
+    },
+    {
+        targets: 16,  // Created Date
+        render: (data, type, row) => {
+            return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
+        }
+    },
+    {
+        targets: 17,  // Created By
+        defaultContent: "-"
+    },
+    {
+        targets: 18,  // Updated Date
+        render: (data, type, row) => {
+            return moment.utc(row.updated_date).format('MMM DD, YYYY hh:mm A');
+        }
+    },
+    {
+        targets: 19,  // Updated By
+        defaultContent: "-"
+    },
+    {
+        targets: 0,   // ID
+        sortable: false,
+        searchable: false,
+        render: ( data, type, row ) => {
+            let editURL = "{% url 'class:historicalclass_update' pk=0 %}";
+            let actions =  `<ul class="list-inline hstack gap-2 mb-0">`;
+
+            actions += `<li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Restore">
+                <a class="restore-btn text-primary d-inline-block" data-bs-toggle="modal" href="#restoreTable" data-url="${editURL.replace('0', row.history_id)}">
+                    <i class="mdi mdi-backup-restore fs-16"></i>
+                </a>
+            </li>`;
+
+            actions += `</ul>`;
+            return actions;
+        }
+    },
+]
+
+});
+
+$(document).ready(function(){
+    
+    // Update the Delete URL in Delete Confirm Modal
+    $('#ClassHistoryTable').on('click', '.restore-btn', (event) => {
+        {console.log({"event": $(event.currentTarget).data('url')})}
+        $('#restore-record').attr('href', $(event.currentTarget).data('url'))
+    })
+
+    // Filters for table
+    $('#id_search').on('keyup', function () {
+        table.search( this.value ).draw();
+    });
+})
+</script>
+{% endblock extra_js %}

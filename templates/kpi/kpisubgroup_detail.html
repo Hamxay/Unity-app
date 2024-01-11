@@ -1,0 +1,84 @@
+{% extends "partials/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}
+    KPI Sub Group Details
+{% endblock title %}
+{% block extra_css %}
+{% endblock extra_css %}
+{% block content %}
+    <!-- ============================================================== -->
+    <!-- Start right Content here -->
+    <!-- ============================================================== -->
+    <div class="main-content">
+        <div class="page-content">
+            <div class="container-fluid">
+                {% block pagetitle %}
+                    {% include "partials/page-title.html" with pagetitle="KPI Sub Group" title="KPI Sub Group Details" %}
+                {% endblock pagetitle %}
+                <div class="row">
+                    <div class="col-xl-9">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="d-flex align-items-center">
+                                    <h5 class="card-title flex-grow-1 mb-0">KPI Sub Group</h5>
+                                    <div class="flex-shrink-0"></div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="pt-3">
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                            <table class="table table-borderless">
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <td>{{ kpisubgroup.name }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Description</th>
+                                                    <td>{{ kpisubgroup.description }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Sort Order</th>
+                                                    <td>{{ kpisubgroup.sort_order }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Created By</th>
+                                                    <td>{{ kpisubgroup.created_by }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Created Date</th>
+                                                    <td>{{ kpisubgroup.created_date }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Updated By</th>
+                                                    <td>{{ kpisubgroup.updated_by }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Updated Date</th>
+                                                    <td>{{ kpisubgroup.updated_date }}</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--end card-->
+                    </div>
+                    <!--end col-->
+                </div>
+                <!--end row-->
+            </div>
+            <!-- container-fluid -->
+        </div>
+        <!-- End Page-content -->
+        {% block footer %}
+            {% include "partials/footer.html" %}
+        {% endblock footer %}
+    </div>
+    <!-- end main content-->
+{% endblock content %}
+{% block extra_js %}
+    <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+{% endblock extra_js %}
