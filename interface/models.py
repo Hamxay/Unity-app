@@ -57,7 +57,7 @@ class InterfaceType(BaseModel):
 
 
 class Interface(BaseModel):
-    code = models.IntegerField(unique=True)
+    code = models.BigAutoField(primary_key=True)
     interface_category_id = models.ForeignKey(
         InterfaceCategory, on_delete=models.CASCADE
     )

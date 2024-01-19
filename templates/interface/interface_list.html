@@ -42,7 +42,6 @@
                                            <thead class="table-light text-muted">
                                                <tr>
                                                     <th>Action</th>
-                                                    <th data-data="id" data-name="id">ID</th>
                                                     <th data-data="code" data-name="code">Code</th>
                                                     <th data-data="interface_category_id" data-name="interface_category_id">Interface Category ID</th>
                                                     <th data-data="interface_type_id" data-name="interface_type_id">Interface Type ID</th>
@@ -124,7 +123,7 @@
 var table = $('#classTable').DataTable( {
     serverSide: true,
     processing: true,
-    order: [[17, 'desc']],
+    order: [[16, 'desc']],
     "ajax": {
         "url": "/api/interface/?format=datatables"
     },
@@ -192,27 +191,22 @@ var table = $('#classTable').DataTable( {
     },
     {
         targets: 16,
-        defaultContent: "-"
-    },
-   
-    {
-        targets: 17,
         render: (data, type, row)=>{
             return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
         }
+    },
+    {
+        targets: 17,
+        defaultContent: "-"
     },
     {
         targets: 18,
-        defaultContent: "-"
-    },
-    {
-        targets: 19,
         render: (data, type, row)=>{
             return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
         }
     },
     {
-        targets: 20,
+        targets: 19,
         defaultContent: "-"
     },
     {
@@ -223,25 +217,25 @@ var table = $('#classTable').DataTable( {
         // The `rows`argument is an object representing all the data for the current row.
         render: ( data, type, row ) => {
             let viewURL = "{% url 'interface:historicalinterface_list' pk=0 %}"
-            let editURL = "{% url 'interface:interface_update' pk=0 %}"
-            let deleteURL = "{% url 'interface:interface_delete' pk=0 %}"
+            let editURL = "{% url 'interface:interface_update' code=0 %}"
+            let deleteURL = "{% url 'interface:interface_delete' code=0 %}"
             
             let actions =  `<ul class="list-inline hstack gap-2 mb-0">`
                 
             actions += `
             <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="History">
-            <a href="${viewURL.replace('0', row.id)}" class="text-primary d-inline-block">
+            <a href="${viewURL.replace('0', row.code)}" class="text-primary d-inline-block">
                 <i class="mdi mdi-history fs-16"></i>
             </a>
             </li>`
             actions += `<li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
-                <a href="${editURL.replace('0', row.id)}" class="text-primary d-inline-block edit-item-btn">
+                <a href="${editURL.replace('0', row.code)}" class="text-primary d-inline-block edit-item-btn">
                     <i class="ri-pencil-fill fs-16"></i>
                 </a>
             </li>`
         
             actions += `<li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
-            <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder" data-url="${deleteURL.replace('0', row.id)}">
+            <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder" data-url="${deleteURL.replace('0', row.code)}">
             <i class="ri-delete-bin-5-fill fs-16"></i>
                 </a>
             </li>`

@@ -1,5 +1,5 @@
 from django.http import HttpResponseBadRequest
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django import forms
 from django.views.generic import (
     ListView,
@@ -138,7 +138,6 @@ class InterfaceCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     permission_required = "interface.add_class"
     model = Interface
     fields = [
-        "code",
         "interface_category_id",
         "interface_type_id",
         "schedule_id",
@@ -168,9 +167,8 @@ class InterfaceUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
 
     permission_required = "interface.change_class"
     model = Interface
-
+    slug_url_kwarg = 'code'
     fields = [
-        "code",
         "interface_category_id",
         "interface_type_id",
         "schedule_id",
@@ -192,6 +190,9 @@ class InterfaceUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     def form_valid(self, form):
         form.instance.updated_by = self.request.user
         return super().form_valid(form)
+    def get_object(self, queryset=None):
+        # Retrieve the object based on the slug (code)
+        return get_object_or_404(self.model, code=self.kwargs[self.slug_url_kwarg])
 
 
 class InterfaceDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
@@ -201,7 +202,7 @@ class InterfaceDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     model = Interface
     success_url = reverse_lazy("interface:interface_list")
     success_message = "Record was deleted successfully"
-
+    slug_url_kwarg = 'code'
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         self.object.deleted_by = request.user
@@ -210,6 +211,10 @@ class InterfaceDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
         success_url = self.get_success_url()
         messages.success(self.request, self.success_message)
         return redirect(success_url)
+
+    def get_object(self, queryset=None):
+        # Retrieve the object based on the slug (code)
+        return get_object_or_404(self.model, code=self.kwargs[self.slug_url_kwarg])
 
 
 class HistoricalInterfaceListView(ListView):

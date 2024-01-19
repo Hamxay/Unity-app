@@ -10,7 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
-from distutils.util import strtobool
+# from distutils.util import strtobool
 import os
 from pathlib import Path
 from dotenv import load_dotenv
@@ -31,13 +31,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-q)d-&3vmch45=2w(spdfxaiwl0um3u3py(%x_ek-0##69d+@_%"
 
-sentry_sdk.init(
-    dsn="https://f20a4c33404e93f6abb90ca2526061ff@o4506461139435520.ingest.sentry.io/4506461142122496",
-    enable_tracing=True,
-)
+# sentry_sdk.init(
+#     dsn="https://f20a4c33404e93f6abb90ca2526061ff@o4506461139435520.ingest.sentry.io/4506461142122496",
+#     enable_tracing=True,
+# )
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = strtobool(os.environ.get("DEBUG", "False"))
+DEBUG = bool(os.environ.get("DEBUG", "False"))
 
 ALLOWED_HOSTS = ["*"]
 CSRF_TRUSTED_ORIGINS = [

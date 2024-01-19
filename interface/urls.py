@@ -89,12 +89,12 @@ urlpatterns = [
     path("list/", InterfaceListView.as_view(), name="interface_list"),
     path("create/", InterfaceCreateView.as_view(), name="interface_create"),
     path(
-        "update/<int:pk>/",
+        "update/<slug:code>/",
         InterfaceUpdateView.as_view(),
         name="interface_update",
     ),
     path(
-        "delete/<int:pk>/",
+        "delete/<slug:code>/",
         InterfaceDeleteView.as_view(),
         name="interface_delete",
     ),
