@@ -267,47 +267,50 @@ $(document).ready(function(){
     
 })
 
- $('#classTable').on('contextmenu', 'tbody tr', function(e)  {
+$('#classTable').on('contextmenu', 'tbody tr', function(e) {
     e.preventDefault();
-    console.log(e)
     var interfaceData = table.row(this).data();
-    interfaceId = interfaceData.id
-    console.log(interfaceId)
+    var interfaceId = interfaceData.id;
+    var baseUrl = window.location.origin;
     $.ajax({
-            url: 'api/references/'+interfaceId,
-            method: 'POST',
-            data: {
-            'interfaceId' : interfaceId,
-            },
-            success: function (interfaceData) {
-                // Handle the fetched data as needed
-            },
-            error: function () {
-                console.error('Error fetching interface by ID');
+        url: baseUrl + '/api/references/' + interfaceId + '/',
+        method: 'GET',
+        data: {
+            'interfaceId': interfaceId,
+        },
+        success: function (interfaceData) {
+            $('.dropdown-menu').remove();
+            var dropdownMenu = $('<div class="dropdown-menu" role="menu"></div>');
+            for (var key in interfaceData) {
+                if (interfaceData.hasOwnProperty(key)) {
+                    if (key.endsWith('_id') && key !== 'id') {
+                        var foreignKeyRecordId = interfaceData[key];
+                        var modifiedKey = key.replace(/_/g, '/');
+                        dropdownMenu.append('<a class="dropdown-item" href="' + baseUrl + '/' + modifiedKey + '/' + foreignKeyRecordId + '">' + key + ': ' + interfaceData[key] + '</a>');
+                    } else {
+                        dropdownMenu.append('<a class="dropdown-item" href="">' + key + ': ' + interfaceData[key] + '</a>');
+                    }
+                }
             }
-        });
-    $('.dropdown-menu').remove();
-    var dropdownMenu = $('<div class="dropdown-menu" role="menu"></div>');
-    dropdownMenu.append('<a class="dropdown-item" href="#">1</a>');
-    dropdownMenu.append('<a class="dropdown-item" href="#">rowId</a>');
-    dropdownMenu.append('<div class="dropdown-divider"></div>');
-    dropdownMenu.append('<a class="dropdown-item" href="#">Another action</a>');
-    dropdownMenu.css({
-        position: 'absolute',
-        left: e.pageX,
-        top: e.pageY,
-        display: 'block'
+            dropdownMenu.append('<div class="dropdown-divider"></div>');
+            dropdownMenu.append('<a class="dropdown-item" href="">Another action</a>');
+            dropdownMenu.css({
+                position: 'absolute',
+                left: e.pageX,
+                top: e.pageY,
+                display: 'block',
+            });
+            $('body').append(dropdownMenu);
+            $(document).on('click.contextMenu', function () {
+                dropdownMenu.remove();
+                $(document).off('click.contextMenu');
+            });
+        },
+        error: function () {
+            console.error('Error fetching interface by ID', interfaceId);
+        }
     });
-    $('body').append(dropdownMenu);
-    $(document).on('click.contextMenu', function () {
-        dropdownMenu.remove();
-        $(document).off('click.contextMenu');
-    });
-    console.log('Right-clicked on row with ID:', interfaceId);
 });
-
-
-
 
 
 </script>

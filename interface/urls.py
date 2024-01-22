@@ -18,7 +18,7 @@ from .views import (
     InterfaceTypeDeleteView,
     InterfaceTypeListView,
     InterfaceTypeUpdateView,
-    InterfaceUpdateView, InterfaceDropdownView,
+    InterfaceUpdateView, InterfaceDropdownView, InterfaceTypeDetailView, InterfaceCategoryDetailView,
 )
 from .viewsets import (
     InterfaceCategoryViewset,
@@ -135,4 +135,7 @@ urlpatterns = [
         InterfaceDropdownView.as_view(),
         name='references'
     ),
+    path("type/id/<int:pk>/", InterfaceTypeDetailView.as_view(), name="interface_type_detail"),
+    path("category/id/<int:pk>/", InterfaceCategoryDetailView.as_view(), name="interface_category_detail"),
+
 ]

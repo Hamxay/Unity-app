@@ -6,6 +6,8 @@ from django.views.generic import (
     CreateView,
     UpdateView,
     DeleteView,
+    DetailView,
+
 )
 from django.utils import timezone
 from django.contrib.messages.views import SuccessMessageMixin
@@ -18,6 +20,11 @@ from .models import InterfaceCategory, InterfaceType, Interface, InterfaceDepend
 # InterfaceCategory CRUD
 class InterfaceCategoryListView(LoginRequiredMixin, ListView):
     permission_required = "interface.view_interfacecategory"
+    model = InterfaceCategory
+
+
+class InterfaceCategoryDetailView(LoginRequiredMixin, DetailView):
+    permission_required = "interface.detail_interfacecategory"
     model = InterfaceCategory
 
 
@@ -106,6 +113,11 @@ class InterfaceTypeDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteVie
         success_url = self.get_success_url()
         messages.success(self.request, self.success_message)
         return redirect(success_url)
+
+
+class InterfaceTypeDetailView(LoginRequiredMixin, DetailView):
+    permission_required = "interface.interfacetype_detail"
+    model = InterfaceType
 
 
 class RestoreHistoricalVersionForm(forms.Form):
@@ -297,25 +309,11 @@ class InterfaceDropdownView(
     success_url = reverse_lazy("interface:references")
     success_message = "Related data requested successfully"
 
-    def post(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         self.object.user = request.user
-        self.object.data = request.user
-        print(self.object.data)
-        print(self.object.user)
         success_url = self.get_success_url()
         return redirect(success_url)
-    # Fetch the Interface object based on row_id
-    # interface_obj = get_object_or_404(Interface, id=code)
-    #
-    # # Replace the following lines with the actual logic to retrieve related data
-    # # For demonstration purposes, we're just returning a sample response
-    # related_data = {
-    #     'field1': interface_obj.field1_related_data,
-    #     'field2': interface_obj.field2_related_data,
-    #     # Add more fields as needed
-    # }
-    #
-    # return JsonResponse(related_data)
+
 
 
