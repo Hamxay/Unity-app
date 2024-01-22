@@ -1,4 +1,4 @@
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django import forms
 from django.views.generic import (
     ListView,
@@ -46,7 +46,6 @@ class ScheduleCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     permission_required = "schedule.add_schedule"
     model = Schedule
     fields = [
-        "Code",
         "Name",
         "Frequency",
         "FrequencyInterval",
@@ -74,8 +73,8 @@ class ScheduleUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
 
     permission_required = "schedule.change_schedule"
     model = Schedule
+    slug_url_kwarg = 'Code'
     fields = [
-        "Code",
         "Name",
         "Frequency",
         "FrequencyInterval",
@@ -97,12 +96,16 @@ class ScheduleUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         form.instance.updated_by = self.request.user
         return super().form_valid(form)
 
+    def get_object(self, queryset=None):
+        return get_object_or_404(self.model, Code=self.kwargs[self.slug_url_kwarg])
+
 
 class ScheduleDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     """Delete the Schedule"""
 
     permission_required = "schedule.delete_schedule"
     model = Schedule
+    slug_url_kwarg = 'Code'
     success_url = reverse_lazy("schedule:schedule_list")
     success_message = "Record was deleted successfully"
 
@@ -115,6 +118,8 @@ class ScheduleDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
         messages.success(self.request, self.success_message)
         return redirect(success_url)
 
+    def get_object(self, queryset=None):
+        return get_object_or_404(self.model, Code=self.kwargs[self.slug_url_kwarg])
 
 class HistoricalScheduleListView(ListView):
     permission_required = "Schedule.view_schedule"
