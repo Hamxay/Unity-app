@@ -16,6 +16,7 @@ from django.contrib import messages
 from .models import InterfaceCategory, InterfaceType, Interface, InterfaceDependence
 from .forms import InterfaceForm
 
+
 # InterfaceCategory CRUD
 class InterfaceCategoryListView(LoginRequiredMixin, ListView):
     permission_required = "interface.view_interfacecategory"
@@ -54,7 +55,6 @@ class InterfaceCategoryUpdateView(LoginRequiredMixin, SuccessMessageMixin, Updat
         return get_object_or_404(self.model, code=self.kwargs[self.slug_url_kwarg])
 
 
-
 class InterfaceCategoryDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     permission_required = "interface.delete_interfacecategory"
     model = InterfaceCategory
@@ -73,7 +73,6 @@ class InterfaceCategoryDeleteView(LoginRequiredMixin, SuccessMessageMixin, Delet
         return redirect(success_url)
     def get_object(self, queryset=None):
         return get_object_or_404(self.model, code=self.kwargs[self.slug_url_kwarg])
-
 
 
 # InterfaceType CRUD
@@ -108,7 +107,6 @@ class InterfaceTypeUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateVie
     
     def get_object(self, queryset=None):
         return get_object_or_404(self.model, code=self.kwargs[self.slug_url_kwarg])
-
 
 
 class InterfaceTypeDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):

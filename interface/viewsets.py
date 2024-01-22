@@ -41,7 +41,7 @@ class InterfaceDependenceViewset(viewsets.ModelViewSet):
 
 class InterfaceDropdownViewSet(viewsets.ViewSet):
     def retrieve(self, request, pk=None):
-        queryset = Interface.objects.filter(id=pk)
+        queryset = Interface.objects.filter(code=pk)
         foreign_key_fields = [field for field in Interface._meta.get_fields() if isinstance(field, models.ForeignKey)]
         foreign_key_names = [
             str(field).split(":")[1].strip().split(">")[0].strip()

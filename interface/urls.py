@@ -101,7 +101,7 @@ urlpatterns = [
         name="interface_delete",
     ),
     path(
-        "history/list/<int:pk>/",
+        "history/list/<int:code>/",
         HistoricalInterfaceListView.as_view(),
         name="historicalinterface_list",
     ),
@@ -131,7 +131,7 @@ urlpatterns = [
         name="interface_dependence_delete",
     ),
     path(
-        "references/<int:pk>",
+        "references/<int:code>",
         InterfaceDropdownView.as_view(),
         name='references'
     ),

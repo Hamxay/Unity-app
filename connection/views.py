@@ -4,7 +4,7 @@ from django.views.generic import (
     ListView,
     CreateView,
     UpdateView,
-    DeleteView,
+    DeleteView, DetailView,
 )
 from django.utils import timezone
 from django.contrib.messages.views import SuccessMessageMixin
@@ -125,3 +125,8 @@ class HistoricalConnectionUpdateView(LoginRequiredMixin, UpdateView):
         connection_obj.save_without_historical_record()
         messages.success(self.request, "Table restored successfully")
         return redirect(reverse_lazy("connection:connection_list"))
+
+
+class ConnectionDetailView(LoginRequiredMixin, DetailView):
+    permission_required = "connection.connection_detail"
+    model = Connection

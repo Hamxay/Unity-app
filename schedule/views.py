@@ -4,7 +4,7 @@ from django.views.generic import (
     ListView,
     CreateView,
     UpdateView,
-    DeleteView,
+    DeleteView, DetailView,
 )
 from django.utils import timezone
 from django.contrib.messages.views import SuccessMessageMixin
@@ -147,3 +147,8 @@ class HistoricalScheduleUpdateView(LoginRequiredMixin, UpdateView):
         Schedule_obj.save_without_historical_record()
         messages.success(self.request, "Table restored successfully")
         return redirect(reverse_lazy("schedule:schedule_list"))
+
+
+class ScheduleDetailView(LoginRequiredMixin, DetailView):
+    permission_required = "schedule.schedule_detail"
+    model = Schedule

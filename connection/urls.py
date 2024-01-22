@@ -6,7 +6,7 @@ from .views import (
     ConnectionListView,
     ConnectionUpdateView,
     HistoricalConnectionListView,
-    HistoricalConnectionUpdateView,
+    HistoricalConnectionUpdateView, ConnectionDetailView,
 )
 from .viewsets import ConnectionViewset, ConnectionHistoryViewset
 
@@ -43,4 +43,6 @@ urlpatterns = [
         HistoricalConnectionUpdateView.as_view(),
         name="historicalconnection_update",
     ),
+    path("id/<int:pk>/", ConnectionDetailView.as_view(), name="connection_detail"),
+
 ]
