@@ -24,12 +24,12 @@ urlpatterns = [
     path("list/", ConnectionListView.as_view(), name="connection_list"),
     path("create/", ConnectionCreateView.as_view(), name="connection_create"),
     path(
-        "update/<int:pk>/",
+        "update/<slug:code>/",
         ConnectionUpdateView.as_view(),
         name="connection_update",
     ),
     path(
-        "delete/<int:pk>/",
+        "delete/<slug:code>/",
         ConnectionDeleteView.as_view(),
         name="connection_delete",
     ),

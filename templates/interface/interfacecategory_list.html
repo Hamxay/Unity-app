@@ -58,7 +58,6 @@
                                            <thead class="table-light text-muted">
                                                <tr>
                                                 <th>Action</th>
-                                                <th data-data="id" data-name="id">ID</th>
                                                 <th data-data="code" data-name="code">Code</th>
                                                 <th data-data="name" data-name="name">Name</th>
                                                 <th data-data="description" data-name="description">Description</th>
@@ -128,7 +127,7 @@
 var table = $('#InterfaceCategoryTable').DataTable( {
     serverSide: true,
     processing: true,
-    order: [[5, 'desc']],
+    order: [[4, 'desc']],
     "ajax": {
         "url": "/api/interface/category/?format=datatables"
     },
@@ -136,7 +135,7 @@ var table = $('#InterfaceCategoryTable').DataTable( {
     "columnDefs": [
     {
         targets: 1,
-        visible: false
+        defaultContent: "-"
     },
     {
         targets: 2,
@@ -148,26 +147,22 @@ var table = $('#InterfaceCategoryTable').DataTable( {
     },
     {
         targets: 4,
-        defaultContent: "-"
+        render: (data, type, row)=>{
+            return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
+        }
     },
     {
         targets: 5,
-        render: (data, type, row)=>{
-            return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
-        }
-    },
-    {
-        targets: 6,
         defaultContent: "-"
     },
     {
-        targets: 7,
+        targets: 6,
         render: (data, type, row)=>{
             return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
         }
     },
     {
-        targets: 8,
+        targets: 7,
         defaultContent: "-"
     },
     {
@@ -177,19 +172,19 @@ var table = $('#InterfaceCategoryTable').DataTable( {
         // The `data` parameter refers to the data for the cell.
         // The `rows`argument is an object representing all the data for the current row.
         render: ( data, type, row ) => {
-            let editURL = "{% url 'interface:interface_category_update' pk=0 %}"
-            let deleteURL = "{% url 'interface:interface_category_delete' pk=0 %}"
+            let editURL = "{% url 'interface:interface_category_update' code=0 %}"
+            let deleteURL = "{% url 'interface:interface_category_delete' code=0 %}"
             
             let actions =  `<ul class="list-inline hstack gap-2 mb-0">`
 
             actions += `<li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
-                <a href="${editURL.replace('0', row.id)}" class="text-primary d-inline-block edit-item-btn">
+                <a href="${editURL.replace('0', row.code)}" class="text-primary d-inline-block edit-item-btn">
                     <i class="ri-pencil-fill fs-16"></i>
                 </a>
             </li>`
         
             actions += `<li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
-            <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder" data-url="${deleteURL.replace('0', row.id)}">
+            <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder" data-url="${deleteURL.replace('0', row.code)}">
             <i class="ri-delete-bin-5-fill fs-16"></i>
                 </a>
             </li>`

@@ -35,6 +35,23 @@
                             </div>
                             
                             <!--end card-body-->
+                            <div class="card-body border border-dashed border-end-0 border-start-0">
+                                <form>
+                                    <div class="row g-3">
+                                        <div class="col-xxl-5 col-sm-12">
+                                            <div class="search-box">
+                                                <input type="text"
+                                                       class="form-control search bg-light border-light"
+                                                       placeholder="Search..."
+                                                       id="id_search">
+                                                <i class="ri-search-line search-icon"></i>
+                                            </div>
+                                        </div>
+                                        <!--end col-->
+                                    </div>
+                                    <!--end row-->
+                                </form>
+                            </div>
                             <div class="card-body">
                                 <div class="table-responsive table-card mb-4">
                                     <table class="table align-middle table-nowrap mb-0"
@@ -131,7 +148,7 @@ var table = $('#classTable').DataTable( {
     "columnDefs": [
     {
         targets: 1,
-        visible: false
+        defaultContent: "-"
     },
     {
         targets: 2,
@@ -151,7 +168,7 @@ var table = $('#classTable').DataTable( {
     },
     {
         targets: 6,
-        visible: false
+        defaultContent: "-"
     },
     {
         targets: 7,
@@ -171,7 +188,7 @@ var table = $('#classTable').DataTable( {
     },
     {
         targets: 11,
-        visible: false
+        defaultContent: "-"
     },
     {
         targets: 12,
@@ -254,10 +271,28 @@ $(document).ready(function(){
     })
     
     // Filters for table
-    $('#id_search').on('keyup', function () {
-        table.search( this.value ).draw();
-    } );
-    
+    $("#example_wrapper input[type='search']").on("keydown", function(evt){
+        if(evt.keyCode == 13){
+          $("#example").DataTable().search($("input[type='search']").val()).draw();
+        }
+   });
+// this function is used to intialize the event handlers
+function onint(e){
+    // take off all events from the searchfield
+    $("#id_search input[type='search']").off();
+    // Use return key to trigger search
+    $("#id_search input[type='search']").on("keydown", function(evt){
+         if(evt.keyCode == 13){
+           $("#classTable").DataTable().search($("input[type='search']").val()).draw();
+         }
+    })
+    console.log(e);
+    $("#search-btn").button().on("click", function(){
+          $("#classTable").DataTable().search($("input[type='search']").val()).draw();
+
+    });
+  }
+
 })
 </script>
 {% endblock extra_js %}

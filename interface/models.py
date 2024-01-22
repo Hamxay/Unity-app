@@ -1,9 +1,10 @@
+import datetime
 from django.db import models
 from accounts.models import User
 from simple_history.models import HistoricalRecords
 from historyconfiguration.models import HistoricalModel
-
-
+from schedule import models as scheduleModel
+from connection import models as connectionModel
 # Create your models here.
 class BaseModel(models.Model):
     created_by = models.ForeignKey(
@@ -25,7 +26,7 @@ class BaseModel(models.Model):
 
 
 class InterfaceCategory(BaseModel):
-    code = models.IntegerField(unique=True)
+    code = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=128)
     description = models.CharField(max_length=250, null=True, blank=True)
 
@@ -38,11 +39,11 @@ class InterfaceCategory(BaseModel):
         ]
 
     def __str__(self):
-        return self.name
+        return f'({self.code} - {self.name})'
 
 
 class InterfaceType(BaseModel):
-    code = models.IntegerField(unique=True)
+    code = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=128)
     description = models.CharField(max_length=250, null=True, blank=True)
 
@@ -53,28 +54,30 @@ class InterfaceType(BaseModel):
         ]
 
     def __str__(self):
-        return self.name
+        return f'({self.code} - {self.name})'
 
 
 class Interface(BaseModel):
+    WAIT_ACTION_CHOICES = [
+        (1, 'Execute Regardless'),
+        (2, 'Stop/Do Not Execute'),
+    ]
     code = models.BigAutoField(primary_key=True)
     interface_category_id = models.ForeignKey(
         InterfaceCategory, on_delete=models.CASCADE
     )
     interface_type_id = models.ForeignKey(InterfaceType, on_delete=models.CASCADE)
-    schedule_id = models.IntegerField()
-    connection_id = models.IntegerField()
+    schedule_id = models.ForeignKey(scheduleModel.Schedule, on_delete=models.CASCADE)
+    connection_id = models.ForeignKey(connectionModel.Connection,on_delete=models.CASCADE)
     name = models.CharField(max_length=128)
     description = models.CharField(max_length=250, blank=True, null=True)
     priority = models.IntegerField()
     max_concurrent_sessions = models.IntegerField(blank=True, null=True)
-    wait_action = models.IntegerField()
+    wait_action = models.IntegerField(choices=WAIT_ACTION_CHOICES)
     run_window = models.IntegerField()
     is_enabled = models.BooleanField()  # Assuming 'nchar(1)' stores 'Y' or 'N'
-    active_start_date = (
-        models.IntegerField()
-    )  # Or DateTimeField, if it represents a date
-    active_end_date = models.IntegerField()  # Or DateTimeField, if it represents a date
+    active_start_date=models.DateField(default=datetime.date.today)
+    active_end_date=models.DateField(default=datetime.date.today)
     retry_times = models.IntegerField()
 
     history = HistoricalRecords(bases=[HistoricalModel])
@@ -93,11 +96,11 @@ class Interface(BaseModel):
         return ret
 
     def __str__(self):
-        return self.name
+        return f'({self.code} - {self.name})'
 
 
 class InterfaceDependence(BaseModel):
-    code = models.IntegerField(unique=True)
+    code = models.BigAutoField(primary_key=True)
     interface_id = models.ForeignKey(Interface, on_delete=models.CASCADE)
     dependent_on_interface = models.ForeignKey(
         Interface,

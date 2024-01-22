@@ -13,7 +13,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.contrib import messages
 from .models import InterfaceCategory, InterfaceType, Interface, InterfaceDependence
-
+from .forms import InterfaceForm
 
 # InterfaceCategory CRUD
 class InterfaceCategoryListView(LoginRequiredMixin, ListView):
@@ -24,7 +24,7 @@ class InterfaceCategoryListView(LoginRequiredMixin, ListView):
 class InterfaceCategoryCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     permission_required = "interface.add_interfacecategory"
     model = InterfaceCategory
-    fields = ["code", "name", "description"]
+    fields = ["name", "description"]
     success_url = reverse_lazy("interface:interface_category_list")
     success_message = "Record was created successfully"
 
@@ -36,13 +36,17 @@ class InterfaceCategoryCreateView(LoginRequiredMixin, SuccessMessageMixin, Creat
 class InterfaceCategoryUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     permission_required = "interface.change_interfacecategory"
     model = InterfaceCategory
-    fields = ["code", "name", "description"]
+    fields = ["name", "description"]
     success_url = reverse_lazy("interface:interface_category_list")
     success_message = "Record was updated successfully"
+    slug_url_kwarg = 'code'
 
     def form_valid(self, form):
         form.instance.updated_by = self.request.user
         return super().form_valid(form)
+    def get_object(self, queryset=None):
+        return get_object_or_404(self.model, code=self.kwargs[self.slug_url_kwarg])
+
 
 
 class InterfaceCategoryDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
@@ -51,7 +55,8 @@ class InterfaceCategoryDeleteView(LoginRequiredMixin, SuccessMessageMixin, Delet
     template_name = "interface/interface_category_confirm_delete.html"
     success_url = reverse_lazy("interface:interface_category_list")
     success_message = "Record was deleted successfully"
-
+    slug_url_kwarg = 'code'
+    
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         self.object.deleted_by = request.user
@@ -60,6 +65,9 @@ class InterfaceCategoryDeleteView(LoginRequiredMixin, SuccessMessageMixin, Delet
         success_url = self.get_success_url()
         messages.success(self.request, self.success_message)
         return redirect(success_url)
+    def get_object(self, queryset=None):
+        return get_object_or_404(self.model, code=self.kwargs[self.slug_url_kwarg])
+
 
 
 # InterfaceType CRUD
@@ -71,7 +79,7 @@ class InterfaceTypeListView(LoginRequiredMixin, ListView):
 class InterfaceTypeCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     permission_required = "interface.add_interfacetype"
     model = InterfaceType
-    fields = ["code", "name", "description"]
+    fields = ["name", "description"]
     success_url = reverse_lazy("interface:interface_type_list")
     success_message = "Record was created successfully"
 
@@ -83,13 +91,18 @@ class InterfaceTypeCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateVie
 class InterfaceTypeUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     permission_required = "interface.change_interfacetype"
     model = InterfaceType
-    fields = ["code", "name", "description"]
+    fields = [ "name", "description"]
     success_url = reverse_lazy("interface:interface_type_list")
     success_message = "Record was updated successfully"
-
+    slug_url_kwarg = 'code'
+    
     def form_valid(self, form):
         form.instance.updated_by = self.request.user
         return super().form_valid(form)
+    
+    def get_object(self, queryset=None):
+        return get_object_or_404(self.model, code=self.kwargs[self.slug_url_kwarg])
+
 
 
 class InterfaceTypeDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
@@ -97,7 +110,8 @@ class InterfaceTypeDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteVie
     model = InterfaceType
     success_url = reverse_lazy("interface:interface_type_list")
     success_message = "Record was deleted successfully"
-
+    slug_url_kwarg = 'code'
+    
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         self.object.deleted_by = request.user
@@ -106,6 +120,8 @@ class InterfaceTypeDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteVie
         success_url = self.get_success_url()
         messages.success(self.request, self.success_message)
         return redirect(success_url)
+    def get_object(self, queryset=None):
+        return get_object_or_404(self.model, code=self.kwargs[self.slug_url_kwarg])
 
 
 class RestoreHistoricalVersionForm(forms.Form):
@@ -136,23 +152,8 @@ class InterfaceCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     """Add Interface"""
 
     permission_required = "interface.add_class"
+    form_class = InterfaceForm
     model = Interface
-    fields = [
-        "interface_category_id",
-        "interface_type_id",
-        "schedule_id",
-        "connection_id",
-        "name",
-        "description",
-        "priority",
-        "max_concurrent_sessions",
-        "run_window",
-        "is_enabled",
-        "active_start_date",
-        "active_end_date",
-        "retry_times",
-        "wait_action",
-    ]
 
     success_url = reverse_lazy("interface:interface_list")
     success_message = "Interface was added successfully"
@@ -191,7 +192,6 @@ class InterfaceUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         form.instance.updated_by = self.request.user
         return super().form_valid(form)
     def get_object(self, queryset=None):
-        # Retrieve the object based on the slug (code)
         return get_object_or_404(self.model, code=self.kwargs[self.slug_url_kwarg])
 
 
@@ -213,7 +213,6 @@ class InterfaceDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
         return redirect(success_url)
 
     def get_object(self, queryset=None):
-        # Retrieve the object based on the slug (code)
         return get_object_or_404(self.model, code=self.kwargs[self.slug_url_kwarg])
 
 
@@ -271,10 +270,14 @@ class InterfaceDependenceUpdateView(
     fields = ["code", "interface_id", "dependent_on_interface"]
     success_url = reverse_lazy("interface:interface_dependence_list")
     success_message = "Record was updated successfully"
+    slug_url_kwarg = 'code'
 
     def form_valid(self, form):
         form.instance.updated_by = self.request.user
         return super().form_valid(form)
+    def get_object(self, queryset=None):
+        return get_object_or_404(self.model, code=self.kwargs[self.slug_url_kwarg])
+
 
 
 class InterfaceDependenceDeleteView(
@@ -284,6 +287,7 @@ class InterfaceDependenceDeleteView(
     model = InterfaceDependence
     success_url = reverse_lazy("interface:interface_dependence_list")
     success_message = "Record was deleted successfully"
+    slug_url_kwarg = 'code'
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -293,3 +297,6 @@ class InterfaceDependenceDeleteView(
         success_url = self.get_success_url()
         messages.success(self.request, self.success_message)
         return redirect(success_url)
+    def get_object(self, queryset=None):
+        return get_object_or_404(self.model, code=self.kwargs[self.slug_url_kwarg])
+
