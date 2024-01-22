@@ -35,3 +35,10 @@ class InterfaceHistoryViewset(viewsets.ViewSet):
 class InterfaceDependenceViewset(viewsets.ModelViewSet):
     queryset = InterfaceDependence.objects.all()
     serializer_class = InterfaceDependenceSerializer
+
+
+class InterfaceDropdownViewSet(viewsets.ViewSet):
+    def retrieve(self, request, pk=None):
+        queryset = Interface.history.filter(id=pk)
+        serializer = InterfaceHistorySerializer(queryset, many=True)
+        return Response(serializer.data)

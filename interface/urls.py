@@ -18,7 +18,7 @@ from .views import (
     InterfaceTypeDeleteView,
     InterfaceTypeListView,
     InterfaceTypeUpdateView,
-    InterfaceUpdateView,
+    InterfaceUpdateView, InterfaceDropdownView,
 )
 from .viewsets import (
     InterfaceCategoryViewset,
@@ -26,6 +26,7 @@ from .viewsets import (
     InterfaceHistoryViewset,
     InterfaceTypeViewset,
     InterfaceViewset,
+    InterfaceDropdownViewSet
 )
 
 router = routers.DefaultRouter()
@@ -37,6 +38,7 @@ router.register(
     "interface/dependence", InterfaceDependenceViewset, basename="interface_dependence"
 )
 router.register("interface", InterfaceViewset, basename="interface")
+router.register("references", InterfaceDropdownViewSet, basename="references")
 router.register(
     "interface/history",
     InterfaceHistoryViewset,
@@ -127,5 +129,10 @@ urlpatterns = [
         "dependence/delete/<int:pk>/",
         InterfaceDependenceDeleteView.as_view(),
         name="interface_dependence_delete",
+    ),
+    path(
+        "references/<int:pk>",
+        InterfaceDropdownView.as_view(),
+        name='references'
     ),
 ]
