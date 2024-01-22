@@ -1,6 +1,7 @@
 from django.db import models
 from rest_framework.response import Response
 from rest_framework import viewsets
+from django.db.models import Q
 from .models import InterfaceCategory, InterfaceType, Interface, InterfaceDependence
 from .serializer import (
     InterfaceCategorySerializer,

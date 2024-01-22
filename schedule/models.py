@@ -24,7 +24,7 @@ class BaseModel(models.Model):
 
 
 class Schedule(BaseModel):
-    Code = models.IntegerField(unique=True)
+    Code = models.BigAutoField(primary_key=True)
     Name = models.CharField(max_length=128)
     Frequency = models.IntegerField()
     FrequencyInterval = models.IntegerField()
@@ -50,4 +50,4 @@ class Schedule(BaseModel):
         return ret
 
     def __str__(self):
-        return f"{self.Code} - {self.Name}"
+        return f"({self.Code} - {self.Name})"

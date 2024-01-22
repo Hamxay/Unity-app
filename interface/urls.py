@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path,include
 from rest_framework import routers
 from .views import (
     HistoricalInterfaceListView,
@@ -59,12 +59,12 @@ urlpatterns = [
         name="interface_category_create",
     ),
     path(
-        "category/update/<int:pk>/",
+        "category/update/<slug:code>/",
         InterfaceCategoryUpdateView.as_view(),
         name="interface_category_update",
     ),
     path(
-        "category/delete/<int:pk>/",
+        "category/delete/<slug:code>/",
         InterfaceCategoryDeleteView.as_view(),
         name="interface_category_delete",
     ),
@@ -79,24 +79,24 @@ urlpatterns = [
         name="interface_type_create",
     ),
     path(
-        "type/update/<int:pk>/",
+        "type/update/<slug:code>/",
         InterfaceTypeUpdateView.as_view(),
         name="interface_type_update",
     ),
     path(
-        "type/delete/<int:pk>/",
+        "type/delete/<slug:code>/",
         InterfaceTypeDeleteView.as_view(),
         name="interface_type_delete",
     ),
     path("list/", InterfaceListView.as_view(), name="interface_list"),
     path("create/", InterfaceCreateView.as_view(), name="interface_create"),
     path(
-        "update/<int:pk>/",
+        "update/<slug:code>/",
         InterfaceUpdateView.as_view(),
         name="interface_update",
     ),
     path(
-        "delete/<int:pk>/",
+        "delete/<slug:code>/",
         InterfaceDeleteView.as_view(),
         name="interface_delete",
     ),
@@ -121,12 +121,12 @@ urlpatterns = [
         name="interface_dependence_create",
     ),
     path(
-        "dependence/update/<int:pk>/",
+        "dependence/update/<slug:code>/",
         InterfaceDependenceUpdateView.as_view(),
         name="interface_dependence_update",
     ),
     path(
-        "dependence/delete/<int:pk>/",
+        "dependence/delete/<slug:code>/",
         InterfaceDependenceDeleteView.as_view(),
         name="interface_dependence_delete",
     ),
