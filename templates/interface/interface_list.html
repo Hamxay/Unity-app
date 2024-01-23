@@ -299,14 +299,11 @@ function onint(e){
 $('#classTable').on('contextmenu', 'tbody tr', function(e) {
     e.preventDefault();
     var interfaceData = table.row(this).data();
-    var interfaceId = interfaceData.code;
+    var interfaceCode = interfaceData.code;
     var baseUrl = window.location.origin;
     $.ajax({
-        url: baseUrl + '/api/references/' + interfaceId + '/',
+        url: baseUrl + '/api/references/' + interfaceCode + '/',
         method: 'GET',
-        data: {
-            'interfaceId': interfaceId,
-        },
         success: function (interfaceData) {
             $('.dropdown-menu').remove();
             var dropdownMenu = $('<div class="dropdown-menu" role="menu"></div>');
@@ -315,7 +312,7 @@ $('#classTable').on('contextmenu', 'tbody tr', function(e) {
                     if (key.endsWith('_id') && key !== 'id') {
                         var foreignKeyRecordId = interfaceData[key];
                         var modifiedKey = key.replace(/_/g, '/');
-                        dropdownMenu.append('<a class="dropdown-item" href="' + baseUrl + '/' + modifiedKey + '/' + foreignKeyRecordId + '">' + key + ': ' + interfaceData[key] + '</a>');
+                        dropdownMenu.append('<a class="dropdown-item" href="' + baseUrl + '/' + modifiedKey + '/' + foreignKeyRecordId + '">' + key.replace(/_/g, ' ') + ' : ' + interfaceData[key] + '</a>');
                     } else {
                         dropdownMenu.append('<a class="dropdown-item" href="">' + key + ': ' + interfaceData[key] + '</a>');
                     }
