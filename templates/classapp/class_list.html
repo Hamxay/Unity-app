@@ -58,7 +58,6 @@
                                            <thead class="table-light text-muted">
                                                <tr>
                                                 <th>Action</th>
-                                                <th data-data="id" data-name="id">ID</th> <!-- Keeping this as it seems you still want to display IDs -->
                                                 <th data-data="Code" data-name="Code">Code</th>
                                                 <th data-data="InterfaceId" data-name="InterfaceId">InterfaceId</th>
                                                 <th data-data="Name" data-name="Name">Name</th>
@@ -139,7 +138,7 @@ var interfaceIdParam = new URLSearchParams(window.location.search).get('Interfac
 var table = $('#classTable').DataTable( {
     serverSide: true,
     processing: true,
-    order: [[14, 'desc']],
+    order: [[13, 'desc']],
     "ajax": {
         "url": "/api/class/?format=datatables" + (interfaceIdParam ? '&InterfaceId=' + interfaceIdParam : '')
     },
@@ -147,7 +146,7 @@ var table = $('#classTable').DataTable( {
     "columnDefs": [
     {
         targets: 1,
-        visible: false
+        defaultContent: "-"
     },
     {
         targets: 2,
@@ -196,28 +195,25 @@ var table = $('#classTable').DataTable( {
     },
     {
         targets: 13,
-        defaultContent: "-"
+        render: (data, type, row)=>{
+            return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
+        }
     },
     {
         targets: 14,
-        render: (data, type, row)=>{
-            return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
-        }
+        defaultContent: "-"
     },
     {
         targets: 15,
-        defaultContent: "-"
-    },
-    {
-        targets: 16,
         render: (data, type, row)=>{
             return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
         }
     },
     {
-        targets: 17,
+        targets: 16,
         defaultContent: "-"
     },
+
     {
         targets: 0,  // 0 the first, 1 the second, etc.
         sortable: false,
@@ -226,25 +222,24 @@ var table = $('#classTable').DataTable( {
         // The `rows`argument is an object representing all the data for the current row.
         render: ( data, type, row ) => {
             let viewURL = "{% url 'class:historicalclass_list' pk=0 %}"
-            let editURL = "{% url 'class:class_update' pk=0 %}"
-            let deleteURL = "{% url 'class:class_delete' pk=0 %}"
-            
+            let editURL = "{% url 'class:class_update' Code=0 %}"
+            let deleteURL = "{% url 'class:class_delete' Code=0 %}"
             let actions =  `<ul class="list-inline hstack gap-2 mb-0">`
                 
             actions += `
             <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="History">
-            <a href="${viewURL.replace('0', row.id)}" class="text-primary d-inline-block">
+            <a href="${viewURL.replace('0', row.Code)}" class="text-primary d-inline-block">
                 <i class="mdi mdi-history fs-16"></i>
             </a>
             </li>`
             actions += `<li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
-                <a href="${editURL.replace('0', row.id)}" class="text-primary d-inline-block edit-item-btn">
+                <a href="${editURL.replace('0', row.Code)}" class="text-primary d-inline-block edit-item-btn">
                     <i class="ri-pencil-fill fs-16"></i>
                 </a>
             </li>`
         
             actions += `<li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
-            <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder" data-url="${deleteURL.replace('0', row.id)}">
+            <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder" data-url="${deleteURL.replace('0', row.Code)}">
             <i class="ri-delete-bin-5-fill fs-16"></i>
                 </a>
             </li>`

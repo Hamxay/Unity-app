@@ -1,4 +1,4 @@
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django import forms
 from django.views.generic import (
     ListView,
@@ -42,7 +42,6 @@ class ClassCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     permission_required = "class.add_class"
     model = Class
     fields = [
-        "Code",
         "InterfaceId",
         "Name",
         "Description",
@@ -69,7 +68,6 @@ class ClassUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     permission_required = "class.change_class"
     model = Class
     fields = [
-        "Code",
         "InterfaceId",
         "Name",
         "Description",
@@ -95,8 +93,13 @@ class ClassDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
 
     permission_required = "class.delete_class"
     model = Class
+    slug_url_kwarg = 'Code'
     success_url = reverse_lazy("class:class_list")
     success_message = "Record was deleted successfully"
+
+    def get_object(self, queryset=None):
+        # Retrieve the object based on the slug (code)
+        return get_object_or_404(self.model, Code=self.kwargs[self.slug_url_kwarg])
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
