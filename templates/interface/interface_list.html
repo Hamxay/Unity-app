@@ -142,7 +142,8 @@ var table = $('#classTable').DataTable( {
     processing: true,
     order: [[16, 'desc']],
     "ajax": {
-        "url": "/api/interface/?format=datatables"
+        "url": "/api/interface/?format=datatables",
+
     },
     "dom": 'lrtip',
     "columnDefs": [
@@ -152,19 +153,23 @@ var table = $('#classTable').DataTable( {
     },
     {
         targets: 2,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 3,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 4,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 5,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 6,
@@ -172,59 +177,72 @@ var table = $('#classTable').DataTable( {
     },
     {
         targets: 7,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 8,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 9,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 10,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 11,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 12,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 13,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 14,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 15,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 16,
+        searchable: false,
         render: (data, type, row)=>{
             return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
         }
     },
     {
         targets: 17,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 18,
+        searchable: false,
         render: (data, type, row)=>{
             return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
         }
     },
     {
         targets: 19,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 0,  // 0 the first, 1 the second, etc.
@@ -277,23 +295,6 @@ $(document).ready(function(){
           $("#example").DataTable().search($("input[type='search']").val()).draw();
         }
    });
-// this function is used to intialize the event handlers
-function onint(e){
-    // take off all events from the searchfield
-    $("#id_search input[type='search']").off();
-    // Use return key to trigger search
-    $("#id_search input[type='search']").on("keydown", function(evt){
-         if(evt.keyCode == 13){
-           $("#classTable").DataTable().search($("input[type='search']").val()).draw();
-         }
-    })
-    console.log(e);
-    $("#search-btn").button().on("click", function(){
-          $("#classTable").DataTable().search($("input[type='search']").val()).draw();
-
-    });
-  }
-
 })
 
 $('#classTable').on('contextmenu', 'tbody tr', function(e) {
@@ -334,6 +335,11 @@ $('#classTable').on('contextmenu', 'tbody tr', function(e) {
             console.error('Error fetching interface by ID', interfaceId);
         }
     });
+});
+
+$('#id_search').on('keyup', function () {
+    var searchValue = this.value;
+    table.search(searchValue).draw();
 });
 
 
