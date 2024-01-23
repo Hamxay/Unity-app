@@ -21,12 +21,12 @@ urlpatterns = [
     path("list/", ClassListView.as_view(), name="class_list"),
     path("create/", ClassCreateView.as_view(), name="class_create"),
     path(
-        "update/<int:pk>/",
+        "update/<slug:Code>/",
         ClassUpdateView.as_view(),
         name="class_update",
     ),
     path(
-        "delete/<int:pk>/",
+        "delete/<slug:Code>/",
         ClassDeleteView.as_view(),
         name="class_delete",
     ),

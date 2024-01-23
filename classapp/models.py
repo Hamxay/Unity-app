@@ -26,7 +26,7 @@ class BaseModel(models.Model):
 
 
 class Class(BaseModel):
-    Code = models.IntegerField(unique=True)
+    Code = models.BigAutoField(primary_key=True)
     InterfaceId = models.IntegerField()
     Name = models.CharField(max_length=128)
     Description = models.CharField(max_length=250, blank=True, null=True)
