@@ -19,6 +19,7 @@ from .views import (
     InterfaceTypeListView,
     InterfaceTypeUpdateView,
     InterfaceUpdateView, InterfaceDropdownView, InterfaceTypeDetailView, InterfaceCategoryDetailView,
+    InterfaceDetailView,
 )
 from .viewsets import (
     InterfaceCategoryViewset,
@@ -137,5 +138,6 @@ urlpatterns = [
     ),
     path("type/id/<int:pk>/", InterfaceTypeDetailView.as_view(), name="interface_type_detail"),
     path("category/id/<int:pk>/", InterfaceCategoryDetailView.as_view(), name="interface_category_detail"),
+    path("id/<int:pk>/", InterfaceDetailView.as_view(), name="interface_detail"),
 
 ]

@@ -3,9 +3,10 @@ from rest_framework import routers
 from .views import (
     ClassListView,
     HistoricalClassListView,
-    ClassDeleteView,ClassCreateView,ClassUpdateView,HistoricalClassUpdateView
+    ClassDeleteView,ClassCreateView,ClassUpdateView,HistoricalClassUpdateView,
+    ClassDropdownView
 )
-from .viewsets import ClassViewset, ClassHistoryViewset
+from .viewsets import ClassViewset, ClassHistoryViewset, ClassDropdownViewset
 
 router = routers.DefaultRouter()
 router.register("class", ClassViewset, basename="class")
@@ -14,7 +15,7 @@ router.register(
     ClassHistoryViewset,
     basename="class_history",
 )
-
+router.register("class/relations", ClassDropdownViewset, basename="class_relations")
 app_name = "class"
 
 urlpatterns = [
@@ -39,5 +40,10 @@ urlpatterns = [
         "history/update/<int:pk>/",
         HistoricalClassUpdateView.as_view(),
         name="historicalclass_update",
+    ),
+    path(
+        "relations/<int:code>",
+        ClassDropdownView.as_view(),
+        name='class_relations'
     ),
 ]

@@ -76,7 +76,7 @@
                                                 <th data-data="updated_by" data-name="updated_by">Updated By</th>
                                             </tr>
                                         </thead>
-                                        <tbody class="list form-check-all">
+                                        <tbody id="tableContent" class="list form-check-all">
                                         </tbody>
                                     </table>
                                     <!--end table-->
@@ -265,17 +265,65 @@ var table = $('#classTable').DataTable( {
 });
 
 $(document).ready(function(){
- 
     // Update the Delete URL in Delete Confirm Modal
     $('#classTable').on('click', '.delete-btn', (event) => {
         $('#delete-record').attr('href', $(event.currentTarget).data('url'))
     })
-    
     // Filters for table
     $('#id_search').on('keyup', function () {
         table.search( this.value ).draw();
     } );
-
 })
+
+// right click feature
+
+$('#classTable').on('contextmenu', 'tbody tr', function(e) {
+    e.preventDefault();
+    var classData = table.row(this).data();
+    var classCode = classData.Code;
+    var baseUrl = window.location.origin;
+    $.ajax({
+        url: baseUrl + '/api/class/relations/' + classCode + '/',
+        method: 'GET',
+        success: function (classData) {
+            $('.dropdown-menu').remove();
+            var dropdownMenu = $('<div class="dropdown-menu" role="menu"></div>');
+            for (var key in classData) {
+    if (classData.hasOwnProperty(key)) {
+        if (key.endsWith('Id') && key !== 'id') {
+            var foreignKeyRecordId = classData[key];
+
+            // Define a mapping for special cases
+            var keyMapping = {
+                'InterfaceId': 'interface/id',
+                // Add more mappings as needed
+            };
+
+            // Check if the key is in the mapping
+            var modifiedKey = keyMapping[key] || key.replace(/_/g, '/');
+
+            dropdownMenu.append('<a class="dropdown-item" href="' + baseUrl + '/' + modifiedKey + '/' + foreignKeyRecordId + '">' + key.replace(/_/g, ' ') + ' : ' + classData[key] + '</a>');
+        } else {
+            dropdownMenu.append('<a class="dropdown-item" href="">' + key + ': ' + classData[key] + '</a>');
+        }
+    }
+}
+            dropdownMenu.css({
+                position: 'absolute',
+                left: e.pageX,
+                top: e.pageY,
+                display: 'block',
+            });
+            $('body').append(dropdownMenu);
+            $(document).on('click.contextMenu', function () {
+                dropdownMenu.remove();
+                $(document).off('click.contextMenu');
+            });
+        },
+        error: function () {
+            console.error('Error fetching class by Code', classCode);
+        }
+    });
+});
 </script>
 {% endblock extra_js %}
