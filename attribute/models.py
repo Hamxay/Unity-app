@@ -2,6 +2,7 @@ from django.db import models
 from accounts.models import User
 from simple_history.models import HistoricalRecords
 
+from classapp.models import Class
 from collection.models import HistoricalModel
 
 
@@ -26,7 +27,7 @@ class BaseModel(models.Model):
 
 class Attribute(BaseModel):
     code = models.BigAutoField(primary_key=True)
-    class_id = models.IntegerField()
+    class_id = models.ForeignKey(Class, on_delete=models.CASCADE)
     source_name = models.CharField(max_length=128)
     target_name = models.CharField(max_length=128)
     source_description = models.CharField(max_length=250, null=True)
