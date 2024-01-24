@@ -28,6 +28,11 @@ class InterfaceCategoryDetailView(LoginRequiredMixin, DetailView):
     model = InterfaceCategory
 
 
+class InterfaceDetailView(LoginRequiredMixin, DetailView):
+    permission_required = "interface.detail"
+    model = Interface
+
+
 class InterfaceCategoryCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     permission_required = "interface.add_interfacecategory"
     model = InterfaceCategory
@@ -314,7 +319,7 @@ class InterfaceDropdownView(
 ):
     success_url = reverse_lazy("interface:references")
     success_message = "Related data requested successfully"
-    
+
     def get_object(self, queryset=None):
         return get_object_or_404(self.model, code=self.kwargs[self.slug_url_kwarg])
 
