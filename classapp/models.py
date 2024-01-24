@@ -33,7 +33,7 @@ class Class(BaseModel):
     Prefix = models.CharField(max_length=50, blank=True, null=True)
     Version = models.IntegerField()
     TargetAlias = models.CharField(max_length=128)
-    IgnoreOnIngest = models.CharField(max_length=1)
+    IgnoreOnIngest = models.BooleanField(default=False)
     Mask = models.TextField(blank=True, null=True)
     Filter = models.TextField(blank=True, null=True)
     SlideWindowAttribute = models.CharField(max_length=128, blank=True, null=True)
