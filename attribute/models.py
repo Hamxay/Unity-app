@@ -42,10 +42,10 @@ class Attribute(BaseModel):
     target_precision = models.IntegerField(null=True)
     source_scale = models.IntegerField(null=True)
     target_scale = models.IntegerField(null=True)
-    is_primary_key = models.CharField(max_length=1)
-    is_snapshot_key = models.CharField(max_length=1)
-    is_nullable = models.CharField(max_length=1)
-    ignore_on_ingest = models.CharField(max_length=1)
+    is_primary_key = models.BooleanField(default=False)
+    is_snapshot_key = models.BooleanField(default=False)
+    is_nullable = models.BooleanField(default=False)
+    ignore_on_ingest = models.BooleanField(default=False)
 
     history = HistoricalRecords(bases=[HistoricalModel])
 
