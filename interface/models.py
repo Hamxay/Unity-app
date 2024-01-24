@@ -70,7 +70,7 @@ class Interface(BaseModel):
     )
     interface_type_id = models.ForeignKey(InterfaceType, on_delete=models.CASCADE)
     schedule_id = models.ForeignKey(scheduleModel.Schedule, on_delete=models.CASCADE)
-    connection_id = models.ForeignKey(connectionModel.Connection,on_delete=models.CASCADE)
+    connection_id = models.ForeignKey(connectionModel.Connection, on_delete=models.CASCADE)
     name = models.CharField(max_length=128)
     description = models.CharField(max_length=250, blank=True, null=True)
     priority = models.IntegerField()

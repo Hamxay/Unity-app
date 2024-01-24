@@ -46,7 +46,6 @@ class Attribute(BaseModel):
     is_snapshot_key = models.BooleanField(default=False)
     is_nullable = models.BooleanField(default=False)
     ignore_on_ingest = models.BooleanField(default=False)
-
     history = HistoricalRecords(bases=[HistoricalModel])
 
     def save_without_historical_record(self, *args, **kwargs):
