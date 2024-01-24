@@ -6,6 +6,8 @@ from historyconfiguration.models import HistoricalModel
 from schedule import models as scheduleModel
 from connection import models as connectionModel
 # Create your models here.
+
+
 class BaseModel(models.Model):
     created_by = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="%(class)s_created_by"

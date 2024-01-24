@@ -25,7 +25,7 @@ class BaseModel(models.Model):
 
 
 class Attribute(BaseModel):
-    code = models.IntegerField(unique=True)
+    code = models.BigAutoField(primary_key=True)
     class_id = models.IntegerField()
     source_name = models.CharField(max_length=128)
     target_name = models.CharField(max_length=128)
