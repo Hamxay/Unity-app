@@ -26,7 +26,6 @@ class InterfaceViewset(viewsets.ModelViewSet):
     queryset = Interface.objects.all()
     serializer_class = InterfaceSerializer
 
-
 class InterfaceHistoryViewset(viewsets.ViewSet):
     def retrieve(self, request, pk=None):
         queryset = Interface.history.filter(id=pk)

@@ -11,6 +11,8 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.contrib import messages
+
+from .forms import ClassForm
 from .models import Class
 
 
@@ -38,22 +40,9 @@ class ClassListView(LoginRequiredMixin, ListView):
 
 class ClassCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     """Add Class"""
-
+    form_class = ClassForm
     permission_required = "class.add_class"
     model = Class
-    fields = [
-        "InterfaceId",
-        "Name",
-        "Description",
-        "Prefix",
-        "Version",
-        "TargetAlias",
-        "IgnoreOnIngest",
-        "Mask",
-        "Filter",
-        "SlideWindowAttribute",
-        "SlideWindowDays",
-    ]
     success_url = reverse_lazy("class:class_list")
     success_message = "Class was added successfully"
 
@@ -138,3 +127,19 @@ class HistoricalClassUpdateView(LoginRequiredMixin, UpdateView):
         class_obj.save_without_historical_record()
         messages.success(self.request, "Table restored successfully")
         return redirect(reverse_lazy("class:class_list"))
+
+
+class ClassDropdownView(
+    LoginRequiredMixin, SuccessMessageMixin, CreateView
+):
+    success_url = reverse_lazy("class:references")
+    success_message = "Class related data requested successfully"
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(self.model, Code=self.kwargs[self.slug_url_kwarg])
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.user = request.user
+        success_url = self.get_success_url()
+        return redirect(success_url)
