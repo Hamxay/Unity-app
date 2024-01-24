@@ -2,7 +2,7 @@ from django.db import models
 from accounts.models import User
 from simple_history.models import HistoricalRecords
 from collection.models import HistoricalModel
-
+from interface import models as interface_model
 
 
 # Create your models here.
@@ -27,13 +27,13 @@ class BaseModel(models.Model):
 
 class Class(BaseModel):
     Code = models.BigAutoField(primary_key=True)
-    InterfaceId = models.IntegerField()
+    InterfaceId = models.ForeignKey(interface_model.Interface, on_delete=models.CASCADE)
     Name = models.CharField(max_length=128)
     Description = models.CharField(max_length=250, blank=True, null=True)
     Prefix = models.CharField(max_length=50, blank=True, null=True)
     Version = models.IntegerField()
     TargetAlias = models.CharField(max_length=128)
-    IgnoreOnIngest = models.CharField(max_length=1)
+    IgnoreOnIngest = models.BooleanField(default=False)
     Mask = models.TextField(blank=True, null=True)
     Filter = models.TextField(blank=True, null=True)
     SlideWindowAttribute = models.CharField(max_length=128, blank=True, null=True)
