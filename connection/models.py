@@ -39,5 +39,6 @@ class Connection(BaseModel):
         finally:
             del self.skip_history_when_saving
         return ret
+
     def __str__(self) :
         return f"({self.code} - {self.name})"

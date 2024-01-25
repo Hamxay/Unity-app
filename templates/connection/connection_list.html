@@ -35,6 +35,23 @@
                             </div>
                             
                             <!--end card-body-->
+                            <div class="card-body border border-dashed border-end-0 border-start-0">
+                                <form>
+                                    <div class="row g-3">
+                                        <div class="col-xxl-5 col-sm-12">
+                                            <div class="search-box">
+                                                <input type="text"
+                                                       class="form-control search bg-light border-light"
+                                                       placeholder="Search..."
+                                                       id="id_search">
+                                                <i class="ri-search-line search-icon"></i>
+                                            </div>
+                                        </div>
+                                        <!--end col-->
+                                    </div>
+                                    <!--end row-->
+                                </form>
+                            </div>
                             <div class="card-body">
                                 <div class="table-responsive table-card mb-4">
                                     <table class="table align-middle table-nowrap mb-0"
@@ -120,39 +137,45 @@ var table = $('#classTable').DataTable( {
     "columnDefs": [
     {
         targets: 1,
-        defaultContent: "-"
+        defaultContent: "-",
     },
     {
         targets: 2,
-        defaultContent: "-"
+        defaultContent: "-",
     },
     {
         targets: 3,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 4,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 5,
+        searchable: false,
         render: (data, type, row)=>{
             return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
         }
     },
     {
         targets: 6,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 7,
+        searchable: false,
         render: (data, type, row)=>{
             return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
         }
     },
     {
         targets: 8,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
 
     {
@@ -190,6 +213,46 @@ var table = $('#classTable').DataTable( {
             return actions
         },
     }]
+});
+
+$('#classTable').on('contextmenu', 'tbody tr', function(e) {
+    e.preventDefault();
+    var connectionData = table.row(this).data();
+    var connectionCode = connectionData.code;
+    var baseUrl = window.location.origin;
+    $.ajax({
+        url: baseUrl + '/api/connection/relations/' + connectionCode + '/',
+        method: 'GET',
+        success: function (connectionData) {
+            $('.dropdown-menu').remove();
+            var dropdownMenu = $('<div class="dropdown-menu" role="menu"></div>');
+            for (var key in connectionData) {
+                if (connectionData.hasOwnProperty(key)) {
+                    if (key.endsWith('_id') && key !== 'id') {
+                        var foreignKeyRecordId = connectionData[key];
+                        var modifiedKey = key.replace(/_/g, '/');
+                        dropdownMenu.append('<a class="dropdown-item" href="' + baseUrl + '/' + modifiedKey + '/' + foreignKeyRecordId + '">' + key.replace(/_/g, ' ') + ' : ' + connectionData[key] + '</a>');
+                    } else {
+                        dropdownMenu.append('<a class="dropdown-item" href="">' + key + ': ' + connectionData[key] + '</a>');
+                    }
+                }
+            }
+            dropdownMenu.css({
+                position: 'absolute',
+                left: e.pageX,
+                top: e.pageY,
+                display: 'block',
+            });
+            $('body').append(dropdownMenu);
+            $(document).on('click.contextMenu', function () {
+                dropdownMenu.remove();
+                $(document).off('click.contextMenu');
+            });
+        },
+        error: function () {
+            console.error('Error fetching connection by code', connectionCode);
+        }
+    });
 });
 
 $(document).ready(function(){
