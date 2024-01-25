@@ -323,8 +323,6 @@ $(document).ready(function(){
     // Filters for table
     $('#id_search').on('keyup', function () {
         attributeTableParams.search = $(this).val();
-        console.log($(this).val())
-        console.log(attributeTableParams)
         table.ajax.reload();
     });
 })

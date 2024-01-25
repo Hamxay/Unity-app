@@ -143,27 +143,33 @@ var table = $('#InterfaceTypeTable').DataTable( {
     },
     {
         targets: 3,
+        searchable: false,
         defaultContent: "-"
     },
     {
         targets: 4,
+        searchable: false,
         render: (data, type, row)=>{
             return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
         }
     },
     {
         targets: 5,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 6,
+        searchable: false,
         render: (data, type, row)=>{
             return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
         }
     },
     {
         targets: 7,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
+
     },
     {
         targets: 0,  // 0 the first, 1 the second, etc.
@@ -172,25 +178,28 @@ var table = $('#InterfaceTypeTable').DataTable( {
         // The `data` parameter refers to the data for the cell.
         // The `rows`argument is an object representing all the data for the current row.
         render: ( data, type, row ) => {
-            let editURL = "{% url 'interface:interface_type_update' code=0 %}"
-            let deleteURL = "{% url 'interface:interface_type_delete' code=0 %}"
-            
-            let actions =  `<ul class="list-inline hstack gap-2 mb-0">`
+            {% if request.user.is_staff %}
+                let editURL = "{% url 'interface:interface_type_update' code=0 %}"
+                let deleteURL = "{% url 'interface:interface_type_delete' code=0 %}"
 
-            actions += `<li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
-                <a href="${editURL.replace('0', row.code)}" class="text-primary d-inline-block edit-item-btn">
-                    <i class="ri-pencil-fill fs-16"></i>
-                </a>
-            </li>`
-        
-            actions += `<li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
-            <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder" data-url="${deleteURL.replace('0', row.code)}">
-            <i class="ri-delete-bin-5-fill fs-16"></i>
-                </a>
-            </li>`
+                let actions =  `<ul class="list-inline hstack gap-2 mb-0">`
 
-            actions += `</ul>`
-            return actions
+                actions += `<li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
+                    <a href="${editURL.replace('0', row.code)}" class="text-primary d-inline-block edit-item-btn">
+                        <i class="ri-pencil-fill fs-16"></i>
+                    </a>
+                </li>`
+
+                actions += `<li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
+                <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder" data-url="${deleteURL.replace('0', row.code)}">
+                <i class="ri-delete-bin-5-fill fs-16"></i>
+                    </a>
+                </li>`
+
+                actions += `</ul>`
+                return actions
+            {% endif %}
+
         },
     }]
 });
@@ -206,7 +215,47 @@ $(document).ready(function(){
     $('#id_search').on('keyup', function () {
         table.search( this.value ).draw();
     } );
-    
 })
+
+$('#InterfaceTypeTable').on('contextmenu', 'tbody tr', function(e) {
+    e.preventDefault();
+    var interfaceTypeData = table.row(this).data();
+    console.log(interfaceTypeData)
+    var interfaceTypeCode = interfaceTypeData.code;
+    var baseUrl = window.location.origin;
+    $.ajax({
+        url: baseUrl + '/api/interface/type/relations/' + interfaceTypeCode + '/',
+        method: 'GET',
+        success: function (interfaceTypeData) {
+            $('.dropdown-menu').remove();
+            var dropdownMenu = $('<div class="dropdown-menu" role="menu"></div>');
+            for (var key in interfaceTypeData) {
+                if (interfaceTypeData.hasOwnProperty(key)) {
+                    if (key.endsWith('_id') && key !== 'id') {
+                        var foreignKeyRecordId = interfaceTypeData[key];
+                        var modifiedKey = key.replace(/_/g, '/');
+                        dropdownMenu.append('<a class="dropdown-item" href="' + baseUrl + '/' + modifiedKey + '/' + foreignKeyRecordId + '">' + key.replace(/_/g, ' ') + ' : ' + interfaceTypeData[key] + '</a>');
+                    } else {
+                        dropdownMenu.append('<a class="dropdown-item" href="">' + key + ': ' + interfaceTypeData[key] + '</a>');
+                    }
+                }
+            }
+            dropdownMenu.css({
+                position: 'absolute',
+                left: e.pageX,
+                top: e.pageY,
+                display: 'block',
+            });
+            $('body').append(dropdownMenu);
+            $(document).on('click.contextMenu', function () {
+                dropdownMenu.remove();
+                $(document).off('click.contextMenu');
+            });
+        },
+        error: function () {
+            console.error('Error fetching interface by ID', interfaceTypeCode);
+        }
+    });
+});
 </script>
 {% endblock extra_js %}

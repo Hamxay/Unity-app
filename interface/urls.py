@@ -27,7 +27,7 @@ from .viewsets import (
     InterfaceHistoryViewset,
     InterfaceTypeViewset,
     InterfaceViewset,
-    InterfaceDropdownViewSet
+    InterfaceDropdownViewSet, InterfaceTypeDetailViewSet
 )
 
 router = routers.DefaultRouter()
@@ -40,6 +40,7 @@ router.register(
 )
 router.register("interface", InterfaceViewset, basename="interface")
 router.register("references", InterfaceDropdownViewSet, basename="references")
+router.register("interface/type/relations", InterfaceTypeDetailViewSet, basename="interface_type_relations")
 router.register(
     "interface/history",
     InterfaceHistoryViewset,
@@ -73,6 +74,11 @@ urlpatterns = [
         "type/list/",
         InterfaceTypeListView.as_view(),
         name="interface_type_list",
+    ),
+    path(
+        "type/relations/",
+        InterfaceTypeDetailView.as_view(),
+        name="interface_type_relations",
     ),
     path(
         "type/create/",
