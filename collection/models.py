@@ -26,13 +26,16 @@ class BaseModel(models.Model):
 
 
 class Collection(BaseModel):
+    EXECUTION_TRIGGER_RULE = [
+        (1, 'Success'),
+        (2, 'Complete'),
+    ]
     code = models.BigAutoField(primary_key=True)
-    precedingcollectionid = models.IntegerField(null=True, blank=True)
     interfaceid = models.ForeignKey(Interface, on_delete=models.CASCADE)
     name = models.CharField(max_length=128)
     description = models.CharField(max_length=250, null=True, blank=True)
     executionorder = models.IntegerField()
-    executiontriggerrule = models.SmallIntegerField()
+    executiontriggerrule = models.SmallIntegerField(choices=EXECUTION_TRIGGER_RULE)
 
     history = HistoricalRecords(bases=[HistoricalModel])
 

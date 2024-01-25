@@ -6,7 +6,6 @@ class CollectionForm(forms.ModelForm):
     class Meta:
         model = Collection
         fields = [
-            "precedingcollectionid",
             "interfaceid",
             "name",
             "description",

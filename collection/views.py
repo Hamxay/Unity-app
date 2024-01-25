@@ -61,7 +61,6 @@ class CollectionUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     permission_required = "collection.change_class"
     model = Collection
     fields = [
-        "precedingcollectionid",
         "interfaceid",
         "name",
         "description",
