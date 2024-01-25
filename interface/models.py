@@ -78,8 +78,8 @@ class Interface(BaseModel):
     wait_action = models.IntegerField(choices=WAIT_ACTION_CHOICES)
     run_window = models.IntegerField()
     is_enabled = models.BooleanField()  # Assuming 'nchar(1)' stores 'Y' or 'N'
-    active_start_date=models.DateField(default=datetime.date.today)
-    active_end_date=models.DateField(default=datetime.date.today)
+    active_start_date = models.DateField(default=datetime.date.today)
+    active_end_date = models.DateField(default=datetime.date.today)
     retry_times = models.IntegerField()
 
     history = HistoricalRecords(bases=[HistoricalModel])

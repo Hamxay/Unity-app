@@ -57,7 +57,7 @@
                                            id="InterfaceTypeTable">
                                            <thead class="table-light text-muted">
                                                <tr>
-                                                <th>Action</th>
+                                                <th style="{% if request.user.is_staff %}{% else %}pointer-events: none; cursor: pointer{% endif %}">Action</th>
                                                 <th data-data="code" data-name="code">Code</th>
                                                 <th data-data="name" data-name="name">Name</th>
                                                 <th data-data="description" data-name="description">Description</th>
@@ -178,7 +178,7 @@ var table = $('#InterfaceTypeTable').DataTable( {
         // The `data` parameter refers to the data for the cell.
         // The `rows`argument is an object representing all the data for the current row.
         render: ( data, type, row ) => {
-            {% if request.user.is_staff %}
+            {% if request.user.is_superuser %}
                 let editURL = "{% url 'interface:interface_type_update' code=0 %}"
                 let deleteURL = "{% url 'interface:interface_type_delete' code=0 %}"
 
@@ -198,8 +198,21 @@ var table = $('#InterfaceTypeTable').DataTable( {
 
                 actions += `</ul>`
                 return actions
+                {% else %}
+                    // If the user is not an admin, disable the edit and delete links
+                    return `<ul class="list-inline hstack gap-2 mb-0">
+                                <li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
+                                    <a href="" class="text-primary d-inline-block edit-item-btn" disabled>
+                                        <i class="ri-pencil-fill fs-16"></i>
+                                    </a>
+                                </li>
+                                <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
+                                    <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="" data-url="" disabled>
+                                        <i class="ri-delete-bin-5-fill fs-16"></i>
+                                    </a>
+                                </li>
+                            </ul>`;
             {% endif %}
-
         },
     }]
 });
@@ -257,5 +270,7 @@ $('#InterfaceTypeTable').on('contextmenu', 'tbody tr', function(e) {
         }
     });
 });
+
+
 </script>
 {% endblock extra_js %}
