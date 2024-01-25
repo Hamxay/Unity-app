@@ -60,10 +60,10 @@
                                                <tr>
                                                     <th>Action</th>
                                                     <th data-data="code" data-name="code">Code</th>
-                                                    <th data-data="interface_category_id" data-name="interface_category_id">Interface Category ID</th>
-                                                    <th data-data="interface_type_id" data-name="interface_type_id">Interface Type ID</th>
-                                                    <th data-data="schedule_id" data-name="schedule_id">Schedule ID</th>
-                                                    <th data-data="connection_id" data-name="connection_id">Connection ID</th>
+                                                    <th data-data="interface_category_id" data-name="interface_category_id">Interface Category (Code - Name)</th>
+                                                    <th data-data="interface_type_id" data-name="interface_type_id">Interface Type (Code - Name)</th>
+                                                    <th data-data="schedule_id" data-name="schedule_id">Schedule (Code - Name)</th>
+                                                    <th data-data="connection_id" data-name="connection_id">Connection (Code - Name) </th>
                                                     <th data-data="name" data-name="name">Name</th>
                                                     <th data-data="description" data-name="description">Description</th>
                                                     <th data-data="priority" data-name="priority">Priority</th>
@@ -155,21 +155,57 @@ var table = $('#classTable').DataTable( {
         targets: 2,
         defaultContent: "-",
         searchable: false,
+        render: function (data, type, row) {
+            // Check if data is an object (assuming your data is an Interface object)
+            if (typeof data === 'object' && data !== null) {
+                return data.code + ' - ' + data.name;
+            } else {
+                // Handle other cases or return the original data
+                return data;
+            }
+        }
     },
     {
         targets: 3,
         defaultContent: "-",
         searchable: false,
+        render: function (data, type, row) {
+            // Check if data is an object (assuming your data is an Interface object)
+            if (typeof data === 'object' && data !== null) {
+                return data.code + ' - ' + data.name;
+            } else {
+                // Handle other cases or return the original data
+                return data;
+            }
+        }
     },
     {
         targets: 4,
         defaultContent: "-",
         searchable: false,
+        render: function (data, type, row) {
+            // Check if data is an object (assuming your data is an Interface object)
+            if (typeof data === 'object' && data !== null) {
+                return data.Code + ' - ' + data.Name;
+            } else {
+                // Handle other cases or return the original data
+                return data;
+            }
+        }
     },
     {
         targets: 5,
         defaultContent: "-",
         searchable: false,
+        render: function (data, type, row) {
+            // Check if data is an object (assuming your data is an Interface object)
+            if (typeof data === 'object' && data !== null) {
+                return data.code + ' - ' + data.name;
+            } else {
+                // Handle other cases or return the original data
+                return data;
+            }
+        }
     },
     {
         targets: 6,

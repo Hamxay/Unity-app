@@ -18,3 +18,10 @@ class ScheduleHistorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Schedule.history.model
         fields = "__all__"
+
+
+class ScheduleDisplaySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Schedule
+        fields = ['Code', 'Name']
+        
