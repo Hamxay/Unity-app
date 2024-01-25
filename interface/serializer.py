@@ -70,3 +70,7 @@ class InterfaceDependenceSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class InterfaceDisplaySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Interface
+        fields = ['code', 'name']

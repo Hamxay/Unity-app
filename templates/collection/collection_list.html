@@ -60,7 +60,7 @@
                                                <tr>
                                                 <th>Action</th>
                                                 <th data-data="code" data-name="code">Code</th>
-                                                <th data-data="interfaceid" data-name="interfaceid">InterfaceId</th>
+                                                <th data-data="interfaceid" data-name="interfaceid">Interface(Code - Name)</th>
                                                 <th data-data="name" data-name="name">Name</th>
                                                 <th data-data="description" data-name="description">Description</th>
                                                 <th data-data="executionorder" data-name="executionorder">Execution Order</th>
@@ -146,6 +146,15 @@ var table = $('#classTable').DataTable( {
         targets: 2,
         defaultContent: "-",
         searchable: false,
+        render: function (data, type, row) {
+        // Check if data is an object (assuming your data is an Interface object)
+        if (typeof data === 'object' && data !== null) {
+            return data.code + ' - ' + data.name;
+        } else {
+            // Handle other cases or return the original data
+            return data;
+        }
+    }
     },
     {
         targets: 3,
