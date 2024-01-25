@@ -9,6 +9,8 @@
     <link href="{% static 'libs/dropzone/dist/dropzone.css' %}"
           rel="stylesheet"
           type="text/css"/>
+    <!--select2 css-->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 {% endblock extra_css %}
 {% block content %}
     <!-- ============================================================== -->
@@ -32,7 +34,7 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-lg-6">
-                                            <div class="mb-3">{{ form.interfaceid|as_crispy_field }}</div>
+                                            <div class="mb-3" id="interface_id">{{ form.interfaceid|as_crispy_field }}</div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">{{ form.name|as_crispy_field }}</div>
@@ -63,7 +65,7 @@
                                     {% endif %}
                                 </button>
                             </div>
-                        </div>
+    4                        </div>
                         <!-- end col -->
                     </div>
                     <!-- end row -->
@@ -89,4 +91,13 @@
     <script src="{% static 'js/pages/project-create.init.js'%}"></script>
     <!-- jquery.js-->
     <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+    <!-- for the script of select2-->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#id_interfaceid').select2({
+                search: true
+            });
+        });
+    </script>
 {% endblock extra_js %}
