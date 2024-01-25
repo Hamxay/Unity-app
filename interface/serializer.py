@@ -23,6 +23,12 @@ class InterfaceTypeDisplaySerializer(serializers.ModelSerializer):
         fields = ['code', 'name']
 
 
+class InterfaceDisplaySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InterfaceType
+        fields = ['code', 'name']
+
+
 class InterfaceCategorySerializer(serializers.ModelSerializer):
     created_by = serializers.ReadOnlyField(source="created_by.get_full_name")
     updated_by = serializers.ReadOnlyField(source="created_by.get_full_name")
