@@ -1,10 +1,13 @@
 from rest_framework import serializers
+
+from interface.serializer import InterfaceDisplaySerializer
 from .models import Class
 
 
 class ClassSerializer(serializers.ModelSerializer):
     created_by = serializers.ReadOnlyField(source="created_by.get_full_name")
     updated_by = serializers.ReadOnlyField(source="created_by.get_full_name")
+    InterfaceId = InterfaceDisplaySerializer()
 
     class Meta:
         model = Class
