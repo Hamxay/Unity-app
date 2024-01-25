@@ -4,7 +4,7 @@ from django.views.generic import (
     ListView,
     CreateView,
     UpdateView,
-    DeleteView,
+    DeleteView, DetailView,
 )
 from django.utils import timezone
 from django.contrib.messages.views import SuccessMessageMixin
@@ -118,3 +118,8 @@ class HistoricalCollectionUpdateView(LoginRequiredMixin, UpdateView):
         collection_obj.save_without_historical_record()
         messages.success(self.request, "Table restored successfully")
         return redirect(reverse_lazy("collection:collection_list"))
+
+
+class CollectionDetailView(LoginRequiredMixin, DetailView):
+    permission_required = "collection.collection_relations"
+    model = Collection
