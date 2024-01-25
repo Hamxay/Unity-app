@@ -11,6 +11,8 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.contrib import messages
+
+from .forms import CollectionForm
 from .models import Collection
 
 
@@ -43,15 +45,7 @@ class CollectionCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 
     permission_required = "collection.add_class"
     model = Collection
-    fields = [
-        "code",
-        "precedingcollectionid",
-        "interfaceid",
-        "name",
-        "description",
-        "executionorder",
-        "executiontriggerrule",
-    ]
+    form_class = CollectionForm
 
     success_url = reverse_lazy("collection:collection_list")
     success_message = "Collection was added successfully"
@@ -67,7 +61,6 @@ class CollectionUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     permission_required = "collection.change_class"
     model = Collection
     fields = [
-        "code",
         "precedingcollectionid",
         "interfaceid",
         "name",

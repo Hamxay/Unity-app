@@ -102,7 +102,7 @@ class InterfaceTypeCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateVie
 class InterfaceTypeUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     permission_required = "interface.change_interfacetype"
     model = InterfaceType
-    fields = [ "name", "description"]
+    fields = ["name", "description"]
     success_url = reverse_lazy("interface:interface_type_list")
     success_message = "Record was updated successfully"
     slug_url_kwarg = 'code'
@@ -130,6 +130,7 @@ class InterfaceTypeDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteVie
         success_url = self.get_success_url()
         messages.success(self.request, self.success_message)
         return redirect(success_url)
+
     def get_object(self, queryset=None):
         return get_object_or_404(self.model, code=self.kwargs[self.slug_url_kwarg])
 
