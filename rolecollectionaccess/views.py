@@ -1,11 +1,13 @@
-from django.shortcuts import redirect
-from .models import RoleCollectionAccess
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from django.contrib.messages.views import SuccessMessageMixin
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
-from django.utils import timezone
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
+from django.utils import timezone
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+
+from .forms import RoleCollectionAccessForm
+from .models import RoleCollectionAccess
 
 
 # RoleCollectionAccess CRUD
@@ -17,7 +19,7 @@ class RoleCollectionAccessListView(LoginRequiredMixin, ListView):
 class RoleCollectionAccessCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     permission_required = "rolecollectionaccess.add_rolecollectionaccess"
     model = RoleCollectionAccess
-    fields = ["code", "collectionId", "RoleId"]
+    form_class = RoleCollectionAccessForm
     success_url = reverse_lazy("rolecollectionaccess:rolecollectionaccess_list")
     success_message = "Record was created successfully"
 
