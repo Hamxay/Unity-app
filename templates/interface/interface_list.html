@@ -255,6 +255,15 @@ var table = $('#classTable').DataTable( {
         targets: 15,
         defaultContent: "-",
         searchable: false,
+        render: function (data, type, row) {
+            if (data === 1) {
+                return "1 - Execute Regardless";
+            } else if (data === 2) {
+                return "2 - Stop/Do Not Execute";
+            } else {
+                return "-";
+            }
+        },
     },
     {
         targets: 16,
