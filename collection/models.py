@@ -2,6 +2,7 @@ from django.db import models
 from accounts.models import User
 from simple_history.models import HistoricalRecords
 from historyconfiguration.models import HistoricalModel
+from interface.models import Interface
 
 
 # Create your models here.
@@ -25,9 +26,9 @@ class BaseModel(models.Model):
 
 
 class Collection(BaseModel):
-    code = models.IntegerField(unique=True)
+    code = models.BigAutoField(primary_key=True)
     precedingcollectionid = models.IntegerField(null=True, blank=True)
-    interfaceid = models.IntegerField()
+    interfaceid = models.ForeignKey(Interface, on_delete=models.CASCADE)
     name = models.CharField(max_length=128)
     description = models.CharField(max_length=250, null=True, blank=True)
     executionorder = models.IntegerField()

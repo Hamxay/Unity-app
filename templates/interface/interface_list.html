@@ -344,17 +344,16 @@ $('#classTable').on('contextmenu', 'tbody tr', function(e) {
         success: function (interfaceData) {
             $('.dropdown-menu').remove();
             var dropdownMenu = $('<div class="dropdown-menu" role="menu"></div>');
-            for (var key in interfaceData) {
-                if (interfaceData.hasOwnProperty(key)) {
-                    if (key.endsWith('_id') && key !== 'id') {
-                        var foreignKeyRecordId = interfaceData[key];
-                        var modifiedKey = key.replace(/_/g, '/');
-                        dropdownMenu.append('<a class="dropdown-item" href="' + baseUrl + '/' + modifiedKey + '/' + foreignKeyRecordId + '">' + key.replace(/_/g, ' ') + ' : ' + interfaceData[key] + '</a>');
-                    } else {
-                        dropdownMenu.append('<a class="dropdown-item" href="">' + key + ': ' + interfaceData[key] + '</a>');
-                    }
-                }
-            }
+
+            // Create a new dropdown for class, schedule, and collection
+            var classUrl = baseUrl + '/class/list?InterfaceId=' + interfaceCode;
+<!--            var scheduleUrl = baseUrl + '/schedule/list?interface_id=' + interfaceCode;-->
+            var collectionUrl = baseUrl + '/collection/list?InterfaceId=' + interfaceCode;
+
+            dropdownMenu.append('<a class="dropdown-item" href="' + classUrl + '">Class</a>');
+<!--            dropdownMenu.append('<a class="dropdown-item" href="' + scheduleUrl + '">Schedule</a>');-->
+            dropdownMenu.append('<a class="dropdown-item" href="' + collectionUrl + '">Collection</a>');
+
             dropdownMenu.css({
                 position: 'absolute',
                 left: e.pageX,

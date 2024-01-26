@@ -134,12 +134,14 @@
 <script src="{% static 'js/moment-2.29.2.min.js' %}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 <script type="text/javascript">
+var interfaceIdParam = new URLSearchParams(window.location.search).get('InterfaceId');
+
 var table = $('#classTable').DataTable( {
     serverSide: true,
     processing: true,
     order: [[14, 'desc']],
     "ajax": {
-        "url": "/api/class/?format=datatables"
+        "url": "/api/class/?format=datatables" + (interfaceIdParam ? '&InterfaceId=' + interfaceIdParam : '')
     },
     "dom": 'lrtip',
     "columnDefs": [

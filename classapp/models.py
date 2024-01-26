@@ -2,7 +2,7 @@ from django.db import models
 from accounts.models import User
 from simple_history.models import HistoricalRecords
 from collection.models import HistoricalModel
-
+from interface.models import Interface
 
 
 # Create your models here.
@@ -26,8 +26,8 @@ class BaseModel(models.Model):
 
 
 class Class(BaseModel):
-    Code = models.IntegerField(unique=True)
-    InterfaceId = models.IntegerField()
+    Code = models.BigAutoField(primary_key=True)
+    InterfaceId = models.ForeignKey(Interface, on_delete=models.CASCADE)
     Name = models.CharField(max_length=128)
     Description = models.CharField(max_length=250, blank=True, null=True)
     Prefix = models.CharField(max_length=50, blank=True, null=True)
