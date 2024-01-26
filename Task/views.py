@@ -7,13 +7,15 @@ from django.views.generic import (
     ListView,
     CreateView,
     UpdateView,
-    DeleteView,
+    DeleteView, DetailView,
 )
 from django.utils import timezone
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.contrib import messages
+
+from Task.forms import TaskForm
 from Task.models import Task
 
 
@@ -44,19 +46,7 @@ class TaskCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 
     permission_required = "Task.add_Task"
     model = Task
-    fields = [
-        "Code",
-        "ClassId",
-        "CollectionId",
-        "LoadPatternId",
-        "Name",
-        "Description",
-        "PipelineName",
-        "PipelineParameters",
-        "SubPipelineParameters",
-        "DeduplicateSource",
-        "Priority",
-    ]
+    form_class = TaskForm
     success_url = reverse_lazy("Task:Task_list")
     success_message = "Task was added successfully"
 
@@ -70,19 +60,7 @@ class TaskUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
 
     permission_required = "Task.change_Task"
     model = Task
-    fields = [
-        "Code",
-        "ClassId",
-        "CollectionId",
-        "LoadPatternId",
-        "Name",
-        "Description",
-        "PipelineName",
-        "PipelineParameters",
-        "SubPipelineParameters",
-        "DeduplicateSource",
-        "Priority",
-    ]
+    form_class = TaskForm
     success_url = reverse_lazy("Task:Task_list")
     success_message = "Task was updated successfully"
 
@@ -136,9 +114,9 @@ class HistoricalTaskUpdateView(LoginRequiredMixin, UpdateView):
                 LoadPatternId=historical_record.LoadPatternId,
                 Name=historical_record.Name,
                 Description=historical_record.Description,
-                PipelineName=historical_record.PipelineName,
-                PipelineParameters=historical_record.PipelineParameters,
-                SubPipelineParameters=historical_record.SubPipelineParameters,
+                ProcessName=historical_record.ProcessName,
+                ProcessParameters=historical_record.ProcessParameters,
+                SubProcessParameters=historical_record.SubProcessParameters,
                 DeduplicateSource=historical_record.DeduplicateSource,
                 Priority=historical_record.Priority,
                 created_by=historical_record.created_by,
@@ -169,3 +147,8 @@ class HistoricalTaskViewAll(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         return context
+
+
+class TaskDetailView(LoginRequiredMixin, DetailView):
+    permission_required = "Task.detail"
+    model = Task

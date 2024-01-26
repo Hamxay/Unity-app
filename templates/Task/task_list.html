@@ -63,16 +63,15 @@
                                            <thead class="table-light text-muted">
                                                <tr>
                                                 <th>Action</th>
-                                                <th data-data="id" data-name="id">ID</th> <!-- Keeping this as it seems you still want to display IDs -->
                                                 <th data-data="Code" data-name="Code">Code</th>
                                                 <th data-data="ClassId" data-name="ClassId">ClassId</th>
                                                 <th data-data="CollectionId" data-name="CollectionId">CollectionId</th>
                                                 <th data-data="LoadPatternId" data-name="LoadPatternId">LoadPatternId</th>
                                                 <th data-data="Name" data-name="Name">Name</th>
                                                 <th data-data="Description" data-name="Description">Description</th>
-                                                <th data-data="PipelineName" data-name="PipelineName">PipelineName</th>
-                                                <th data-data="PipelineParameters" data-name="PipelineParameters">PipelineParameters</th>
-                                                <th data-data="SubPipelineParameters" data-name="SubPipelineParameters">SubPipelineParameters</th>
+                                                <th data-data="ProcessName" data-name="ProcessName">ProcessName</th>
+                                                <th data-data="ProcessParameters" data-name="ProcessParameters">ProcessParameters</th>
+                                                <th data-data="SubProcessParameters" data-name="SubProcessParameters">SubProcessParameters</th>
                                                 <th data-data="DeduplicateSource" data-name="DeduplicateSource">DeduplicateSource</th>
                                                 <th data-data="Priority" data-name="Priority">Priority</th>
                                                 <th data-data="created_date" data-name="created_date">Created Date</th>
@@ -149,19 +148,23 @@ var table = $('#TaskTable').DataTable( {
     "columnDefs": [
     {
         targets: 1,
-        visible: false
+        defaultContent: "-"
+
     },
     {
         targets: 2,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 3,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 4,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 5,
@@ -169,52 +172,59 @@ var table = $('#TaskTable').DataTable( {
     },
     {
         targets: 6,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 7,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 8,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 9,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 10,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     
     {
         targets: 11,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 12,
-        defaultContent: "-"
-    },
-    {
-        targets: 13,
+        searchable: false,
         render: (data, type, row)=>{
             return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
         }
     },
     {
-        targets: 14,
-        defaultContent: "-"
+        targets: 13,
+        defaultContent: "-",
+        searchable: false,
+
     },
     {
-        targets: 15,
+        targets: 14,
+        searchable: false,
         render: (data, type, row)=>{
-            return moment.utc(row.updated_date).format('MMM DD, YYYY hh:mm A');
+            return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
         }
     },
     {
-        targets: 16,
-        defaultContent: "-"
+        targets: 15,
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 0,  // 0 the first, 1 the second, etc.
@@ -231,18 +241,17 @@ var table = $('#TaskTable').DataTable( {
                 
             actions += `
             <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="History">
-            <a href="${viewURL.replace('0', row.id)}" class="text-primary d-inline-block">
                 <i class="mdi mdi-history fs-16"></i>
             </a>
             </li>`
             actions += `<li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
-                <a href="${editURL.replace('0', row.id)}" class="text-primary d-inline-block edit-item-btn">
+                <a href="${editURL.replace('0', row.Code)}" class="text-primary d-inline-block edit-item-btn">
                     <i class="ri-pencil-fill fs-16"></i>
                 </a>
             </li>`
         
             actions += `<li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
-            <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder" data-url="${deleteURL.replace('0', row.id)}">
+            <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder" data-url="${deleteURL.replace('0', row.Code)}">
             <i class="ri-delete-bin-5-fill fs-16"></i>
                 </a>
             </li>`
@@ -251,6 +260,52 @@ var table = $('#TaskTable').DataTable( {
             return actions
         },
     }]
+});
+
+$('#TaskTable').on('contextmenu', 'tbody tr', function(e) {
+    e.preventDefault();
+    var taskData = table.row(this).data();
+    console.log(taskData)
+    var taskCode = taskData.Code;
+    var baseUrl = window.location.origin;
+    $.ajax({
+        url: baseUrl + '/api/Task/relations/' + taskCode + '/',
+        method: 'GET',
+        success: function (taskData) {
+            $('.dropdown-menu').remove();
+            var dropdownMenu = $('<div class="dropdown-menu" role="menu"></div>');
+            for (var key in taskData) {
+                if (taskData.hasOwnProperty(key)) {
+                    if ((key.endsWith('Id') || key.endsWith('id')) && key !== 'id') {
+                        var foreignKeyRecordId = taskData[key];
+                        var keyMapping = {
+                            'ClassId': 'class/id',
+                            'CollectionId': 'collection/id',
+                            'LoadPatternId': 'pattern/loadpattern/id',
+                        };
+                        var modifiedKey = keyMapping[key] || key.replace(/_/g, '/');
+                        dropdownMenu.append('<a class="dropdown-item" href="' + baseUrl + '/' + modifiedKey + '/' + foreignKeyRecordId + '">' + key.replace(/_/g, ' ') + ' : ' + taskData[key] + '</a>');
+                    } else {
+                        dropdownMenu.append('<a class="dropdown-item" href="">' + key + ': ' + taskData[key] + '</a>');
+                    }
+                }
+            }
+            dropdownMenu.css({
+                position: 'absolute',
+                left: e.pageX,
+                top: e.pageY,
+                display: 'block',
+            });
+            $('body').append(dropdownMenu);
+            $(document).on('click.contextMenu', function () {
+                dropdownMenu.remove();
+                $(document).off('click.contextMenu');
+            });
+        },
+        error: function () {
+            console.error('Error fetching task by code', taskCode);
+        }
+    });
 });
 
 $(document).ready(function(){

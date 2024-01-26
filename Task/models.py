@@ -31,16 +31,16 @@ class BaseModel(models.Model):
 
 
 class Task(BaseModel):
-    Code = models.IntegerField()
+    Code = models.BigAutoField(primary_key=True)
     ClassId = models.ForeignKey(Class, on_delete=models.CASCADE)
     CollectionId = models.ForeignKey(Collection, on_delete=models.CASCADE)
     LoadPatternId = models.ForeignKey(LoadPattern, on_delete=models.CASCADE)
     Name = models.CharField(max_length=128)
     Description = models.CharField(max_length=250, null=True)
-    PipelineName = models.CharField(max_length=128)
-    PipelineParameters = models.CharField(max_length=2000, null=True)
-    SubPipelineParameters = models.CharField(max_length=2000, null=True)
-    DeduplicateSource = models.CharField(max_length=1, null=True)
+    ProcessName = models.CharField(max_length=128)
+    ProcessParameters = models.CharField(max_length=2000, null=True)
+    SubProcessParameters = models.CharField(max_length=2000, null=True)
+    DeduplicateSource = models.BooleanField(default=False)
     Priority = models.IntegerField(null=True)
 
     def __str__(self):

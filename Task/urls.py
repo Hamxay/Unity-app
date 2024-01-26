@@ -4,15 +4,16 @@ from rest_framework import routers
 from Task.views import (
     TaskListView,
     HistoricalTaskListView,
-    TaskDeleteView,TaskCreateView,TaskUpdateView,HistoricalTaskUpdateView, HistoricalTaskViewAll
+    TaskDeleteView, TaskCreateView, TaskUpdateView, HistoricalTaskUpdateView, HistoricalTaskViewAll, TaskDetailView
 )
-from Task.viewsets import TaskViewset, TaskHistoryViewset,TaskHistoryViewsetAll
+from Task.viewsets import TaskViewset, TaskHistoryViewset, TaskHistoryViewsetAll, TaskDropdownViewset
 
 router = routers.DefaultRouter()
 router.register("Task", TaskViewset, basename="Task")
 # urls.py
 router.register(r'Task/history/all', TaskHistoryViewsetAll, basename='Task_history_all')
 router.register(r'Task/history', TaskHistoryViewset, basename='Task_history')
+router.register(r'Task/relations', TaskDropdownViewset, basename='Task_relations')
 
 app_name = "Task"
 
@@ -44,4 +45,9 @@ urlpatterns = [
         HistoricalTaskViewAll.as_view(),
         name="historicalTask_list_all",
     ),
+    path(
+        'relations/<int:code>/',
+        TaskDetailView.as_view(),
+        name='task_relations'
+    )
 ]

@@ -4,7 +4,7 @@ from django.views.generic import (
     ListView,
     CreateView,
     UpdateView,
-    DeleteView,
+    DeleteView, DetailView,
 )
 from django.utils import timezone
 from django.contrib.messages.views import SuccessMessageMixin
@@ -143,3 +143,8 @@ class ClassDropdownView(
         self.object.user = request.user
         success_url = self.get_success_url()
         return redirect(success_url)
+
+
+class ClassDetailView(LoginRequiredMixin, DetailView):
+    permission_required = "class.detail"
+    model = Class

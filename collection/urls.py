@@ -43,8 +43,8 @@ urlpatterns = [
         name="historicalcollection_update",
     ),
     path(
-        "relations/<slug:code>/",
+        "relations/<int:pk>/",
         CollectionDetailView.as_view(),
         name='collection_relations'
-    )
+    ),
 ]

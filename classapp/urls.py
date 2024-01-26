@@ -3,8 +3,8 @@ from rest_framework import routers
 from .views import (
     ClassListView,
     HistoricalClassListView,
-    ClassDeleteView,ClassCreateView,ClassUpdateView,HistoricalClassUpdateView,
-    ClassDropdownView
+    ClassDeleteView, ClassCreateView, ClassUpdateView, HistoricalClassUpdateView,
+    ClassDropdownView, ClassDetailView
 )
 from .viewsets import ClassViewset, ClassHistoryViewset, ClassDropdownViewset
 
@@ -30,6 +30,11 @@ urlpatterns = [
         "delete/<slug:Code>/",
         ClassDeleteView.as_view(),
         name="class_delete",
+    ),
+    path(
+        "id/<int:pk>/",
+        ClassDetailView.as_view(),
+        name="class_detail",
     ),
     path(
         "history/list/<int:pk>/",

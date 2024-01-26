@@ -1,6 +1,6 @@
 from django.shortcuts import redirect
 from .models import LoadPattern
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
@@ -54,3 +54,8 @@ class LoadPatternDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView)
         success_url = self.get_success_url()
         messages.success(self.request, self.success_message)
         return redirect(success_url)
+
+
+class LoadPatternDetailView(LoginRequiredMixin, DetailView):
+    permission_required = "pattern.detail"
+    model = LoadPattern
