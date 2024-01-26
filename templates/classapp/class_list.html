@@ -297,26 +297,8 @@ $('#classTable').on('contextmenu', 'tbody tr', function(e) {
         success: function (classData) {
             $('.dropdown-menu').remove();
             var dropdownMenu = $('<div class="dropdown-menu" role="menu"></div>');
-            for (var key in classData) {
-    if (classData.hasOwnProperty(key)) {
-        if (key.endsWith('Id') && key !== 'id') {
-            var foreignKeyRecordId = classData[key];
-
-            // Define a mapping for special cases
-            var keyMapping = {
-                'InterfaceId': 'interface/id',
-                // Add more mappings as needed
-            };
-
-            // Check if the key is in the mapping
-            var modifiedKey = keyMapping[key] || key.replace(/_/g, '/');
-
-            dropdownMenu.append('<a class="dropdown-item" href="' + baseUrl + '/' + modifiedKey + '/' + foreignKeyRecordId + '">' + key.replace(/_/g, ' ') + ' : ' + classData[key] + '</a>');
-        } else {
-            dropdownMenu.append('<a class="dropdown-item" href="">' + key + ': ' + classData[key] + '</a>');
-        }
-    }
-}
+            var interfaceUrl = baseUrl + '/interface/list?class_id=' + classCode;
+            dropdownMenu.append('<a class="dropdown-item" href="' + interfaceUrl + '">Interface</a>');
             dropdownMenu.css({
                 position: 'absolute',
                 left: e.pageX,

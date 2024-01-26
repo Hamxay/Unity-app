@@ -11,6 +11,12 @@ class InterfaceCategoryDisplaySerializer(serializers.ModelSerializer):
         fields = ['code', 'name']
 
 
+class InterfaceDisplaySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InterfaceCategory
+        fields = ['code', 'name']
+
+
 class InterfaceTypeDisplaySerializer(serializers.ModelSerializer):
     class Meta:
         model = InterfaceType
