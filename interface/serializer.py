@@ -2,6 +2,12 @@ from rest_framework import serializers
 from .models import InterfaceCategory, InterfaceType, Interface, InterfaceDependence
 
 
+class InterfaceDisplaySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Interface
+        fields = ['code', 'name']
+
+
 class InterfaceCategorySerializer(serializers.ModelSerializer):
     created_by = serializers.ReadOnlyField(source="created_by.get_full_name")
     updated_by = serializers.ReadOnlyField(source="created_by.get_full_name")

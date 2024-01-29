@@ -59,7 +59,7 @@
                                                <tr>
                                                 <th>Action</th>
                                                 <th data-data="Code" data-name="Code">Code</th>
-                                                <th data-data="InterfaceId" data-name="InterfaceId">InterfaceId</th>
+                                                <th data-data="InterfaceId" data-name="InterfaceId">Interface (Code - Name)</th>
                                                 <th data-data="Name" data-name="Name">Name</th>
                                                 <th data-data="Description" data-name="Description">Description</th>
                                                 <th data-data="Prefix" data-name="Prefix">Prefix</th>
@@ -69,7 +69,7 @@
                                                 <th data-data="Mask" data-name="Mask">Mask</th>
                                                 <th data-data="Filter" data-name="Filter">Filter</th>
                                                 <th data-data="SlideWindowAttribute" data-name="SlideWindowAttribute">SlideWindowAttribute</th>
-                                                <th data-data="SlideWindowDays" data-name="SlideWindowDays">SlideWindowDays</th>                                            
+                                                <th data-data="SlideWindowDays" data-name="SlideWindowDays">SlideWindowDays</th>
                                                 <th data-data="created_date" data-name="created_date">Created Date</th>
                                                 <th data-data="created_by" data-name="created_by">Created By</th>
                                                 <th data-data="updated_date" data-name="updated_date">Updated Date</th>
@@ -133,12 +133,14 @@
 <script src="{% static 'js/moment-2.29.2.min.js' %}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 <script type="text/javascript">
+var interfaceIdParam = new URLSearchParams(window.location.search).get('InterfaceId');
+
 var table = $('#classTable').DataTable( {
     serverSide: true,
     processing: true,
     order: [[13, 'desc']],
     "ajax": {
-        "url": "/api/class/?format=datatables"
+        "url": "/api/class/?format=datatables" + (interfaceIdParam ? '&InterfaceId=' + interfaceIdParam : '')
     },
     "dom": 'lrtip',
     "columnDefs": [
@@ -150,6 +152,15 @@ var table = $('#classTable').DataTable( {
         targets: 2,
         defaultContent: "-",
         searchable: false,
+        render: function (data, type, row) {
+            // Check if data is an object (assuming your data is an Interface object)
+            if (typeof data === 'object' && data !== null) {
+                return data.code + ' - ' + data.name;
+            } else {
+                // Handle other cases or return the original data
+                return data;
+            }
+        }
     },
     {
         targets: 3,
@@ -190,7 +201,7 @@ var table = $('#classTable').DataTable( {
         defaultContent: "-",
         searchable: false,
     },
-    
+
     {
         targets: 11,
         defaultContent: "-",
@@ -237,7 +248,7 @@ var table = $('#classTable').DataTable( {
             let editURL = "{% url 'class:class_update' Code=0 %}"
             let deleteURL = "{% url 'class:class_delete' Code=0 %}"
             let actions =  `<ul class="list-inline hstack gap-2 mb-0">`
-                
+
             actions += `
             <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="History">
             <a href="${viewURL.replace('0', row.Code)}" class="text-primary d-inline-block">
@@ -249,7 +260,7 @@ var table = $('#classTable').DataTable( {
                     <i class="ri-pencil-fill fs-16"></i>
                 </a>
             </li>`
-        
+
             actions += `<li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
             <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder" data-url="${deleteURL.replace('0', row.Code)}">
             <i class="ri-delete-bin-5-fill fs-16"></i>
@@ -286,26 +297,8 @@ $('#classTable').on('contextmenu', 'tbody tr', function(e) {
         success: function (classData) {
             $('.dropdown-menu').remove();
             var dropdownMenu = $('<div class="dropdown-menu" role="menu"></div>');
-            for (var key in classData) {
-    if (classData.hasOwnProperty(key)) {
-        if (key.endsWith('Id') && key !== 'id') {
-            var foreignKeyRecordId = classData[key];
-
-            // Define a mapping for special cases
-            var keyMapping = {
-                'InterfaceId': 'interface/id',
-                // Add more mappings as needed
-            };
-
-            // Check if the key is in the mapping
-            var modifiedKey = keyMapping[key] || key.replace(/_/g, '/');
-
-            dropdownMenu.append('<a class="dropdown-item" href="' + baseUrl + '/' + modifiedKey + '/' + foreignKeyRecordId + '">' + key.replace(/_/g, ' ') + ' : ' + classData[key] + '</a>');
-        } else {
-            dropdownMenu.append('<a class="dropdown-item" href="">' + key + ': ' + classData[key] + '</a>');
-        }
-    }
-}
+            var interfaceUrl = baseUrl + '/interface/list?class_id=' + classCode;
+            dropdownMenu.append('<a class="dropdown-item" href="' + interfaceUrl + '">Interface</a>');
             dropdownMenu.css({
                 position: 'absolute',
                 left: e.pageX,
