@@ -58,7 +58,6 @@
                                            <thead class="table-light text-muted">
                                                <tr>
                                                 <th>Action</th>
-                                                <th data-data="id" data-name="id">ID</th>
                                                 <th data-data="code" data-name="code">Code</th>
                                                 <th data-data="class_id" data-name="class_id">Class ID</th>
                                                 <th data-data="source_name" data-name="source_name">Source Name</th>
@@ -142,22 +141,26 @@
 <script src="{% static 'js/moment-2.29.2.min.js' %}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 <script type="text/javascript">
-var table = $('#AttributeTable').DataTable( {
-    serverSide: true,
-    processing: true,
-    order: [[22, 'desc']],
-    "ajax": {
-        "url": "/api/attribute/?format=datatables"
-    },
+    var attributeTableParams = {}
+    var table = $('#AttributeTable').DataTable({
+        serverSide: true,
+        processing: true,
+        order: [[21, 'desc']],
+        "ajax": {
+            "url": "/api/attribute/?format=datatables",
+            "data": function (d) {
+                return $.extend(d, attributeTableParams);
+            }
+        },
     "dom": 'lrtip',
     "columnDefs": [
     {
         targets: 1,
-        visible: false
+        defaultContent: "-"
     },
     {
         targets: 2,
-        defaultContent: "-"
+        defaultContent: "-",
     },
     {
         targets: 3,
@@ -169,91 +172,109 @@ var table = $('#AttributeTable').DataTable( {
     },
     {
         targets: 5,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 6,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 7,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 8,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 9,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 10,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 11,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 12,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 13,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 14,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 15,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 16,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 17,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 18,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 19,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 20,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 21,
-        defaultContent: "-"
+        searchable: false,
+        render: (data, type, row)=>{
+            return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
+        }
     },
     {
         targets: 22,
-        render: (data, type, row)=>{
-            return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
-        }
+        defaultContent: "-",
+        searchable: false,
+
     },
     {
         targets: 23,
-        defaultContent: "-"
-    },
-    {
-        targets: 24,
+        searchable: false,
         render: (data, type, row)=>{
             return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
         }
     },
     {
-        targets: 25,
-        defaultContent: "-"
+        targets: 24,
+        defaultContent: "-",
+        searchable: false,
+
     },
     {
         targets: 0,  // 0 the first, 1 the second, etc.
@@ -265,9 +286,9 @@ var table = $('#AttributeTable').DataTable( {
             let viewURL = "{% url 'attribute:historicalattribute_list' pk=0 %}"
             let editURL = "{% url 'attribute:attribute_update' pk=0 %}"
             let deleteURL = "{% url 'attribute:attribute_delete' pk=0 %}"
-            
+
             let actions =  `<ul class="list-inline hstack gap-2 mb-0">`
-                
+
             actions += `
             <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="History">
             <a href="${viewURL.replace('0', row.id)}" class="text-primary d-inline-block">
@@ -279,7 +300,7 @@ var table = $('#AttributeTable').DataTable( {
                     <i class="ri-pencil-fill fs-16"></i>
                 </a>
             </li>`
-        
+
             actions += `<li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
             <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder" data-url="${deleteURL.replace('0', row.id)}">
             <i class="ri-delete-bin-5-fill fs-16"></i>
@@ -293,17 +314,17 @@ var table = $('#AttributeTable').DataTable( {
 });
 
 $(document).ready(function(){
- 
+
     // Update the Delete URL in Delete Confirm Modal
     $('#AttributeTable').on('click', '.delete-btn', (event) => {
         $('#delete-record').attr('href', $(event.currentTarget).data('url'))
     })
-    
+
     // Filters for table
     $('#id_search').on('keyup', function () {
-        table.search( this.value ).draw();
-    } );
-    
+        attributeTableParams.search = $(this).val();
+        table.ajax.reload();
+    });
 })
 </script>
 {% endblock extra_js %}
