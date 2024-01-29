@@ -162,11 +162,9 @@
         targets: 2,
         defaultContent: "-",
         render: function (data, type, row) {
-            // Check if data is an object (assuming your data is an Interface object)
             if (typeof data === 'object' && data !== null) {
                 return data.Code + ' - ' + data.Name;
             } else {
-                // Handle other cases or return the original data
                 return data;
             }
         }
