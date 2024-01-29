@@ -1,13 +1,22 @@
+from django.db.models import Q
 from rest_framework.response import Response
 from rest_framework import viewsets
 from Task.models import Task
 from Task.serializer import TaskHistorySerializer, TaskSerializer
 from django.db import models
 
+
 class TaskViewset(viewsets.ModelViewSet):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
 
+    def get_queryset(self):
+        collection_id = self.request.query_params.get('CollectionId')
+        if collection_id:
+            queryset = Task.objects.filter(CollectionId_id=collection_id)
+        else:
+            queryset = Task.objects.all()
+        return queryset
 
 class TaskHistoryViewsetAll(viewsets.ReadOnlyModelViewSet):
     queryset = Task.history.all()

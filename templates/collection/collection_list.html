@@ -242,27 +242,21 @@ $('#classTable').on('contextmenu', 'tbody tr', function(e) {
     var collectionCode = collectionData.code;
     var baseUrl = window.location.origin;
     $.ajax({
-        url: baseUrl + '/api/collection/relations/' + collectionCode + '/',
+        url: baseUrl + '/api/references/' + collectionCode + '/',
         method: 'GET',
         success: function (collectionData) {
             $('.dropdown-menu').remove();
             var dropdownMenu = $('<div class="dropdown-menu" role="menu"></div>');
-            for (var key in collectionData) {
-                if (collectionData.hasOwnProperty(key)) {
-                    if ((key.endsWith('Id') || key.endsWith('id')) && key !== 'id') {
-                        var foreignKeyRecordId = collectionData[key];
-                        var keyMapping = {
-                            'InterfaceId': 'interface/id',
-                            'Interfaceid': 'interface/id',
-                            'interfaceid': 'interface/id',
-                        };
-                        var modifiedKey = keyMapping[key] || key.replace(/_/g, '/');
-                        dropdownMenu.append('<a class="dropdown-item" href="' + baseUrl + '/' + modifiedKey + '/' + foreignKeyRecordId + '">' + key.replace(/_/g, ' ') + ' : ' + collectionData[key] + '</a>');
-                    } else {
-                        dropdownMenu.append('<a class="dropdown-item" href="">' + key + ': ' + collectionData[key] + '</a>');
-                    }
-                }
-            }
+
+            // Create a new dropdown for class, schedule, and collection
+            var taskUrl = baseUrl + '/Task/list?CollectionId='+collectionCode;
+<!--            var scheduleUrl = baseUrl + '/schedule/list?interface_id=' + collectionCode;-->
+<!--            var collectionUrl = baseUrl + '/collection/list?InterfaceId=' + collectionCode;-->
+
+            dropdownMenu.append('<a class="dropdown-item" href="' + taskUrl + '">Task</a>');
+<!--            dropdownMenu.append('<a class="dropdown-item" href="' + scheduleUrl + '">Schedule</a>');-->
+<!--            dropdownMenu.append('<a class="dropdown-item" href="' + collectionUrl + '">Collection</a>');-->
+
             dropdownMenu.css({
                 position: 'absolute',
                 left: e.pageX,
@@ -276,7 +270,7 @@ $('#classTable').on('contextmenu', 'tbody tr', function(e) {
             });
         },
         error: function () {
-            console.error('Error fetching collection by ID', collectionCode);
+            console.error('Error fetching collection by CODE', collectionCode);
         }
     });
 });

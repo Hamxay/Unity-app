@@ -137,12 +137,13 @@
 <script src="{% static 'js/moment-2.29.2.min.js' %}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 <script type="text/javascript">
+var CollectionIdParam = new URLSearchParams(window.location.search).get('CollectionId');
 var table = $('#TaskTable').DataTable( {
     serverSide: true,
     processing: true,
     order: [[14, 'desc']],
     "ajax": {
-        "url": "/api/Task/?format=datatables"
+        "url": "/api/Task/?format=datatables" + (CollectionIdParam ? '&CollectionId='+ CollectionIdParam : '')
     },
     "dom": 'lrtip',
     "columnDefs": [
