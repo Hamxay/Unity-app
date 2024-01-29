@@ -33,6 +33,37 @@
                                     </div>
                                 </div>
                             </div>
+                            <style>
+                            /* Alert box styles */
+                            .alert {
+                                padding: 20px;
+                                background-color: #f44336; /* Red background color */
+                                color: white; /* White text color */
+                                margin-bottom: 15px;
+                                position: relative;
+                            }
+
+                            /* Close button styles */
+                            .closebtn {
+                                margin-left: 15px;
+                                color: white;
+                                font-weight: bold;
+                                float: right;
+                                font-size: 22px;
+                                line-height: 20px;
+                                cursor: pointer;
+                                transition: 0.3s;
+                            }
+
+                            .closebtn:hover {
+                                color: black;
+                            }
+                        </style>
+                        <!-- Custom alert box -->
+                        <div id="customAlert" class="alert" style="display: none;">
+                            <span class="closebtn" onclick="document.getElementById('customAlert').style.display='none';">&times;</span>
+                            This action is only allowed for admin users.
+                        </div>
                             <div class="card-body border border-dashed border-end-0 border-start-0">
                                 <form>
                                     <div class="row g-3">
@@ -57,7 +88,7 @@
                                            id="InterfaceTypeTable">
                                            <thead class="table-light text-muted">
                                                <tr>
-                                                <th>Action</th>
+                                                <th style="{% if request.user.is_staff %}{% else %}pointer-events: none; cursor: pointer{% endif %}">Action</th>
                                                 <th data-data="code" data-name="code">Code</th>
                                                 <th data-data="name" data-name="name">Name</th>
                                                 <th data-data="description" data-name="description">Description</th>
@@ -143,70 +174,137 @@ var table = $('#InterfaceTypeTable').DataTable( {
     },
     {
         targets: 3,
+        searchable: false,
         defaultContent: "-"
     },
     {
         targets: 4,
+        searchable: false,
         render: (data, type, row)=>{
             return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
         }
     },
     {
         targets: 5,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 6,
+        searchable: false,
         render: (data, type, row)=>{
             return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
         }
     },
     {
         targets: 7,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
+
     },
     {
-        targets: 0,  // 0 the first, 1 the second, etc.
-        sortable: false,
-        searchable: false,
-        // The `data` parameter refers to the data for the cell.
-        // The `rows`argument is an object representing all the data for the current row.
-        render: ( data, type, row ) => {
-            let editURL = "{% url 'interface:interface_type_update' code=0 %}"
-            let deleteURL = "{% url 'interface:interface_type_delete' code=0 %}"
-            
-            let actions =  `<ul class="list-inline hstack gap-2 mb-0">`
+            targets: 0,  // 0 the first, 1 the second, etc.
+            sortable: false,
+            searchable: false,
+            render: function (data, type, row) {
+                {% if request.user.is_superuser %}
+                    // Admin user
+                    let editURL = "{% url 'interface:interface_type_update' code=0 %}";
+                    let deleteURL = "{% url 'interface:interface_type_delete' code=0 %}";
 
-            actions += `<li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
-                <a href="${editURL.replace('0', row.code)}" class="text-primary d-inline-block edit-item-btn">
-                    <i class="ri-pencil-fill fs-16"></i>
-                </a>
-            </li>`
-        
-            actions += `<li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
-            <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder" data-url="${deleteURL.replace('0', row.code)}">
-            <i class="ri-delete-bin-5-fill fs-16"></i>
-                </a>
-            </li>`
+                    let actions = `<ul class="list-inline hstack gap-2 mb-0">`;
 
-            actions += `</ul>`
-            return actions
+                    actions += `<li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
+                        <a href="${editURL.replace('0', row.code)}" class="text-primary d-inline-block edit-item-btn">
+                            <i class="ri-pencil-fill fs-16"></i>
+                        </a>
+                    </li>`;
+
+                    actions += `<li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
+                    <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder" data-url="${deleteURL.replace('0', row.code)}">
+                    <i class="ri-delete-bin-5-fill fs-16"></i>
+                        </a>
+                    </li>`;
+
+                    actions += `</ul>`;
+                    return actions;
+                {% else %}
+                    // Non-admin user
+                    return `<ul class="list-inline hstack gap-2 mb-0">
+                                <li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
+                                    <a href="" class="text-primary d-inline-block edit-item-btn" onclick="showAlert();">
+                                        <i class="ri-pencil-fill fs-16"></i>
+                                    </a>
+                                </li>
+                                <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
+                                    <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="" data-url="" onclick="showAlert();">
+                                        <i class="ri-delete-bin-5-fill fs-16"></i>
+                                    </a>
+                                </li>
+                            </ul>`;
+                {% endif %}
+            },
         },
-    }]
+    ]
 });
 
+function showAlert() {
+    document.getElementById("customAlert").style.display = "block";
+}
 $(document).ready(function(){
- 
+
     // Update the Delete URL in Delete Confirm Modal
     $('#InterfaceTypeTable').on('click', '.delete-btn', (event) => {
         $('#delete-record').attr('href', $(event.currentTarget).data('url'))
     })
-    
+
     // Filters for table
     $('#id_search').on('keyup', function () {
         table.search( this.value ).draw();
     } );
-    
 })
+
+$('#InterfaceTypeTable').on('contextmenu', 'tbody tr', function(e) {
+    e.preventDefault();
+    var interfaceTypeData = table.row(this).data();
+    console.log(interfaceTypeData)
+    var interfaceTypeCode = interfaceTypeData.code;
+    var baseUrl = window.location.origin;
+    $.ajax({
+        url: baseUrl + '/api/interface/type/relations/' + interfaceTypeCode + '/',
+        method: 'GET',
+        success: function (interfaceTypeData) {
+            $('.dropdown-menu').remove();
+            var dropdownMenu = $('<div class="dropdown-menu" role="menu"></div>');
+            for (var key in interfaceTypeData) {
+                if (interfaceTypeData.hasOwnProperty(key)) {
+                    if (key.endsWith('_id') && key !== 'id') {
+                        var foreignKeyRecordId = interfaceTypeData[key];
+                        var modifiedKey = key.replace(/_/g, '/');
+                        dropdownMenu.append('<a class="dropdown-item" href="' + baseUrl + '/' + modifiedKey + '/' + foreignKeyRecordId + '">' + key.replace(/_/g, ' ') + ' : ' + interfaceTypeData[key] + '</a>');
+                    } else {
+                        dropdownMenu.append('<a class="dropdown-item" href="">' + key + ': ' + interfaceTypeData[key] + '</a>');
+                    }
+                }
+            }
+            dropdownMenu.css({
+                position: 'absolute',
+                left: e.pageX,
+                top: e.pageY,
+                display: 'block',
+            });
+            $('body').append(dropdownMenu);
+            $(document).on('click.contextMenu', function () {
+                dropdownMenu.remove();
+                $(document).off('click.contextMenu');
+            });
+        },
+        error: function () {
+            console.error('Error fetching interface by ID', interfaceTypeCode);
+        }
+    });
+});
+
+
 </script>
 {% endblock extra_js %}
