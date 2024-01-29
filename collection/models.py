@@ -48,4 +48,4 @@ class Collection(BaseModel):
         return ret
 
     def __str__(self):
-        return self.name
+        return f'({self.code} - {self.name})'

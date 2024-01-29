@@ -284,51 +284,51 @@ var table = $('#TaskTable').DataTable( {
     }]
 });
 
-$('#TaskTable').on('contextmenu', 'tbody tr', function(e) {
-    e.preventDefault();
-    var taskData = table.row(this).data();
-    console.log(taskData)
-    var taskCode = taskData.Code;
-    var baseUrl = window.location.origin;
-    $.ajax({
-        url: baseUrl + '/api/Task/relations/' + taskCode + '/',
-        method: 'GET',
-        success: function (taskData) {
-            $('.dropdown-menu').remove();
-            var dropdownMenu = $('<div class="dropdown-menu" role="menu"></div>');
-            for (var key in taskData) {
-                if (taskData.hasOwnProperty(key)) {
-                    if ((key.endsWith('Id') || key.endsWith('id')) && key !== 'id') {
-                        var foreignKeyRecordId = taskData[key];
-                        var keyMapping = {
-                            'ClassId': 'class/id',
-                            'CollectionId': 'collection/id',
-                            'LoadPatternId': 'pattern/loadpattern/id',
-                        };
-                        var modifiedKey = keyMapping[key] || key.replace(/_/g, '/');
-                        dropdownMenu.append('<a class="dropdown-item" href="' + baseUrl + '/' + modifiedKey + '/' + foreignKeyRecordId + '">' + key.replace(/_/g, ' ') + ' : ' + taskData[key] + '</a>');
-                    } else {
-                        dropdownMenu.append('<a class="dropdown-item" href="">' + key + ': ' + taskData[key] + '</a>');
-                    }
-                }
-            }
-            dropdownMenu.css({
-                position: 'absolute',
-                left: e.pageX,
-                top: e.pageY,
-                display: 'block',
-            });
-            $('body').append(dropdownMenu);
-            $(document).on('click.contextMenu', function () {
-                dropdownMenu.remove();
-                $(document).off('click.contextMenu');
-            });
-        },
-        error: function () {
-            console.error('Error fetching task by code', taskCode);
-        }
-    });
-});
+<!--$('#TaskTable').on('contextmenu', 'tbody tr', function(e) {-->
+<!--    e.preventDefault();-->
+<!--    var taskData = table.row(this).data();-->
+<!--    console.log(taskData)-->
+<!--    var taskCode = taskData.Code;-->
+<!--    var baseUrl = window.location.origin;-->
+<!--    $.ajax({-->
+<!--        url: baseUrl + '/api/Task/relations/' + taskCode + '/',-->
+<!--        method: 'GET',-->
+<!--        success: function (taskData) {-->
+<!--            $('.dropdown-menu').remove();-->
+<!--            var dropdownMenu = $('<div class="dropdown-menu" role="menu"></div>');-->
+<!--            for (var key in taskData) {-->
+<!--                if (taskData.hasOwnProperty(key)) {-->
+<!--                    if ((key.endsWith('Id') || key.endsWith('id')) && key !== 'id') {-->
+<!--                        var foreignKeyRecordId = taskData[key];-->
+<!--                        var keyMapping = {-->
+<!--                            'ClassId': 'class/id',-->
+<!--                            'CollectionId': 'collection/id',-->
+<!--                            'LoadPatternId': 'pattern/loadpattern/id',-->
+<!--                        };-->
+<!--                        var modifiedKey = keyMapping[key] || key.replace(/_/g, '/');-->
+<!--                        dropdownMenu.append('<a class="dropdown-item" href="' + baseUrl + '/' + modifiedKey + '/' + foreignKeyRecordId + '">' + key.replace(/_/g, ' ') + ' : ' + taskData[key] + '</a>');-->
+<!--                    } else {-->
+<!--                        dropdownMenu.append('<a class="dropdown-item" href="">' + key + ': ' + taskData[key] + '</a>');-->
+<!--                    }-->
+<!--                }-->
+<!--            }-->
+<!--            dropdownMenu.css({-->
+<!--                position: 'absolute',-->
+<!--                left: e.pageX,-->
+<!--                top: e.pageY,-->
+<!--                display: 'block',-->
+<!--            });-->
+<!--            $('body').append(dropdownMenu);-->
+<!--            $(document).on('click.contextMenu', function () {-->
+<!--                dropdownMenu.remove();-->
+<!--                $(document).off('click.contextMenu');-->
+<!--            });-->
+<!--        },-->
+<!--        error: function () {-->
+<!--            console.error('Error fetching task by code', taskCode);-->
+<!--        }-->
+<!--    });-->
+<!--});-->
 
 $(document).ready(function(){
  

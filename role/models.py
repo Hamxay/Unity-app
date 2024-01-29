@@ -33,4 +33,4 @@ class Role(BaseModel):
         ]
 
     def __str__(self):
-        return self.name
+        return f'({self.code} - {self.name})'
