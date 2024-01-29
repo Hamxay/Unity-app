@@ -137,12 +137,14 @@
 <script src="{% static 'js/moment-2.29.2.min.js' %}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 <script type="text/javascript">
+    var ConnectionIdParam = new URLSearchParams(window.location.search).get('ConnectionId');
+
 var table = $('#classTable').DataTable( {
     serverSide: true,
     processing: true,
     order: [[16, 'desc']],
     "ajax": {
-        "url": "/api/interface/?format=datatables",
+        "url": "/api/interface/?format=datatables"+ (ConnectionIdParam ? '&ConnectionId=' + ConnectionIdParam : '')
 
     },
     "dom": 'lrtip',

@@ -23,8 +23,15 @@ class InterfaceTypeViewset(viewsets.ModelViewSet):
 
 
 class InterfaceViewset(viewsets.ModelViewSet):
-    queryset = Interface.objects.all()
     serializer_class = InterfaceSerializer
+
+    def get_queryset(self):
+        connection_id = self.request.query_params.get('ConnectionId')
+        if connection_id:
+            queryset = Interface.objects.filter(connection_id_id=connection_id)
+        else:
+            queryset = Interface.objects.all()
+        return queryset
 
 
 class InterfaceHistoryViewset(viewsets.ViewSet):
