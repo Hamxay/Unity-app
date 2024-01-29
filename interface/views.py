@@ -14,7 +14,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.contrib import messages
 from .models import InterfaceCategory, InterfaceType, Interface, InterfaceDependence
-from .forms import InterfaceForm
+from .forms import InterfaceForm, InterfaceDependenceForm
 
 
 # InterfaceCategory CRUD
@@ -267,7 +267,7 @@ class InterfaceDependenceCreateView(
 ):
     permission_required = "interface.add_dependence"
     model = InterfaceDependence
-    fields = ["code", "interface_id", "dependent_on_interface"]
+    form_class = InterfaceDependenceForm
     success_url = reverse_lazy("interface:interface_dependence_list")
     success_message = "Record was created successfully"
 
@@ -281,7 +281,7 @@ class InterfaceDependenceUpdateView(
 ):
     permission_required = "interface.change_dependence"
     model = InterfaceDependence
-    fields = ["code", "interface_id", "dependent_on_interface"]
+    fields = ["interface_id", "dependent_on_interface"]
     success_url = reverse_lazy("interface:interface_dependence_list")
     success_message = "Record was updated successfully"
     slug_url_kwarg = 'code'
