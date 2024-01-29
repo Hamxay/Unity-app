@@ -35,6 +35,23 @@
                             </div>
 
                             <!--end card-body-->
+                            <div class="card-body border border-dashed border-end-0 border-start-0">
+                                <form>
+                                    <div class="row g-3">
+                                        <div class="col-xxl-5 col-sm-12">
+                                            <div class="search-box">
+                                                <input type="text"
+                                                       class="form-control search bg-light border-light"
+                                                       placeholder="Search..."
+                                                       id="id_search">
+                                                <i class="ri-search-line search-icon"></i>
+                                            </div>
+                                        </div>
+                                        <!--end col-->
+                                    </div>
+                                    <!--end row-->
+                                </form>
+                            </div>
                             <div class="card-body">
                                 <div class="table-responsive table-card mb-4">
                                     <table class="table align-middle table-nowrap mb-0"
@@ -42,7 +59,6 @@
                                            <thead class="table-light text-muted">
                                                <tr>
                                                 <th>Action</th>
-                                                <th data-data="id" data-name="id">ID</th>
                                                 <th data-data="code" data-name="code">Code</th>
                                                 <th data-data="collectionId" data-name="collectionId">Collection ID</th>
                                                 <th data-data="RoleId" data-name="RoleId">Role ID</th>
@@ -120,39 +136,42 @@ var table = $('#rolecollectionaccesstable').DataTable( {
     "columnDefs": [
     {
         targets: 1,
-        visible: false
+        defaultContent: "-"
+
     },
     {
         targets: 2,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 3,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 4,
-        defaultContent: "-"
-    },
-    {
-        targets: 5,
+        searchable: false,
         render: (data, type, row)=>{
             return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
         }
     },
     {
-        targets: 6,
-        defaultContent: "-"
+        targets: 5,
+        defaultContent: "-",
+        searchable: false,
     },
     {
-        targets: 7,
+        targets: 6,
+        searchable: false,
         render: (data, type, row)=>{
             return moment.utc(row.updated_date).format('MMM DD, YYYY hh:mm A');
         }
     },
     {
-        targets: 8,
-        defaultContent: "-"
+        targets: 7,
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 0,  // 0 the first, 1 the second, etc.
@@ -161,25 +180,41 @@ var table = $('#rolecollectionaccesstable').DataTable( {
         // The `data` parameter refers to the data for the cell.
         // The `rows`argument is an object representing all the data for the current row.
         render: ( data, type, row ) => {
-            let editURL = "{% url 'rolecollectionaccess:rolecollectionaccess_update' pk=0 %}"
-            let deleteURL = "{% url 'rolecollectionaccess:rolecollectionaccess_delete' pk=0 %}"
+            {% if request.user.is_staff %}
+                let editURL = "{% url 'rolecollectionaccess:rolecollectionaccess_update' pk=0 %}"
+                let deleteURL = "{% url 'rolecollectionaccess:rolecollectionaccess_delete' pk=0 %}"
 
-            let actions =  `<ul class="list-inline hstack gap-2 mb-0">`
+                let actions =  `<ul class="list-inline hstack gap-2 mb-0">`
 
-            actions += `<li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
-                <a href="${editURL.replace('0', row.id)}" class="text-primary d-inline-block edit-item-btn">
-                    <i class="ri-pencil-fill fs-16"></i>
-                </a>
-            </li>`
+                actions += `<li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
+                    <a href="${editURL.replace('0', row.id)}" class="text-primary d-inline-block edit-item-btn">
+                        <i class="ri-pencil-fill fs-16"></i>
+                    </a>
+                </li>`
 
-            actions += `<li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
-            <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder" data-url="${deleteURL.replace('0', row.id)}">
-            <i class="ri-delete-bin-5-fill fs-16"></i>
-                </a>
-            </li>`
+                actions += `<li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
+                <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder" data-url="${deleteURL.replace('0', row.id)}">
+                <i class="ri-delete-bin-5-fill fs-16"></i>
+                    </a>
+                </li>`
 
-            actions += `</ul>`
-            return actions
+                actions += `</ul>`
+                return actions
+            {% else %}
+                // Non-admin user
+                return `<ul class="list-inline hstack gap-2 mb-0">
+                            <li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
+                                <a href="" class="text-primary d-inline-block edit-item-btn" onclick="showAlert();">
+                                    <i class="ri-pencil-fill fs-16"></i>
+                                </a>
+                            </li>
+                            <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
+                                <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="" data-url="" onclick="showAlert();">
+                                    <i class="ri-delete-bin-5-fill fs-16"></i>
+                                </a>
+                            </li>
+                        </ul>`;
+            {% endif %}
         },
     }]
 });
