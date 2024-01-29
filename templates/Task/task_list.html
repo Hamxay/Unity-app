@@ -156,16 +156,37 @@ var table = $('#TaskTable').DataTable( {
         targets: 2,
         defaultContent: "-",
         searchable: false,
+        render: function (data, type, row) {
+            if (typeof data === 'object' && data !== null) {
+                return data.Code + ' - ' + data.Name;
+            } else {
+                return data;
+            }
+        }
     },
     {
         targets: 3,
         defaultContent: "-",
         searchable: false,
+        render: function (data, type, row) {
+            if (typeof data === 'object' && data !== null) {
+                return data.code + ' - ' + data.name;
+            } else {
+                return data;
+            }
+        }
     },
     {
         targets: 4,
         defaultContent: "-",
         searchable: false,
+        render: function (data, type, row) {
+            if (typeof data === 'object' && data !== null) {
+                return data.code + ' - ' + data.name;
+            } else {
+                return data;
+            }
+        }
     },
     {
         targets: 5,

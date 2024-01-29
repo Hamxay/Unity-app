@@ -21,3 +21,9 @@ class CollectionHistorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Collection.history.model
         fields = "__all__"
+
+
+class CollectionsDisplaySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Collection
+        fields = ['code', 'name']
