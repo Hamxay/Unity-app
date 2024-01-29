@@ -13,7 +13,7 @@ class InterfaceCategoryDisplaySerializer(serializers.ModelSerializer):
 
 class InterfaceDisplaySerializer(serializers.ModelSerializer):
     class Meta:
-        model = InterfaceCategory
+        model = Interface
         fields = ['code', 'name']
 
 
