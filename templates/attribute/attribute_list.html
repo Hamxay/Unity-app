@@ -59,7 +59,7 @@
                                                <tr>
                                                 <th>Action</th>
                                                 <th data-data="code" data-name="code">Code</th>
-                                                <th data-data="class_id" data-name="class_id">Class ID</th>
+                                                <th data-data="class_id" data-name="class_id">Class (Code - Name)</th>
                                                 <th data-data="source_name" data-name="source_name">Source Name</th>
                                                 <th data-data="target_name" data-name="target_name">Target Name</th>
                                                 <th data-data="source_description" data-name="source_description">Source Description</th>
@@ -161,6 +161,15 @@
     {
         targets: 2,
         defaultContent: "-",
+        render: function (data, type, row) {
+            // Check if data is an object (assuming your data is an Interface object)
+            if (typeof data === 'object' && data !== null) {
+                return data.Code + ' - ' + data.Name;
+            } else {
+                // Handle other cases or return the original data
+                return data;
+            }
+        }
     },
     {
         targets: 3,

@@ -21,3 +21,9 @@ class ClassHistorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Class.history.model
         fields = "__all__"
+
+
+class ClassDisplaySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Class
+        fields = ['Code', 'Name']
