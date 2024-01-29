@@ -147,11 +147,9 @@ var table = $('#classTable').DataTable( {
         defaultContent: "-",
         searchable: false,
         render: function (data, type, row) {
-        // Check if data is an object (assuming your data is an Interface object)
         if (typeof data === 'object' && data !== null) {
             return data.code + ' - ' + data.name;
         } else {
-            // Handle other cases or return the original data
             return data;
         }
     }
@@ -247,8 +245,6 @@ $('#classTable').on('contextmenu', 'tbody tr', function(e) {
         success: function (collectionData) {
             $('.dropdown-menu').remove();
             var dropdownMenu = $('<div class="dropdown-menu" role="menu"></div>');
-
-            // Create a new dropdown for class, schedule, and collection
             var taskUrl = baseUrl + '/Task/list?CollectionId='+collectionCode;
 <!--            var scheduleUrl = baseUrl + '/schedule/list?interface_id=' + collectionCode;-->
 <!--            var collectionUrl = baseUrl + '/collection/list?InterfaceId=' + collectionCode;-->

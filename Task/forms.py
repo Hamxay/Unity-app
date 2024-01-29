@@ -2,9 +2,6 @@ from django import forms
 from .models import Task
 
 
-# from autocomplete_light import shortcuts as al
-
-
 class TaskForm(forms.ModelForm):
     class Meta:
         model = Task

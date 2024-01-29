@@ -227,7 +227,6 @@ $('#classTable').on('contextmenu', 'tbody tr', function(e) {
             $('.dropdown-menu').remove();
             var dropdownMenu = $('<div class="dropdown-menu" role="menu"></div>');
 
-            // Create a new dropdown for class, schedule, and collection
             var classUrl = baseUrl + '/interface/list?ConnectionId=' + connectionCode;
             dropdownMenu.append('<a class="dropdown-item" href="' + classUrl + '">Interface</a>');
             dropdownMenu.css({

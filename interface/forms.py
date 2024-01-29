@@ -1,6 +1,5 @@
 from django import forms
 from .models import Interface
-# from autocomplete_light import shortcuts as al
 
 
 class InterfaceForm(forms.ModelForm):
