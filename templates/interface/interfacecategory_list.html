@@ -179,7 +179,7 @@ var table = $('#InterfaceCategoryTable').DataTable( {
         render: ( data, type, row ) => {
             let editURL = "{% url 'interface:interface_category_update' code=0 %}"
             let deleteURL = "{% url 'interface:interface_category_delete' code=0 %}"
-            
+
             let actions =  `<ul class="list-inline hstack gap-2 mb-0">`
 
             actions += `<li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
@@ -187,7 +187,7 @@ var table = $('#InterfaceCategoryTable').DataTable( {
                     <i class="ri-pencil-fill fs-16"></i>
                 </a>
             </li>`
-        
+
             actions += `<li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
             <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder" data-url="${deleteURL.replace('0', row.code)}">
             <i class="ri-delete-bin-5-fill fs-16"></i>
@@ -198,6 +198,37 @@ var table = $('#InterfaceCategoryTable').DataTable( {
             return actions
         },
     }]
+});
+
+$('#InterfaceCategoryTable').on('contextmenu', 'tbody tr', function(e) {
+    e.preventDefault();
+    var interfaceCategoryData = table.row(this).data();
+    var interfaceCategoryCode = interfaceCategoryData.code;
+    var baseUrl = window.location.origin;
+    $.ajax({
+        url: baseUrl + '/api/references/' + interfaceCategoryCode + '/',
+        method: 'GET',
+        success: function (interfaceCategoryData) {
+            $('.dropdown-menu').remove();
+            var dropdownMenu = $('<div class="dropdown-menu" role="menu"></div>');
+            var InterfaceUrl = baseUrl + '/interface/list?InterfaceCategoryId=' + interfaceCategoryCode;
+            dropdownMenu.append('<a class="dropdown-item" href="' + InterfaceUrl + '">Interface</a>');
+            dropdownMenu.css({
+                position: 'absolute',
+                left: e.pageX,
+                top: e.pageY,
+                display: 'block',
+            });
+            $('body').append(dropdownMenu);
+            $(document).on('click.contextMenu', function () {
+                dropdownMenu.remove();
+                $(document).off('click.contextMenu');
+            });
+        },
+        error: function () {
+            console.error('Error fetching interface by ID', interfaceId);
+        }
+    });
 });
 
 $(document).ready(function(){

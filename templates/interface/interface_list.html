@@ -137,14 +137,15 @@
 <script src="{% static 'js/moment-2.29.2.min.js' %}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 <script type="text/javascript">
-    var ConnectionIdParam = new URLSearchParams(window.location.search).get('ConnectionId');
+var ConnectionIdParam = new URLSearchParams(window.location.search).get('ConnectionId');
+var InterfaceCategoryIdParam = new URLSearchParams(window.location.search).get('InterfaceCategoryId');
 
 var table = $('#classTable').DataTable( {
     serverSide: true,
     processing: true,
     order: [[16, 'desc']],
     "ajax": {
-        "url": "/api/interface/?format=datatables"+ (ConnectionIdParam ? '&ConnectionId=' + ConnectionIdParam : '')
+        "url": "/api/interface/?format=datatables"+ (InterfaceCategoryIdParam ? '&InterfaceCategoryId=' + InterfaceCategoryIdParam : '')
 
     },
     "dom": 'lrtip',
@@ -158,11 +159,9 @@ var table = $('#classTable').DataTable( {
         defaultContent: "-",
         searchable: false,
         render: function (data, type, row) {
-            // Check if data is an object (assuming your data is an Interface object)
             if (typeof data === 'object' && data !== null) {
                 return data.code + ' - ' + data.name;
             } else {
-                // Handle other cases or return the original data
                 return data;
             }
         }
@@ -172,11 +171,9 @@ var table = $('#classTable').DataTable( {
         defaultContent: "-",
         searchable: false,
         render: function (data, type, row) {
-            // Check if data is an object (assuming your data is an Interface object)
             if (typeof data === 'object' && data !== null) {
                 return data.code + ' - ' + data.name;
             } else {
-                // Handle other cases or return the original data
                 return data;
             }
         }
@@ -186,11 +183,9 @@ var table = $('#classTable').DataTable( {
         defaultContent: "-",
         searchable: false,
         render: function (data, type, row) {
-            // Check if data is an object (assuming your data is an Interface object)
             if (typeof data === 'object' && data !== null) {
                 return data.Code + ' - ' + data.Name;
             } else {
-                // Handle other cases or return the original data
                 return data;
             }
         }
@@ -200,11 +195,9 @@ var table = $('#classTable').DataTable( {
         defaultContent: "-",
         searchable: false,
         render: function (data, type, row) {
-            // Check if data is an object (assuming your data is an Interface object)
             if (typeof data === 'object' && data !== null) {
                 return data.code + ' - ' + data.name;
             } else {
-                // Handle other cases or return the original data
                 return data;
             }
         }

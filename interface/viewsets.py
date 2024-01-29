@@ -27,8 +27,11 @@ class InterfaceViewset(viewsets.ModelViewSet):
 
     def get_queryset(self):
         connection_id = self.request.query_params.get('ConnectionId')
+        interface_category_id = self.request.query_params.get('InterfaceCategoryId')
         if connection_id:
             queryset = Interface.objects.filter(connection_id_id=connection_id)
+        elif interface_category_id:
+            queryset = Interface.objects.filter(interface_category_id_id=interface_category_id)
         else:
             queryset = Interface.objects.all()
         return queryset
