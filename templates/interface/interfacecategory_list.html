@@ -135,35 +135,40 @@ var table = $('#InterfaceCategoryTable').DataTable( {
     "columnDefs": [
     {
         targets: 1,
-        defaultContent: "-"
+        defaultContent: "-",
     },
     {
         targets: 2,
-        defaultContent: "-"
+        defaultContent: "-",
     },
     {
         targets: 3,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 4,
+        searchable: false,
         render: (data, type, row)=>{
             return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
         }
     },
     {
         targets: 5,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 6,
+        searchable: false,
         render: (data, type, row)=>{
             return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
         }
     },
     {
         targets: 7,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 0,  // 0 the first, 1 the second, etc.
