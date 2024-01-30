@@ -139,14 +139,23 @@
 <script type="text/javascript">
 var ConnectionIdParam = new URLSearchParams(window.location.search).get('ConnectionId');
 var InterfaceCategoryIdParam = new URLSearchParams(window.location.search).get('InterfaceCategoryId');
-
+var LoadPatternIdParam = new URLSearchParams(window.location.search).get('LoadPatternId');
+var url = "/api/interface/?format=datatables";
+if (ConnectionIdParam) {
+    url += '&ConnectionId=' + ConnectionIdParam;
+}
+if (InterfaceCategoryIdParam) {
+    url += '&InterfaceCategoryId=' + InterfaceCategoryIdParam;
+}
+if (LoadPatternIdParam) {
+    url += '&LoadPatternId=' + LoadPatternIdParam;
+}
 var table = $('#classTable').DataTable( {
     serverSide: true,
     processing: true,
     order: [[16, 'desc']],
     "ajax": {
-        "url": "/api/interface/?format=datatables"+ (InterfaceCategoryIdParam ? '&InterfaceCategoryId=' + InterfaceCategoryIdParam : '')
-
+        "url": url
     },
     "dom": 'lrtip',
     "columnDefs": [

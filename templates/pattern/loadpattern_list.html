@@ -211,7 +211,38 @@ $(document).ready(function(){
     $('#id_search').on('keyup', function () {
         table.search( this.value ).draw();
     } );
-    
 })
+    
+$('#LoadPatternTable').on('contextmenu', 'tbody tr', function(e) {
+    e.preventDefault();
+    var loadPatternData = table.row(this).data();
+    var loadPatternCode = loadPatternData.code;
+    var baseUrl = window.location.origin;
+    $.ajax({
+        url: baseUrl + '/api/references/' + loadPatternCode + '/',
+        method: 'GET',
+        success: function (loadPatternData) {
+            $('.dropdown-menu').remove();
+            var dropdownMenu = $('<div class="dropdown-menu" role="menu"></div>');
+            var interfaceUrl = baseUrl + '/interface/list?LoadPatternId=' + loadPatternCode;
+            dropdownMenu.append('<a class="dropdown-item" href="' + interfaceUrl + '">Interface</a>');
+            dropdownMenu.css({
+                position: 'absolute',
+                left: e.pageX,
+                top: e.pageY,
+                display: 'block',
+            });
+            $('body').append(dropdownMenu);
+            $(document).on('click.contextMenu', function () {
+                dropdownMenu.remove();
+                $(document).off('click.contextMenu');
+            });
+        },
+        error: function () {
+            console.error('Error fetching load patterns by ID', loadPatternCode);
+        }
+    });
+});    
+    
 </script>
 {% endblock extra_js %}

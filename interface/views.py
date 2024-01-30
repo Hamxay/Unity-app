@@ -291,9 +291,9 @@ class InterfaceDependenceUpdateView(
     def form_valid(self, form):
         form.instance.updated_by = self.request.user
         return super().form_valid(form)
+
     def get_object(self, queryset=None):
         return get_object_or_404(self.model, code=self.kwargs[self.slug_url_kwarg])
-
 
 
 class InterfaceDependenceDeleteView(
