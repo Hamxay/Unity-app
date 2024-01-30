@@ -7,6 +7,8 @@
 {% block extra_css %}
     <!-- Plugins css -->
     <link href="{% static 'libs/dropzone/dist/dropzone.css' %}" rel="stylesheet" type="text/css"/>
+    <!-- stylesheet for select2 -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css">
 {% endblock extra_css %}
 {% block content %}
     <!-- ============================================================== -->
@@ -131,9 +133,6 @@
                 break;
         }
     }
-    document.getElementById('id_Frequency').addEventListener('change', function () {
-        updateFrequencyInterval();
-    });
     function addTextfield(placeholder, defaultValue) {
         var inputField = document.createElement("input");
         inputField.type = "text";
@@ -207,5 +206,36 @@
     <script src="{% static 'js/pages/project-create.init.js'%}"></script>
     <!-- jquery.js-->
     <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+    <!-- for the script of select2-->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#id_Frequency').select2({
+                placeholder: 'Select an Option',
+                minimumResultsForSearch: Infinity
+            });
+            $('#id_Frequency').on('change', function () {
+                updateFrequencyInterval();
+            });
+        });
+        $(document).ready(function() {
+            $('#id_FrequencyInterval').select2({
+                placeholder: 'Select Frequency first',
+                minimumResultsForSearch: Infinity
+            });
+        });
+        $(document).ready(function() {
+            $('#id_FrequencyRelativeInterval').select2({
+                placeholder: 'Select an Option',
+                minimumResultsForSearch: Infinity
+            });
+        });
+        $(document).ready(function() {
+            $('#id_FrequencySubDayType').select2({
+                placeholder: 'Select an Option',
+                minimumResultsForSearch: Infinity
+            });
+        });
+    </script>
 {% endblock extra_js %}
 
