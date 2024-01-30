@@ -52,6 +52,35 @@
                                     <!--end row-->
                                 </form>
                             </div>
+                            <style>
+                                /* Alert box styles */
+                                .alert-admin {
+                                    padding: 20px;
+                                    background-color: #f44336; /* Red background color */
+                                    color: white; /* White text color */
+                                    margin-bottom: 15px;
+                                    position: relative;
+                                }
+                                /* Close button styles */
+                                .closebtn-admin {
+                                    margin-left: 15px;
+                                    color: white;
+                                    font-weight: bold;
+                                    float: right;
+                                    font-size: 22px;
+                                    line-height: 20px;
+                                    cursor: pointer;
+                                    transition: 0.3s;
+                                }
+                                .closebtn-admin:hover {
+                                    color: black;
+                                }
+                        </style>
+                            <!-- Custom alert box -->
+                            <div id="customAlert" class="alert-admin" style="display: none;">
+                                <span class="closebtn-admin" onclick="document.getElementById('customAlert').style.display='none';">&times;</span>
+                                This action is only allowed for admin users.
+                            </div>
                             <div class="card-body">
                                 <div class="table-responsive table-card mb-4">
                                     <table class="table align-middle table-nowrap mb-0"
@@ -178,29 +207,51 @@ var table = $('#statusupcomingtable').DataTable( {
         // The `data` parameter refers to the data for the cell.
         // The `rows`argument is an object representing all the data for the current row.
         render: ( data, type, row ) => {
-            let editURL = "{% url 'statusupcoming:statusupcoming_update' pk=0 %}"
-            let deleteURL = "{% url 'statusupcoming:statusupcoming_delete' pk=0 %}"
+            var isSuperuser = {% if request.user.is_superuser %}true{% else %}false{% endif %};
 
-            let actions =  `<ul class="list-inline hstack gap-2 mb-0">`
+                if (isSuperuser) {
+                    let editURL = "{% url 'statusupcoming:statusupcoming_update' pk=0 %}"
+                    let deleteURL = "{% url 'statusupcoming:statusupcoming_delete' pk=0 %}"
+                    let actions = `<ul class="list-inline hstack gap-2 mb-0">`;
 
-            actions += `<li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
-                <a href="${editURL.replace('0', row.id)}" class="text-primary d-inline-block edit-item-btn">
-                    <i class="ri-pencil-fill fs-16"></i>
-                </a>
-            </li>`
+                    actions += `<li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
+                        <a href="${editURL.replace('0', row.code)}" class="text-primary d-inline-block edit-item-btn">
+                            <i class="ri-pencil-fill fs-16"></i>
+                        </a>
+                    </li>`;
 
-            actions += `<li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
-            <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder" data-url="${deleteURL.replace('0', row.id)}">
-            <i class="ri-delete-bin-5-fill fs-16"></i>
-                </a>
-            </li>`
+                    actions += `<li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
+                        <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder" data-url="${deleteURL.replace('0', row.code)}">
+                            <i class="ri-delete-bin-5-fill fs-16"></i>
+                        </a>
+                    </li>`;
 
-            actions += `</ul>`
-            return actions
-        },
-    }]
+                    actions += `</ul>`;
+                    return actions;
+                } else {
+                    // Non-ADMIN user
+                    return `<ul class="list-inline hstack gap-2 mb-0">
+                        <li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
+                            <a href="javascript:void(0);" class="text-primary d-inline-block edit-item-btn" onclick="showAlert('${row.code}');">
+                                <i class="ri-pencil-fill fs-16"></i>
+                            </a>
+                        </li>
+                        <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
+                            <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#" onclick="showAlert('${row.code}');">
+                                <i class="ri-delete-bin-5-fill fs-16"></i>
+                            </a>
+                        </li>
+                        </ul>`;
+                    }
+                }
+                        
+            },
+    ]
 });
-
+function showAlert(code) {
+    console.log('Show alert for row with code:', code);
+    document.getElementById("customAlert").style.display = "block";
+}
 $(document).ready(function(){
     // Update the Delete URL in Delete Confirm Modal
     $('#statusupcomingtable').on('click', '.delete-btn', (event) => {
