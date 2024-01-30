@@ -58,7 +58,6 @@
                                            <thead class="table-light text-muted">
                                                <tr>
                                                 <th>Action</th>
-                                                <th data-data="id" data-name="id">ID</th>
                                                 <th data-data="code" data-name="code">Code</th>
                                                 <th data-data="name" data-name="name">Name</th>
                                                 <th data-data="ad_group_name" data-name="ad_group_name">AD Group Name</th>
@@ -128,7 +127,7 @@
 var table = $('#LoadPatternTable').DataTable( {
     serverSide: true,
     processing: true,
-    order: [[5, 'desc']],
+    order: [[4, 'desc']],
     "ajax": {
         "url": "/api/pattern/loadpattern/?format=datatables"
     },
@@ -136,7 +135,7 @@ var table = $('#LoadPatternTable').DataTable( {
     "columnDefs": [
     {
         targets: 1,
-        visible: false
+        defaultContent: "-"
     },
     {
         targets: 2,
@@ -144,31 +143,32 @@ var table = $('#LoadPatternTable').DataTable( {
     },
     {
         targets: 3,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 4,
-        defaultContent: "-"
+        searchable: false,
+        render: (data, type, row)=>{
+            return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
+        }
     },
     {
         targets: 5,
-        render: (data, type, row)=>{
-            return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
-        }
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 6,
-        defaultContent: "-"
-    },
-    {
-        targets: 7,
+        searchable: false,
         render: (data, type, row)=>{
             return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
         }
     },
     {
-        targets: 8,
-        defaultContent: "-"
+        targets: 7,
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 0,  // 0 the first, 1 the second, etc.
@@ -183,13 +183,13 @@ var table = $('#LoadPatternTable').DataTable( {
             let actions =  `<ul class="list-inline hstack gap-2 mb-0">`
 
             actions += `<li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
-                <a href="${editURL.replace('0', row.id)}" class="text-primary d-inline-block edit-item-btn">
+                <a href="${editURL.replace('0', row.code)}" class="text-primary d-inline-block edit-item-btn">
                     <i class="ri-pencil-fill fs-16"></i>
                 </a>
             </li>`
         
             actions += `<li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
-            <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder" data-url="${deleteURL.replace('0', row.id)}">
+            <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder" data-url="${deleteURL.replace('0', row.code)}">
             <i class="ri-delete-bin-5-fill fs-16"></i>
                 </a>
             </li>`
