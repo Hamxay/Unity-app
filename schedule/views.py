@@ -13,6 +13,7 @@ from django.urls import reverse_lazy
 from django.contrib import messages
 
 from historyconfiguration.helper import history_enable
+from .forms import ScheduleForm
 from .models import Schedule
 
 
@@ -45,21 +46,7 @@ class ScheduleCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 
     permission_required = "schedule.add_schedule"
     model = Schedule
-    fields = [
-        "Name",
-        "Frequency",
-        "FrequencyInterval",
-        "FrequencyRelativeInterval",
-        "FrequencyRecurrenceFactor",
-        "FrequencySubDayType",
-        "FrequencySubDayInterval",
-        "ActiveStartDate",
-        "ActiveEndDate",
-        "ActiveStartTime",
-        "ActiveEndTime",
-        "IsEnabled",
-        "Version",
-    ]
+    form_class = ScheduleForm
     success_url = reverse_lazy("schedule:schedule_list")
     success_message = "Schedule was added successfully"
 

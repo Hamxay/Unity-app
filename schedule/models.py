@@ -1,3 +1,6 @@
+import datetime
+from django.utils import timezone
+
 from django.db import models
 from accounts.models import User
 from simple_history.models import HistoricalRecords
@@ -24,18 +27,37 @@ class BaseModel(models.Model):
 
 
 class Schedule(BaseModel):
+    FREQUENCY_CHOICES = [
+        (0, 'Once'),
+        (1, 'Daily'),
+        (2, 'Weekly'),
+        (3, 'Monthly'),
+        (4, 'Monthly-Relative'),
+    ]
+    FREQUENCY_SUB_DAY_TYPE_CHOICES = [
+        (1, 'Minutes'),
+        (2, 'Hourly'),
+    ]
+    FREQUENCY_RELATIVE_INTERVAL_CHOICES = [
+        (0, 'Unused'),
+        (1, 'First'),
+        (2, 'Second'),
+        (3, 'Third'),
+        (4, 'Fourth'),
+        (5, 'Last'),
+    ]
     Code = models.BigAutoField(primary_key=True)
     Name = models.CharField(max_length=128)
-    Frequency = models.IntegerField()
+    Frequency = models.IntegerField(choices=FREQUENCY_CHOICES)
     FrequencyInterval = models.IntegerField()
-    FrequencyRelativeInterval = models.IntegerField()
+    FrequencyRelativeInterval = models.IntegerField(choices=FREQUENCY_RELATIVE_INTERVAL_CHOICES)
     FrequencyRecurrenceFactor = models.IntegerField()
-    FrequencySubDayType = models.IntegerField()
+    FrequencySubDayType = models.IntegerField(choices=FREQUENCY_SUB_DAY_TYPE_CHOICES)
     FrequencySubDayInterval = models.IntegerField()
-    ActiveStartDate = models.IntegerField()
-    ActiveEndDate = models.IntegerField()
-    ActiveStartTime = models.IntegerField()
-    ActiveEndTime = models.IntegerField()
+    ActiveStartDate = models.DateField(default=datetime.date.today)
+    ActiveEndDate = models.DateField(default=datetime.date.today)
+    ActiveStartTime = models.TimeField()
+    ActiveEndTime = models.TimeField()
     IsEnabled = models.BooleanField(max_length=1)
     Version = models.IntegerField()
 

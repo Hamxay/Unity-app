@@ -6,9 +6,7 @@
 {% endblock title %}
 {% block extra_css %}
     <!-- Plugins css -->
-    <link href="{% static 'libs/dropzone/dist/dropzone.css' %}"
-          rel="stylesheet"
-          type="text/css"/>
+    <link href="{% static 'libs/dropzone/dist/dropzone.css' %}" rel="stylesheet" type="text/css"/>
 {% endblock extra_css %}
 {% block content %}
     <!-- ============================================================== -->
@@ -35,10 +33,10 @@
                                             <div class="mb-3">{{ form.Name|as_crispy_field }}</div>
                                         </div>
                                         <div class="col-lg-6">
-                                            <div class="mb-3">{{ form.Frequency|as_crispy_field }}</div>
+                                            <div class="mb-3" id="frequency">{{ form.Frequency|as_crispy_field }}</div>
                                         </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">{{ form.FrequencyInterval|as_crispy_field }}</div>
+                                        <div class="col-lg-6" id="frequencyIntervalContainer">
+                                            <div class="mb-3" id="frequencyInterval">{{ form.FrequencyInterval|as_crispy_field }}</div>
                                         </div>
                                         <div class="col-lg-12">
                                             <div class="mb-3">{{ form.FrequencyRelativeInterval|as_crispy_field }}</div>
@@ -76,8 +74,7 @@
                             </div>
                             <!-- end card -->
                             <div class="text-end mb-4">
-                                <a href="{% url 'schedule:schedule_list' %}"
-                                   class="btn btn-light w-sm">Cancel</a>
+                                <a href="{% url 'schedule:schedule_list' %}" class="btn btn-light w-sm">Cancel</a>
                                 <button type="submit" class="btn btn-success w-sm">
                                     {% if object %}
                                         Update
@@ -104,6 +101,104 @@
 {% block extra_content %}
 {% endblock extra_content %}
 {% block extra_js %}
+<script>
+    var bool = true;
+    document.getElementById("id_FrequencyInterval").disabled = true;
+    function updateFrequencyInterval() {
+        if (bool){
+            document.getElementById("id_FrequencyInterval").disabled = false;
+            bool = false;
+        }
+        var frequencySelect = document.getElementById("id_Frequency");
+        var frequencyIntervalContainer = document.getElementById("frequencyIntervalContainer");
+        frequencyIntervalContainer.innerHTML = '';
+        var selectedFrequency = frequencySelect.value;
+        switch (selectedFrequency) {
+            case '0': // Once
+                addTextfield('Default to zero', '0');
+                break;
+            case '1': // Daily
+                addTextfield('Default to 1234567', '1234567');
+                break;
+            case '2': // Weekly
+                addWeekdayOptions();
+                break;
+            case '3': // Monthly
+                addDayOptions();
+                break;
+            case '4': // Monthly Relative
+                addRelativeOptions();
+                break;
+        }
+    }
+    document.getElementById('id_Frequency').addEventListener('change', function () {
+        updateFrequencyInterval();
+    });
+    function addTextfield(placeholder, defaultValue) {
+        var inputField = document.createElement("input");
+        inputField.type = "text";
+        inputField.id = "frequencyInterval";
+        inputField.name = "FrequencyInterval";
+        inputField.placeholder = placeholder;
+        inputField.value = defaultValue;
+        inputField.className = "form-control";
+        appendHeading("Frequency Interval*");
+        document.getElementById("frequencyIntervalContainer").appendChild(inputField);
+    }
+    function addWeekdayOptions() {
+        var dropdown = document.createElement("select");
+        dropdown.id = "frequencyInterval";
+        dropdown.name = "FrequencyInterval";
+        dropdown.className = "form-control";
+        for (var i = 1; i <= 7; i++) {
+            var option = document.createElement("option");
+            option.value = i;
+            option.text = getDayName(i);
+            dropdown.appendChild(option);
+        }
+        appendHeading("Frequency Interval*");
+        document.getElementById("frequencyIntervalContainer").appendChild(dropdown);
+    }
+    function addDayOptions() {
+        var dropdown = document.createElement("select");
+        dropdown.id = "frequencyInterval";
+        dropdown.name = "FrequencyInterval";
+        dropdown.className = "form-control";
+        for (var i = 1; i <= 31; i++) {
+            var option = document.createElement("option");
+            option.value = i;
+            option.text = i;
+            dropdown.appendChild(option);
+        }
+        appendHeading("Frequency Interval*");
+        document.getElementById("frequencyIntervalContainer").appendChild(dropdown);
+    }
+    function addRelativeOptions() {
+        var dropdown = document.createElement("select");
+        dropdown.id = "frequencyInterval";
+        dropdown.name = "FrequencyInterval";
+        dropdown.className = "form-control";
+        var relativeOptions = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Weekday', 'Weekend'];
+        for (var i = 0; i < relativeOptions.length; i++) {
+            var option = document.createElement("option");
+            option.value = i + 1; // Values start from 1
+            option.text = relativeOptions[i];
+            dropdown.appendChild(option);
+        }
+        appendHeading("Frequency Interval*");
+        document.getElementById("frequencyIntervalContainer").appendChild(dropdown);
+    }
+    function getDayName(dayNumber) {
+        var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        return days[dayNumber - 1];
+    }
+    function appendHeading(headingText) {
+        var headingElement = document.createElement("label");
+        headingElement.className = "form-label";
+        headingElement.innerHTML = headingText;
+        document.getElementById("frequencyIntervalContainer").appendChild(headingElement);
+    }
+</script>
     <!-- ckeditor -->
     <script src="{% static 'libs/@ckeditor/ckeditor5-build-classic/build/ckeditor.js'%}"></script>
     <!-- dropzone js -->
@@ -113,3 +208,4 @@
     <!-- jquery.js-->
     <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
 {% endblock extra_js %}
+

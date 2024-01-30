@@ -41,6 +41,7 @@ class InterfaceCategorySerializer(serializers.ModelSerializer):
 class InterfaceTypeSerializer(serializers.ModelSerializer):
     created_by = serializers.ReadOnlyField(source="created_by.get_full_name")
     updated_by = serializers.ReadOnlyField(source="created_by.get_full_name")
+
     class Meta:
         model = InterfaceType
         fields = "__all__"
@@ -53,6 +54,7 @@ class InterfaceSerializer(serializers.ModelSerializer):
     interface_type_id = InterfaceTypeDisplaySerializer()
     schedule_id = ScheduleDisplaySerializer()
     connection_id = ConnectionDisplaySerializer()
+
     class Meta:
         model = Interface
         fields = "__all__"
