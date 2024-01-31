@@ -128,12 +128,12 @@ urlpatterns = [
         name="interface_dependence_create",
     ),
     path(
-        "dependence/update/<slug:code>/",
+        "dependence/update/<int:pk>/",
         InterfaceDependenceUpdateView.as_view(),
         name="interface_dependence_update",
     ),
     path(
-        "dependence/delete/<slug:code>/",
+        "dependence/delete/<int:pk>/",
         InterfaceDependenceDeleteView.as_view(),
         name="interface_dependence_delete",
     ),
