@@ -58,6 +58,7 @@
                                            <thead class="table-light text-muted">
                                                <tr>
                                                 <th>Action</th>
+                                                <th data-data="code" data-name="code">Code</th>
                                                 <th data-data="interface_id" data-name="interface_id">Interface ID</th>
                                                 <th data-data="dependent_on_interface" data-name="dependent_on_interface">Dependent On Interface</th>
                                                 <th data-data="created_date" data-name="created_date">Created Date</th>
@@ -167,8 +168,8 @@ var table = $('#InterfaceDependenceTable').DataTable( {
         // The `data` parameter refers to the data for the cell.
         // The `rows`argument is an object representing all the data for the current row.
         render: ( data, type, row ) => {
-            let editURL = "{% url 'interface:interface_dependence_update' code=0 %}"
-            let deleteURL = "{% url 'interface:interface_dependence_delete' code=0 %}"
+            let editURL = "{% url 'interface:interface_dependence_update' pk=0 %}"
+            let deleteURL = "{% url 'interface:interface_dependence_delete' pk=0 %}"
             
             let actions =  `<ul class="list-inline hstack gap-2 mb-0">`
 

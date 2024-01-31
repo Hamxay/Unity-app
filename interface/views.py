@@ -219,6 +219,7 @@ class InterfaceDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     success_url = reverse_lazy("interface:interface_list")
     success_message = "Record was deleted successfully"
     slug_url_kwarg = 'code'
+
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         self.object.deleted_by = request.user
@@ -286,7 +287,6 @@ class InterfaceDependenceUpdateView(
     fields = ["code", "interface_id", "dependent_on_interface"]
     success_url = reverse_lazy("interface:interface_dependence_list")
     success_message = "Record was updated successfully"
-    slug_url_kwarg = 'code'
 
     def form_valid(self, form):
         form.instance.updated_by = self.request.user
@@ -303,7 +303,6 @@ class InterfaceDependenceDeleteView(
     model = InterfaceDependence
     success_url = reverse_lazy("interface:interface_dependence_list")
     success_message = "Record was deleted successfully"
-    slug_url_kwarg = 'code'
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
