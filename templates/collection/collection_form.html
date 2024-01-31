@@ -99,5 +99,11 @@
                 search: true
             });
         });
+        $(document).ready(function() {
+            $('#id_executiontriggerrule').select2({
+                placeholder: 'Select an option',
+                minimumResultsForSearch: Infinity
+            });
+        });
     </script>
 {% endblock extra_js %}
