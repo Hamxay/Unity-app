@@ -205,9 +205,9 @@ var table = $('#classTable').DataTable( {
         // The `data` parameter refers to the data for the cell.
         // The `rows`argument is an object representing all the data for the current row.
         render: ( data, type, row ) => {
-            let viewURL = "{% url 'collection:historicalcollection_list' code=0 %}"
-            let editURL = "{% url 'collection:collection_update' code=0 %}"
-            let deleteURL = "{% url 'collection:collection_delete' code=0 %}"
+            let viewURL = "{% url 'collection:historicalcollection_list' pk=0 %}"
+            let editURL = "{% url 'collection:collection_update' pk=0 %}"
+            let deleteURL = "{% url 'collection:collection_delete' pk=0 %}"
             
             let actions =  `<ul class="list-inline hstack gap-2 mb-0">`
                 
@@ -246,12 +246,7 @@ $('#classTable').on('contextmenu', 'tbody tr', function(e) {
             $('.dropdown-menu').remove();
             var dropdownMenu = $('<div class="dropdown-menu" role="menu"></div>');
             var taskUrl = baseUrl + '/Task/list?CollectionId='+collectionCode;
-<!--            var scheduleUrl = baseUrl + '/schedule/list?interface_id=' + collectionCode;-->
-<!--            var collectionUrl = baseUrl + '/collection/list?InterfaceId=' + collectionCode;-->
-
             dropdownMenu.append('<a class="dropdown-item" href="' + taskUrl + '">Task</a>');
-<!--            dropdownMenu.append('<a class="dropdown-item" href="' + scheduleUrl + '">Schedule</a>');-->
-<!--            dropdownMenu.append('<a class="dropdown-item" href="' + collectionUrl + '">Collection</a>');-->
 
             dropdownMenu.css({
                 position: 'absolute',

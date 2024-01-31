@@ -5,7 +5,6 @@ from .serializer import CollectionHistorySerializer, CollectionSerializer
 from django.db import models
 
 
-
 class CollectionViewset(viewsets.ModelViewSet):
     serializer_class = CollectionSerializer
 
