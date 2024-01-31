@@ -35,7 +35,7 @@
                             </div>
                             <style>
                             /* Alert box styles */
-                            .alert {
+                            .alert-admin {
                                 padding: 20px;
                                 background-color: #f44336; /* Red background color */
                                 color: white; /* White text color */
@@ -44,7 +44,7 @@
                             }
 
                             /* Close button styles */
-                            .closebtn {
+                            .closebtn-admin {
                                 margin-left: 15px;
                                 color: white;
                                 font-weight: bold;
@@ -55,13 +55,13 @@
                                 transition: 0.3s;
                             }
 
-                            .closebtn:hover {
+                            .closebtn-admin:hover {
                                 color: black;
                             }
                         </style>
                         <!-- Custom alert box -->
-                        <div id="customAlert" class="alert" style="display: none;">
-                            <span class="closebtn" onclick="document.getElementById('customAlert').style.display='none';">&times;</span>
+                        <div id="customAlert" class="alert-admin" style="display: none;">
+                            <span class="closebtn-admin" onclick="document.getElementById('customAlert').style.display='none';">&times;</span>
                             This action is only allowed for admin users.
                         </div>
                             <div class="card-body border border-dashed border-end-0 border-start-0">

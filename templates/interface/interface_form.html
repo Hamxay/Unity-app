@@ -2,7 +2,7 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% block title %}
-    Create Attribute
+    Create Interface
 {% endblock title %}
 {% block extra_css %}
     <!-- Plugins css -->
@@ -50,9 +50,9 @@
             <div class="container-fluid">
                 {% block pagetitle %}
                     {% if object %}
-                        {% include "partials/page-title.html" with pagetitle="Connection" title="Update Connection" %}
+                        {% include "partials/page-title.html" with pagetitle="Interface" title="Update Interface" %}
                     {% else %}
-                        {% include "partials/page-title.html" with pagetitle="Connection" title="Create Connection" %}
+                        {% include "partials/page-title.html" with pagetitle="Interface" title="Create Interface" %}
                     {% endif %}
                 {% endblock pagetitle %}
                 <form action="" method="post" id="ConnectionForm">
@@ -176,6 +176,12 @@
         $(document).ready(function() {
             $('#id_interface_type_id').select2({
                 search: true
+            });
+        });
+        $(document).ready(function() {
+            $('#id_wait_action').select2({
+                placeholder: 'Select an option',
+                minimumResultsForSearch: Infinity
             });
         });
     </script>

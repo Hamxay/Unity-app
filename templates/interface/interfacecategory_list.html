@@ -177,6 +177,7 @@ var table = $('#InterfaceCategoryTable').DataTable( {
         // The `data` parameter refers to the data for the cell.
         // The `rows`argument is an object representing all the data for the current row.
         render: ( data, type, row ) => {
+        
             let editURL = "{% url 'interface:interface_category_update' code=0 %}"
             let deleteURL = "{% url 'interface:interface_category_delete' code=0 %}"
 
