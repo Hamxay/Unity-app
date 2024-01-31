@@ -30,6 +30,15 @@
                                             class="btn btn-danger add-btn">
                                             <i class="ri-add-line align-bottom me-1"></i> Create Class
                                         </a>
+                                        <a role="button"
+                                        href="{% url 'class:downloadTemplate' %}"
+                                         class="btn btn-danger add-btn"
+                                          id="downloadTemplateBtn">
+                                            <i class="ri-file-download-line align-bottom me-1"></i> Download Template
+                                        </a>
+                                        <button type="button" class="btn btn-danger add-btn" data-bs-toggle="modal" data-bs-target="#uploadFileModal">
+                                            Improt from csv/excel
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -116,6 +125,41 @@
                     </div>
                 </div>
                 <!--end delete modal -->
+
+                <!-- File Upload Modal -->
+                <<div class="modal fade flip"
+                id="uploadFileModal"
+                tabindex="-1"
+                aria-labelledby="uploadFileModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-body p-5 text-center">
+                            <div class="mt-4 text-center">
+                                <h4>Choose a CSV OR Excel file</h4>
+                                <p class="text-muted fs-14 mb-4">
+                                    Make sure that your file is according to the class template.
+                                </p>
+                                <div class="hstack gap-2 justify-content-center remove">
+                                    {% comment %} <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> {% endcomment %}
+                                <form method="post" action="{% url 'class:import_class_from_file' %}" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <input type="file" name="file" class="form-control" required>
+                                    <div class="mt-3">
+                                        <button class="btn btn-link btn-ghost-success fw-medium text-decoration-none" data-bs-dismiss="modal">
+                                            <i class="ri-close-line me-1 align-middle"></i> Close
+                                        </button>
+                                        <button type="submit" class="btn btn-danger add-btn">Confirm</button>
+                                    </div>
+                                </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end File Upload Modal -->
+            
             </div>
             <!-- container-fluid -->
         </div>
@@ -280,6 +324,12 @@ $(document).ready(function(){
     $('#id_search').on('keyup', function () {
         table.search( this.value ).draw();
     } );
+    $('#downloadTemplateBtn').on('click', function () {
+        downloadTemplate();
+    });
+    $('#importFile').on('change', function (e) {
+        const file = e.target.files[0];
+    });
 })
 
 // right click feature
@@ -313,6 +363,46 @@ $('#classTable').on('contextmenu', 'tbody tr', function(e) {
             console.error('Error fetching class by Code', classCode);
         }
     });
+});
+
+
+
+function downloadTemplate() {
+    const headings = [
+        "Name",
+        "Description",
+        "Prefix",
+        "Version",
+        "TargetAlias",
+        "IgnoreOnIngest",
+        "SlideWindowAttribute",
+        "SlideWindowDays",
+        "Mask",
+        "Filter",
+    ];
+
+    const defaultValues = [
+        "Default Name",
+        "Default Description",
+        "Default Prefix",
+        "1.0",
+        "Default TargetAlias",
+        "false",
+        "Default SlideWindowAttribute",
+        "7",
+        "Default Mask",
+        "Default Filter",
+    ];
+
+    const data = [headings, defaultValues];
+    const worksheet = XLSX.utils.aoa_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, worksheet, "ClassTemplate");
+    XLSX.writeFile(wb, "ClassTemplate.xlsx");
+}
+document.getElementById('importFile').addEventListener('change', function (e) {
+    var fileName = e.target.files[0] ? e.target.files[0].name : 'No file chosen';
+    document.getElementById('importFileName').innerText = fileName;
 });
 </script>
 {% endblock extra_js %}

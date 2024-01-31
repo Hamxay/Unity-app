@@ -21,3 +21,7 @@ class ClassForm(forms.ModelForm):
         labels = {
             'InterfaceId': 'Interface',
         }
+
+
+class ImportFileForm(forms.Form):
+    file = forms.FileField()

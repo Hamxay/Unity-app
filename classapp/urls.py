@@ -4,7 +4,7 @@ from .views import (
     ClassListView,
     HistoricalClassListView,
     ClassDeleteView, ClassCreateView, ClassUpdateView, HistoricalClassUpdateView,
-    ClassDropdownView, ClassDetailView
+    ClassDropdownView, ClassDetailView, DownloadTemplateView, ImportClassFromFileView
 )
 from .viewsets import ClassViewset, ClassHistoryViewset, ClassDropdownViewset
 
@@ -51,4 +51,7 @@ urlpatterns = [
         ClassDropdownView.as_view(),
         name='class_relations'
     ),
+    path('downloadTemplate/', DownloadTemplateView.as_view(), name='downloadTemplate'),
+    path('import/', ImportClassFromFileView.as_view(), name='import_class_from_file'),
+
 ]
