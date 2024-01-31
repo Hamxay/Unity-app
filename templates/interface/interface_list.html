@@ -140,12 +140,16 @@
 var ConnectionIdParam = new URLSearchParams(window.location.search).get('ConnectionId');
 var InterfaceCategoryIdParam = new URLSearchParams(window.location.search).get('InterfaceCategoryId');
 var LoadPatternIdParam = new URLSearchParams(window.location.search).get('LoadPatternId');
+var InterfaceTypeIdParam = new URLSearchParams(window.location.search).get('InterfaceTypeId');
 var url = "/api/interface/?format=datatables";
 if (ConnectionIdParam) {
     url += '&ConnectionId=' + ConnectionIdParam;
 }
 if (InterfaceCategoryIdParam) {
     url += '&InterfaceCategoryId=' + InterfaceCategoryIdParam;
+}
+if (InterfaceTypeIdParam) {
+    url += '&InterfaceTypeId=' + InterfaceTypeIdParam;
 }
 if (LoadPatternIdParam) {
     url += '&LoadPatternId=' + LoadPatternIdParam;
