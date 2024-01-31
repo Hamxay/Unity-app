@@ -246,13 +246,9 @@ $('#classTable').on('contextmenu', 'tbody tr', function(e) {
             $('.dropdown-menu').remove();
             var dropdownMenu = $('<div class="dropdown-menu" role="menu"></div>');
             var taskUrl = baseUrl + '/Task/list?CollectionId='+collectionCode;
-<!--            var scheduleUrl = baseUrl + '/schedule/list?interface_id=' + collectionCode;-->
-<!--            var collectionUrl = baseUrl + '/collection/list?InterfaceId=' + collectionCode;-->
-
+            var interfaceUrl = baseUrl + '/interface/list?CollectionId='+collectionCode;
+            dropdownMenu.append('<a class="dropdown-item" href="' + interfaceUrl + '">Interface</a>');
             dropdownMenu.append('<a class="dropdown-item" href="' + taskUrl + '">Task</a>');
-<!--            dropdownMenu.append('<a class="dropdown-item" href="' + scheduleUrl + '">Schedule</a>');-->
-<!--            dropdownMenu.append('<a class="dropdown-item" href="' + collectionUrl + '">Collection</a>');-->
-
             dropdownMenu.css({
                 position: 'absolute',
                 left: e.pageX,

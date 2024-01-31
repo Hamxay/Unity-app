@@ -18,6 +18,7 @@ class TaskViewset(viewsets.ModelViewSet):
             queryset = Task.objects.all()
         return queryset
 
+
 class TaskHistoryViewsetAll(viewsets.ReadOnlyModelViewSet):
     queryset = Task.history.all()
     serializer_class = TaskHistorySerializer
