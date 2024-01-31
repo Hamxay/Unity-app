@@ -161,6 +161,13 @@
     {
         targets: 2,
         defaultContent: "-",
+        render: function (data, type, row) {
+        if (typeof data === 'object' && data !== null) {
+            return data.Code + ' - ' + data.Name;
+        } else {
+            return data;
+        }
+        }
     },
     {
         targets: 3,
