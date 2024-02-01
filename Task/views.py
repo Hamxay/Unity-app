@@ -174,7 +174,7 @@ class TaskDownloadTemplateView(LoginRequiredMixin, View):
             "updated_date"
         ])
         csv_writer.writerow([
-            "1",  # ClassId - Assuming the first Interface instance has ID 1
+            "1",  # ClassId - Assuming the first Class instance has ID 1
             "1",  # CollectionId - Assuming the first Interface instance has ID 1
             "1",  # LoadPatternId - Assuming the first Interface instance has ID 1
             "Default Name", "Default Description", "Default ProcessName", "ProcessParameters",

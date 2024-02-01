@@ -6,7 +6,7 @@ from .views import (
     AttributeUpdateView,
     AttributeDeleteView,
     HistoricalAttributeListView,
-    HistoricalAttributeUpdateView,
+    HistoricalAttributeUpdateView, AttributeDownloadTemplateView, AttributeImportClassFromFileView,
 )
 from .viewsets import AttributeViewset, AttributeHistoryViewset
 
@@ -43,4 +43,6 @@ urlpatterns = [
         HistoricalAttributeUpdateView.as_view(),
         name="historicalattribute_update",
     ),
+    path('downloadTemplate/', AttributeDownloadTemplateView.as_view(), name='downloadTemplate'),
+    path('import/', AttributeImportClassFromFileView.as_view(), name='import_class_from_file'),
 ]

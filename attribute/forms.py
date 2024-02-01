@@ -29,3 +29,7 @@ class AttributeForm(forms.ModelForm):
         labels = {
             'class_id': 'Class',
         }
+
+
+class ImportFileForm(forms.Form):
+    file = forms.FileField()
