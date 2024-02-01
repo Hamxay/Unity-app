@@ -21,7 +21,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.contrib import messages
 
+from Task.download_template import generate_task_csv_template
 from Task.forms import TaskForm, ImportFileForm
+from Task.import_task import import_tasks_from_file
 from Task.models import Task
 from classapp.models import Class
 from collection.models import Collection
@@ -165,26 +167,7 @@ class TaskDetailView(LoginRequiredMixin, DetailView):
 
 class TaskDownloadTemplateView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename="TaskTemplate.csv"'
-        csv_writer = csv.writer(response)
-        csv_writer.writerow([
-            "ClassId", "CollectionId", "LoadPatternId", "Name", "Description", "ProcessName", "ProcessParameters",
-            "SubProcessParameters", "DeduplicateSource", "Priority", "created_by", "updated_by", "created_date",
-            "updated_date"
-        ])
-        csv_writer.writerow([
-            "1",  # ClassId - Assuming the first Class instance has ID 1
-            "1",  # CollectionId - Assuming the first Interface instance has ID 1
-            "1",  # LoadPatternId - Assuming the first Interface instance has ID 1
-            "Default Name", "Default Description", "Default ProcessName", "ProcessParameters",
-            "Default SubProcessParameters", "False", "7",  # Priority
-            "1",  # created_by_id - Assuming the first User instance has ID 1
-            "1",  # updated_by_id - Assuming the first User instance has ID 1
-            "2024-01-30T12:00:00Z",
-            "2024-01-30T12:00:00Z"
-        ])
-        return response
+        return generate_task_csv_template()
 
 
 class TaskImportClassFromFileView(LoginRequiredMixin, FormView):
@@ -193,49 +176,8 @@ class TaskImportClassFromFileView(LoginRequiredMixin, FormView):
 
     def form_valid(self, form):
         file = self.request.FILES['file']
-        if file.name.endswith(('.xlsx', '.xls')):
-            if file.name.endswith('.xlsx'):
-                df = pandas.read_excel(file, engine='openpyxl')
-            else:  # .xls file
-                df = pandas.read_excel(file, engine='xlrd')
-        elif file.name.endswith('.csv'):
-            df = pandas.read_csv(file)
-        else:
-            messages.error(self.request, "Unsupported file format")
-            return redirect(self.success_url)
-
         current_user = self.request.user
 
-        try:
-            for _, row in df.iterrows():
-                class_id = row['ClassId']
-                collection_id = row['CollectionId']
-                load_pattern_id = row['LoadPatternId']
-                try:
-                    class_instance = get_object_or_404(Class, pk=int(class_id))
-                    collection_instance = get_object_or_404(Collection, pk=int(collection_id))
-                    load_pattern_instance = get_object_or_404(LoadPattern, pk=int(load_pattern_id))
-                except (ValueError, TypeError):
-                    messages.error(self.request, "Invalid ID(s). They should be numbers.")
-                    return redirect(self.success_url)
+        import_tasks_from_file(file, current_user, self.success_url, self.request)
 
-                task_instance = Task(
-                    ClassId=class_instance,
-                    CollectionId=collection_instance,
-                    LoadPatternId=load_pattern_instance,
-                    created_by=current_user,
-                    updated_by=current_user,
-                    **row.drop(['ClassId', 'CollectionId', 'LoadPatternId',  'created_by', 'updated_by']).to_dict()
-                )
-                task_instance.full_clean()
-                task_instance.save()
-
-            messages.success(self.request, "Rows imported successfully")
-
-        except ValidationError as e:
-            for field, errors in e.message_dict.items():
-                for error in errors:
-                    messages.error(self.request, f"Error in field '{field}': {error}")
-
-        success_url = self.get_success_url()
-        return redirect(success_url)
+        return redirect(self.get_success_url())

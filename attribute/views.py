@@ -153,4 +153,3 @@ class AttributeImportClassFromFileView(LoginRequiredMixin, FormView):
         import_attributes_from_file(file, current_user, self.success_url, self.request)
 
         return redirect(self.get_success_url())
-    
