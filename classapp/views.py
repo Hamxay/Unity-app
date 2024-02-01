@@ -19,7 +19,9 @@ from django.contrib import messages
 
 import accounts.models
 from interface.models import Interface
+from .download_template import generate_class_csv_template
 from .forms import ClassForm, ImportFileForm
+from .import_class import import_class_from_file
 from .models import Class
 
 
@@ -159,25 +161,7 @@ class ClassDetailView(LoginRequiredMixin, DetailView):
 
 class DownloadTemplateView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename="ClassTemplate.csv"'
-        csv_writer = csv.writer(response)
-        csv_writer.writerow([
-            "InterfaceId", "Name", "Description", "Prefix", "Version",
-            "TargetAlias", "IgnoreOnIngest", "SlideWindowAttribute", "SlideWindowDays",
-            "Mask", "Filter", "created_by", "updated_by", "created_date", "updated_date"
-        ])
-        csv_writer.writerow([
-            "1",  # InterfaceId - Assuming the first Interface instance has ID 1
-            "Default Name", "Default Description", "Default Prefix", "1",  # Version
-            "Default TargetAlias", "False", "Default SlideWindowAttribute", "7",  # SlideWindowDays
-            "Default Mask", "Default Filter",
-            "1",  # created_by_id - Assuming the first User instance has ID 1
-            "1",  # updated_by_id - Assuming the first User instance has ID 1
-            "2024-01-30T12:00:00Z",
-            "2024-01-30T12:00:00Z"
-        ])
-        return response
+        return generate_class_csv_template()
 
 
 class ImportClassFromFileView(LoginRequiredMixin, FormView):
@@ -186,44 +170,8 @@ class ImportClassFromFileView(LoginRequiredMixin, FormView):
 
     def form_valid(self, form):
         file = self.request.FILES['file']
-        if file.name.endswith(('.xlsx', '.xls')):
-            if file.name.endswith('.xlsx'):
-                df = pandas.read_excel(file, engine='openpyxl')
-            else:  # .xls file
-                df = pandas.read_excel(file, engine='xlrd')
-        elif file.name.endswith('.csv'):
-            df = pandas.read_csv(file)
-        else:
-            messages.error(self.request, "Unsupported file format")
-            return redirect(self.success_url)
-
         current_user = self.request.user
 
-        try:
-            for _, row in df.iterrows():
-                interface_id = row['InterfaceId']
-                try:
-                    interface_instance = get_object_or_404(Interface, pk=int(interface_id))
-                except (ValueError, TypeError):
-                    messages.error(self.request, f"Invalid Interface ID: {interface_id}. It should be a number.")
-                    return redirect(self.success_url)
+        import_class_from_file(file, current_user, self.success_url, self.request)
 
-                class_instance = Class(
-                    InterfaceId=interface_instance,
-                    created_by=current_user,
-                    updated_by=current_user,
-                    **row.drop(['InterfaceId', 'created_by', 'updated_by']).to_dict()
-                )
-                class_instance.full_clean()
-                class_instance.save()
-
-            messages.success(self.request, "Rows imported successfully")
-
-        except ValidationError as e:
-            for field, errors in e.message_dict.items():
-                for error in errors:
-                    messages.error(self.request, f"Error in field '{field}': {error}")
-
-        success_url = self.get_success_url()
-        return redirect(success_url)
-    
+        return redirect(self.get_success_url())
