@@ -1,9 +1,4 @@
-import csv
-
-import pandas
-from django.core.exceptions import ValidationError
-from django.http import HttpResponse
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import redirect
 from django import forms
 from django.views import View
 from django.views.generic import (
@@ -18,10 +13,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.contrib import messages
 
-from classapp.models import Class
-from historyconfiguration.helper import history_enable
 from .forms import AttributeForm, ImportFileForm
+from .import_attribute import import_attributes_from_file
 from .models import Attribute
+from .download_template import AttributeTemplateCSVGenerator
 
 
 class RestoreHistoricalVersionForm(forms.Form):
@@ -143,41 +138,7 @@ class HistoricalAttributeUpdateView(LoginRequiredMixin, UpdateView):
 
 class AttributeDownloadTemplateView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename="AttributeTemplate.csv"'
-        csv_writer = csv.writer(response)
-        csv_writer.writerow([
-            "class_id", "source_name", "target_name", "source_description", "target_description",
-            "source_ordinal_position", "target_ordinal_position", "source_data_type", "target_data_type",
-            "source_max_length", "target_max_length", "source_precision", "target_precision",
-            "source_scale", "target_scale", "is_primary_key", "is_snapshot_key", "is_nullable",
-            "ignore_on_ingest",
-            # "history",
-            "created_by", "updated_by", "created_date", "updated_date"
-        ])
-
-        csv_writer.writerow([
-            "1",   # class_id - Assuming the first Class instance has ID 1
-            "Default source_name", "Default target_name", "Default source_description", "Default target_description",
-            "1",  # source_ordinal_position
-            "1",  # target_ordinal_position
-            "Default source_data_type", "Default target_data_type",
-            "1",  # source_max_length
-            "1",  # target_max_length
-            "1",  # source_precision
-            "1",  # target_precision
-            "1",  # source_scale
-            "1",  # target_scale
-            "False",  # is_primary_key
-            "False",  # is_snapshot_key
-            "False",  # is_nullable
-            "False",  # ignore_on_ingest
-            # "History data",  # history
-            "1",  # created_by_id
-            "1",  # updated_by_id
-            "2024-01-30T12:00:00Z",
-            "2024-01-30T12:00:00Z"
-        ])
+        response = AttributeTemplateCSVGenerator.generate_csv()
         return response
 
 
@@ -187,43 +148,9 @@ class AttributeImportClassFromFileView(LoginRequiredMixin, FormView):
 
     def form_valid(self, form):
         file = self.request.FILES['file']
-        if file.name.endswith(('.xlsx', '.xls')):
-            if file.name.endswith('.xlsx'):
-                df = pandas.read_excel(file, engine='openpyxl')
-            else:  # .xls file
-                df = pandas.read_excel(file, engine='xlrd')
-        elif file.name.endswith('.csv'):
-            df = pandas.read_csv(file)
-        else:
-            messages.error(self.request, "Unsupported file format")
-            return redirect(self.success_url)
-
         current_user = self.request.user
 
-        try:
-            for _, row in df.iterrows():
-                class_id = row['class_id']
-                try:
-                    class_instance = get_object_or_404(Class, pk=int(class_id))
-                except (ValueError, TypeError):
-                    messages.error(self.request, f"Invalid classID {class_id},  It should be a number.")
-                    return redirect(self.success_url)
+        import_attributes_from_file(file, current_user, self.success_url, self.request)
 
-                attribute_instance = Attribute(
-                    class_id=class_instance,
-                    created_by=current_user,
-                    updated_by=current_user,
-                    **row.drop(['class_id', 'created_by', 'updated_by']).to_dict()
-                )
-                attribute_instance.full_clean()
-                attribute_instance.save()
-
-            messages.success(self.request, "Rows imported successfully")
-
-        except ValidationError as e:
-            for field, errors in e.message_dict.items():
-                for error in errors:
-                    messages.error(self.request, f"Error in field '{field}': {error}")
-
-        success_url = self.get_success_url()
-        return redirect(success_url)
+        return redirect(self.get_success_url())
+    
