@@ -37,7 +37,7 @@
                                             <i class="ri-file-download-line align-bottom me-1"></i> Download Template
                                         </a>
                                         <button type="button" class="btn btn-danger add-btn" data-bs-toggle="modal" data-bs-target="#uploadFileModal">
-                                            Improt from csv/excel
+                                            Import from csv/excel
                                         </button>
                                     </div>
                                 </div>
@@ -324,12 +324,7 @@ $(document).ready(function(){
     $('#id_search').on('keyup', function () {
         table.search( this.value ).draw();
     } );
-    $('#downloadTemplateBtn').on('click', function () {
-        downloadTemplate();
-    });
-    $('#importFile').on('change', function (e) {
-        const file = e.target.files[0];
-    });
+    
 })
 
 // right click feature
@@ -367,42 +362,6 @@ $('#classTable').on('contextmenu', 'tbody tr', function(e) {
 
 
 
-function downloadTemplate() {
-    const headings = [
-        "Name",
-        "Description",
-        "Prefix",
-        "Version",
-        "TargetAlias",
-        "IgnoreOnIngest",
-        "SlideWindowAttribute",
-        "SlideWindowDays",
-        "Mask",
-        "Filter",
-    ];
 
-    const defaultValues = [
-        "Default Name",
-        "Default Description",
-        "Default Prefix",
-        "1.0",
-        "Default TargetAlias",
-        "false",
-        "Default SlideWindowAttribute",
-        "7",
-        "Default Mask",
-        "Default Filter",
-    ];
-
-    const data = [headings, defaultValues];
-    const worksheet = XLSX.utils.aoa_to_sheet(data);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, worksheet, "ClassTemplate");
-    XLSX.writeFile(wb, "ClassTemplate.xlsx");
-}
-document.getElementById('importFile').addEventListener('change', function (e) {
-    var fileName = e.target.files[0] ? e.target.files[0].name : 'No file chosen';
-    document.getElementById('importFileName').innerText = fileName;
-});
 </script>
 {% endblock extra_js %}

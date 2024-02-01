@@ -1,13 +1,19 @@
+import csv
+
+import pandas
+from django.core.exceptions import ValidationError
+from django.http import HttpResponse
 from django.shortcuts import render
 
 # Create your views here.
 from django.shortcuts import get_object_or_404, redirect
 from django import forms
+from django.views import View
 from django.views.generic import (
     ListView,
     CreateView,
     UpdateView,
-    DeleteView, DetailView,
+    DeleteView, DetailView, FormView,
 )
 from django.utils import timezone
 from django.contrib.messages.views import SuccessMessageMixin
@@ -15,8 +21,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.contrib import messages
 
-from Task.forms import TaskForm
+from Task.forms import TaskForm, ImportFileForm
 from Task.models import Task
+from classapp.models import Class
+from collection.models import Collection
+from pattern.models import LoadPattern
 
 
 class RestoreHistoricalVersionForm(forms.Form):
@@ -152,3 +161,81 @@ class HistoricalTaskViewAll(LoginRequiredMixin, ListView):
 class TaskDetailView(LoginRequiredMixin, DetailView):
     permission_required = "Task.detail"
     model = Task
+
+
+class TaskDownloadTemplateView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="TaskTemplate.csv"'
+        csv_writer = csv.writer(response)
+        csv_writer.writerow([
+            "ClassId", "CollectionId", "LoadPatternId", "Name", "Description", "ProcessName", "ProcessParameters",
+            "SubProcessParameters", "DeduplicateSource", "Priority", "created_by", "updated_by", "created_date",
+            "updated_date"
+        ])
+        csv_writer.writerow([
+            "1",  # ClassId - Assuming the first Interface instance has ID 1
+            "1",  # CollectionId - Assuming the first Interface instance has ID 1
+            "1",  # LoadPatternId - Assuming the first Interface instance has ID 1
+            "Default Name", "Default Description", "Default ProcessName", "ProcessParameters",
+            "Default SubProcessParameters", "False", "7",  # Priority
+            "1",  # created_by_id - Assuming the first User instance has ID 1
+            "1",  # updated_by_id - Assuming the first User instance has ID 1
+            "2024-01-30T12:00:00Z",
+            "2024-01-30T12:00:00Z"
+        ])
+        return response
+
+
+class TaskImportClassFromFileView(LoginRequiredMixin, FormView):
+    form_class = ImportFileForm
+    success_url = reverse_lazy("Task:Task_list")
+
+    def form_valid(self, form):
+        file = self.request.FILES['file']
+        if file.name.endswith(('.xlsx', '.xls')):
+            if file.name.endswith('.xlsx'):
+                df = pandas.read_excel(file, engine='openpyxl')
+            else:  # .xls file
+                df = pandas.read_excel(file, engine='xlrd')
+        elif file.name.endswith('.csv'):
+            df = pandas.read_csv(file)
+        else:
+            messages.error(self.request, "Unsupported file format")
+            return redirect(self.success_url)
+
+        current_user = self.request.user
+
+        try:
+            for _, row in df.iterrows():
+                class_id = row['ClassId']
+                collection_id = row['CollectionId']
+                load_pattern_id = row['LoadPatternId']
+                try:
+                    class_instance = get_object_or_404(Class, pk=int(class_id))
+                    collection_instance = get_object_or_404(Collection, pk=int(collection_id))
+                    load_pattern_instance = get_object_or_404(LoadPattern, pk=int(load_pattern_id))
+                except (ValueError, TypeError):
+                    messages.error(self.request, "Invalid ID(s). They should be numbers.")
+                    return redirect(self.success_url)
+
+                task_instance = Task(
+                    ClassId=class_instance,
+                    CollectionId=collection_instance,
+                    LoadPatternId=load_pattern_instance,
+                    created_by=current_user,
+                    updated_by=current_user,
+                    **row.drop(['ClassId', 'CollectionId', 'LoadPatternId',  'created_by', 'updated_by']).to_dict()
+                )
+                task_instance.full_clean()
+                task_instance.save()
+
+            messages.success(self.request, "Rows imported successfully")
+
+        except ValidationError as e:
+            for field, errors in e.message_dict.items():
+                for error in errors:
+                    messages.error(self.request, f"Error in field '{field}': {error}")
+
+        success_url = self.get_success_url()
+        return redirect(success_url)

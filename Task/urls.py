@@ -4,7 +4,8 @@ from rest_framework import routers
 from Task.views import (
     TaskListView,
     HistoricalTaskListView,
-    TaskDeleteView, TaskCreateView, TaskUpdateView, HistoricalTaskUpdateView, HistoricalTaskViewAll, TaskDetailView
+    TaskDeleteView, TaskCreateView, TaskUpdateView, HistoricalTaskUpdateView, HistoricalTaskViewAll, TaskDetailView,
+    TaskDownloadTemplateView, TaskImportClassFromFileView
 )
 from Task.viewsets import TaskViewset, TaskHistoryViewset, TaskHistoryViewsetAll, TaskDropdownViewset
 
@@ -49,5 +50,7 @@ urlpatterns = [
         'relations/<int:code>/',
         TaskDetailView.as_view(),
         name='task_relations'
-    )
+    ),
+    path('downloadTemplate/', TaskDownloadTemplateView.as_view(), name='downloadTemplate'),
+    path('import/', TaskImportClassFromFileView.as_view(), name='import_class_from_file'),
 ]

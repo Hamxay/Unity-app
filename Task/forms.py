@@ -22,3 +22,7 @@ class TaskForm(forms.ModelForm):
             'CollectionId': 'Collection',
             'LoadPatternId': 'LoadPattern',
         }
+
+
+class ImportFileForm(forms.Form):
+    file = forms.FileField()
