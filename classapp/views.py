@@ -1,9 +1,8 @@
 import csv
 import pandas
-from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.http import HttpResponse
-from django.shortcuts import redirect, get_object_or_404, render
+from django.shortcuts import redirect, get_object_or_404
 from django import forms
 from django.views import View
 from django.views.generic import (
@@ -182,14 +181,16 @@ class DownloadTemplateView(LoginRequiredMixin, View):
 
 
 class ImportClassFromFileView(LoginRequiredMixin, FormView):
-    template_name = 'classapp/import_class_from_file.html'
     form_class = ImportFileForm
     success_url = reverse_lazy("class:class_list")
 
     def form_valid(self, form):
         file = self.request.FILES['file']
-        if file.name.endswith('.xlsx'):
-            df = pandas.read_excel(file, engine='openpyxl')
+        if file.name.endswith(('.xlsx', '.xls')):
+            if file.name.endswith('.xlsx'):
+                df = pandas.read_excel(file, engine='openpyxl')
+            else:  # .xls file
+                df = pandas.read_excel(file, engine='xlrd')
         elif file.name.endswith('.csv'):
             df = pandas.read_csv(file)
         else:
@@ -216,7 +217,7 @@ class ImportClassFromFileView(LoginRequiredMixin, FormView):
                 class_instance.full_clean()
                 class_instance.save()
 
-            messages.success(self.request, "File imported successfully")
+            messages.success(self.request, "Rows imported successfully")
 
         except ValidationError as e:
             for field, errors in e.message_dict.items():
