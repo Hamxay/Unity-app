@@ -42,5 +42,10 @@ def import_class_from_file(file, current_user, success_url, request):
         for field, errors in e.message_dict.items():
             for error in errors:
                 messages.error(request, f"Error in field '{field}': {error}")
+    except (TypeError, AttributeError, ValueError, Exception) as error:
+        messages.error(request, error)
+        return redirect(success_url)
+
+
 
     return redirect(success_url)
