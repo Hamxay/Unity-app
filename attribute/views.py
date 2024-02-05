@@ -61,27 +61,7 @@ class AttributeUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
 
     permission_required = "attribute.change_attribute"
     model = Attribute
-    fields = [
-        "class_id",
-        "source_name",
-        "target_name",
-        "source_description",
-        "target_description",
-        "source_ordinal_position",
-        "target_ordinal_position",
-        "source_data_type",
-        "target_data_type",
-        "source_max_length",
-        "target_max_length",
-        "source_precision",
-        "target_precision",
-        "source_scale",
-        "target_scale",
-        "is_primary_key",
-        "is_snapshot_key",
-        "is_nullable",
-        "ignore_on_ingest",
-    ]
+    form_class = AttributeForm
     success_url = reverse_lazy("attribute:attribute_list")
     success_message = "Attribute was updated successfully"
 

@@ -45,7 +45,7 @@ class InterfaceViewset(viewsets.ModelViewSet):
 
 class InterfaceHistoryViewset(viewsets.ViewSet):
     def retrieve(self, request, pk=None):
-        queryset = Interface.history.filter(id=pk)
+        queryset = Interface.history.filter(code=pk)
         serializer = InterfaceHistorySerializer(queryset, many=True)
         return Response(serializer.data)
 

@@ -9,6 +9,8 @@
     <link href="{% static 'libs/dropzone/dist/dropzone.css' %}"
           rel="stylesheet"
           type="text/css"/>
+    <!--select2 css-->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 {% endblock extra_css %}
 {% block content %}
     <!-- ============================================================== -->
@@ -79,6 +81,8 @@
     <script src="{% static 'js/pages/project-create.init.js'%}"></script>
     <!-- jquery.js-->
     <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+    <!--select2 js-->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>1
     <script>
         const interfaceIdSelect = document.querySelector("#id_interface_id");
         const dependentOnInterfaceSelect = document.querySelector("#id_dependent_on_interface");
@@ -89,5 +93,16 @@
             });
         });
         interfaceIdSelect.dispatchEvent(new Event("change"));
+        $(document).ready(function() {
+            $('#id_interface_id').select2({
+                placeholder: 'Select an option',
+            });
+        });
+        $(document).ready(function() {
+            $('#id_dependent_on_interface').select2({
+                search: true,
+                placeholder: 'Select an option',
+            });
+        });
     </script>
 {% endblock extra_js %}

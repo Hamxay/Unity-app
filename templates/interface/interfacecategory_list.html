@@ -208,8 +208,8 @@ var table = $('#InterfaceCategoryTable').DataTable( {
         render: ( data, type, row ) => {
         var isSuperuser = {% if request.user.is_superuser %}true{% else %}false{% endif %};
                 if (isSuperuser) {
-                    let editURL = "{% url 'interface:interface_category_update' code=0 %}"
-                    let deleteURL = "{% url 'interface:interface_category_delete' code=0 %}"
+                    let editURL = "{% url 'interface:interface_category_update' pk=0 %}"
+                    let deleteURL = "{% url 'interface:interface_category_delete' pk=0 %}"
                     let actions =  `<ul class="list-inline hstack gap-2 mb-0">`
                     actions += `<li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
                         <a href="${editURL.replace('0', row.Code)}" class="text-primary d-inline-block edit-item-btn">

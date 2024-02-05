@@ -304,10 +304,10 @@ var table = $('#classTable').DataTable( {
         // The `data` parameter refers to the data for the cell.
         // The `rows`argument is an object representing all the data for the current row.
         render: ( data, type, row ) => {
-            let viewURL = "{% url 'interface:historicalinterface_list' code=0 %}"
-            let editURL = "{% url 'interface:interface_update' code=0 %}"
-            let deleteURL = "{% url 'interface:interface_delete' code=0 %}"
-            let dropdownURL = "{% url 'interface:references' code=0 %}"
+            let viewURL = "{% url 'interface:historicalinterface_list' pk=0 %}"
+            let editURL = "{% url 'interface:interface_update' pk=0 %}"
+            let deleteURL = "{% url 'interface:interface_delete' pk=0 %}"
+            let dropdownURL = "{% url 'interface:references' pk=0 %}"
             
             let actions =  `<ul class="list-inline hstack gap-2 mb-0">`
                 

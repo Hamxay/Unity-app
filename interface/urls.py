@@ -61,12 +61,12 @@ urlpatterns = [
         name="interface_category_create",
     ),
     path(
-        "category/update/<slug:code>/",
+        "category/update/<int:pk>/",
         InterfaceCategoryUpdateView.as_view(),
         name="interface_category_update",
     ),
     path(
-        "category/delete/<slug:code>/",
+        "category/delete/<int:pk>/",
         InterfaceCategoryDeleteView.as_view(),
         name="interface_category_delete",
     ),
@@ -86,29 +86,29 @@ urlpatterns = [
         name="interface_type_create",
     ),
     path(
-        "type/update/<slug:code>/",
+        "type/update/<int:pk>/",
         InterfaceTypeUpdateView.as_view(),
         name="interface_type_update",
     ),
     path(
-        "type/delete/<slug:code>/",
+        "type/delete/<int:pke>/",
         InterfaceTypeDeleteView.as_view(),
         name="interface_type_delete",
     ),
     path("list/", InterfaceListView.as_view(), name="interface_list"),
     path("create/", InterfaceCreateView.as_view(), name="interface_create"),
     path(
-        "update/<slug:code>/",
+        "update/<int:pk>/",
         InterfaceUpdateView.as_view(),
         name="interface_update",
     ),
     path(
-        "delete/<slug:code>/",
+        "delete/<int:pk>/",
         InterfaceDeleteView.as_view(),
         name="interface_delete",
     ),
     path(
-        "history/list/<int:code>/",
+        "history/list/<int:pk>/",
         HistoricalInterfaceListView.as_view(),
         name="historicalinterface_list",
     ),
@@ -138,7 +138,7 @@ urlpatterns = [
         name="interface_dependence_delete",
     ),
     path(
-        "references/<int:code>",
+        "references/<int:pk>",
         InterfaceDropdownView.as_view(),
         name='references'
     ),

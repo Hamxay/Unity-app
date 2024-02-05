@@ -207,8 +207,6 @@ class InterfaceUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     def form_valid(self, form):
         form.instance.updated_by = self.request.user
         return super().form_valid(form)
-    def get_object(self, queryset=None):
-        return get_object_or_404(self.model, code=self.kwargs[self.slug_url_kwarg])
 
 
 class InterfaceDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
@@ -228,9 +226,6 @@ class InterfaceDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
         success_url = self.get_success_url()
         messages.success(self.request, self.success_message)
         return redirect(success_url)
-
-    def get_object(self, queryset=None):
-        return get_object_or_404(self.model, code=self.kwargs[self.slug_url_kwarg])
 
 
 class HistoricalInterfaceListView(ListView):
@@ -291,9 +286,6 @@ class InterfaceDependenceUpdateView(
     def form_valid(self, form):
         form.instance.updated_by = self.request.user
         return super().form_valid(form)
-
-    def get_object(self, queryset=None):
-        return get_object_or_404(self.model, code=self.kwargs[self.slug_url_kwarg])
 
 
 class InterfaceDependenceDeleteView(

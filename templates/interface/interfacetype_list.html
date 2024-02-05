@@ -209,8 +209,8 @@ var table = $('#InterfaceTypeTable').DataTable( {
             render: function (data, type, row) {
                 {% if request.user.is_superuser %}
                     // Admin user
-                    let editURL = "{% url 'interface:interface_type_update' code=0 %}";
-                    let deleteURL = "{% url 'interface:interface_type_delete' code=0 %}";
+                    let editURL = "{% url 'interface:interface_type_update' pk=0 %}";
+                    let deleteURL = "{% url 'interface:interface_type_delete' pk=0 %}";
 
                     let actions = `<ul class="list-inline hstack gap-2 mb-0">`;
 
