@@ -1,5 +1,5 @@
 from django import forms
-from .models import Interface
+from .models import Interface, InterfaceDependence
 
 
 class InterfaceForm(forms.ModelForm):
@@ -30,4 +30,18 @@ class InterfaceForm(forms.ModelForm):
         widgets = {
             'active_start_date': forms.DateInput(attrs={'type': 'date'}),
             'active_end_date': forms.DateInput(attrs={'type': 'date'}),
+        }
+
+
+class InterfaceDependenceForm(forms.ModelForm):
+    class Meta:
+        model = InterfaceDependence
+        fields = [
+            "code",
+            "interface_id",
+            "dependent_on_interface"
+        ]
+        labels = {
+            'interface_id': 'Interface',
+            'dependent_on_interface': 'Dependent on Interface',
         }

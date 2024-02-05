@@ -14,7 +14,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.contrib import messages
 from .models import InterfaceCategory, InterfaceType, Interface, InterfaceDependence
-from .forms import InterfaceForm
+from .forms import InterfaceForm, InterfaceDependenceForm
 
 
 # InterfaceCategory CRUD
@@ -57,9 +57,6 @@ class InterfaceCategoryUpdateView(LoginRequiredMixin, SuccessMessageMixin, Updat
         form.instance.updated_by = self.request.user
         return super().form_valid(form)
 
-    def get_object(self, queryset=None):
-        return get_object_or_404(self.model, code=self.kwargs[self.slug_url_kwarg])
-
 
 class InterfaceCategoryDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     permission_required = "interface.delete_interfacecategory"
@@ -77,8 +74,6 @@ class InterfaceCategoryDeleteView(LoginRequiredMixin, SuccessMessageMixin, Delet
         success_url = self.get_success_url()
         messages.success(self.request, self.success_message)
         return redirect(success_url)
-    def get_object(self, queryset=None):
-        return get_object_or_404(self.model, code=self.kwargs[self.slug_url_kwarg])
 
 
 # InterfaceType CRUD
@@ -111,9 +106,6 @@ class InterfaceTypeUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateVie
         form.instance.updated_by = self.request.user
         return super().form_valid(form)
     
-    def get_object(self, queryset=None):
-        return get_object_or_404(self.model, code=self.kwargs[self.slug_url_kwarg])
-
 
 class InterfaceTypeDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     permission_required = "interface.delete_interfacetype"
@@ -130,9 +122,6 @@ class InterfaceTypeDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteVie
         success_url = self.get_success_url()
         messages.success(self.request, self.success_message)
         return redirect(success_url)
-
-    def get_object(self, queryset=None):
-        return get_object_or_404(self.model, code=self.kwargs[self.slug_url_kwarg])
 
 
 class InterfaceTypeDetailView(LoginRequiredMixin, DetailView):
@@ -265,7 +254,7 @@ class InterfaceDependenceCreateView(
 ):
     permission_required = "interface.add_dependence"
     model = InterfaceDependence
-    fields = ["code", "interface_id", "dependent_on_interface"]
+    form_class = InterfaceDependenceForm
     success_url = reverse_lazy("interface:interface_dependence_list")
     success_message = "Record was created successfully"
 
@@ -279,7 +268,7 @@ class InterfaceDependenceUpdateView(
 ):
     permission_required = "interface.change_dependence"
     model = InterfaceDependence
-    fields = ["code", "interface_id", "dependent_on_interface"]
+    form_class = InterfaceDependenceForm
     success_url = reverse_lazy("interface:interface_dependence_list")
     success_message = "Record was updated successfully"
 
