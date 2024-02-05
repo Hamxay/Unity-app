@@ -289,8 +289,8 @@ var table = $('#classTable').DataTable( {
         // The `rows`argument is an object representing all the data for the current row.
         render: ( data, type, row ) => {
             let viewURL = "{% url 'class:historicalclass_list' pk=0 %}"
-            let editURL = "{% url 'class:class_update' Code=0 %}"
-            let deleteURL = "{% url 'class:class_delete' Code=0 %}"
+            let editURL = "{% url 'class:class_update' pk=0 %}"
+            let deleteURL = "{% url 'class:class_delete' pk=0 %}"
             let actions =  `<ul class="list-inline hstack gap-2 mb-0">`
                 
             actions += `

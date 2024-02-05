@@ -65,19 +65,7 @@ class ClassUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
 
     permission_required = "class.change_class"
     model = Class
-    fields = [
-        "InterfaceId",
-        "Name",
-        "Description",
-        "Prefix",
-        "Version",
-        "TargetAlias",
-        "IgnoreOnIngest",
-        "Mask",
-        "Filter",
-        "SlideWindowAttribute",
-        "SlideWindowDays",
-    ]
+    form_class = ClassForm
     success_url = reverse_lazy("class:class_list")
     success_message = "Class was updated successfully"
 

@@ -22,12 +22,12 @@ urlpatterns = [
     path("list/", ClassListView.as_view(), name="class_list"),
     path("create/", ClassCreateView.as_view(), name="class_create"),
     path(
-        "update/<slug:Code>/",
+        "update/<int:pk>/",
         ClassUpdateView.as_view(),
         name="class_update",
     ),
     path(
-        "delete/<slug:Code>/",
+        "delete/<int:pk>/",
         ClassDeleteView.as_view(),
         name="class_delete",
     ),

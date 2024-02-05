@@ -137,11 +137,13 @@ var table = $('#ClassHistoryTable').DataTable( {
     "columnDefs": [
     {
         targets: 1,  // History ID
-        visible: false
+        visible: false,
+        searchable: false,
     },
     {
         targets: 2,  // History Type
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 3,  
@@ -152,75 +154,92 @@ var table = $('#ClassHistoryTable').DataTable( {
             if(row.history_type === "-") className = 'btn-soft-danger', text = "Deleted";
             if(row.history_type === "~") className = 'btn-soft-info', text = "Updated";
             return `<button type="button" class="btn btn-sm ${className}">${text}</button>`;
-        }
+        },
+        searchable: false,
     },
     {
         targets: 4,  // Code
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 5,  // InterfaceId
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 6,  // Name
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 7,  // Description
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 8,  // Prefix
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 9,  // Version
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 10,  // TargetAlias
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 11,  // IgnoreOnIngest
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 12,  // Mask
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 13,  // Filter
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 14,  // SlideWindowAttribute
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 15,  // SlideWindowDays
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 16,  // Created Date
         render: (data, type, row) => {
             return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
-        }
+        },
+        searchable: false,
     },
     {
         targets: 17,  // Created By
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 18,  // Updated Date
         render: (data, type, row) => {
             return moment.utc(row.updated_date).format('MMM DD, YYYY hh:mm A');
-        }
+        },
+        searchable: false,
     },
     {
         targets: 19,  // Updated By
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 0,   // ID

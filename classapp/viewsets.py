@@ -19,7 +19,7 @@ class ClassViewset(viewsets.ModelViewSet):
 
 class ClassHistoryViewset(viewsets.ViewSet):
     def retrieve(self, request, pk=None):
-        queryset = Class.history.filter(id=pk)
+        queryset = Class.history.filter(Code=pk)
         serializer = ClassHistorySerializer(queryset, many=True)
         return Response(serializer.data)
 
