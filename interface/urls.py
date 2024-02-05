@@ -91,7 +91,7 @@ urlpatterns = [
         name="interface_type_update",
     ),
     path(
-        "type/delete/<int:pke>/",
+        "type/delete/<int:pk>/",
         InterfaceTypeDeleteView.as_view(),
         name="interface_type_delete",
     ),
