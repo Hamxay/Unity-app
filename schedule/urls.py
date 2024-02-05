@@ -24,12 +24,12 @@ urlpatterns = [
     path("list/", ScheduleListView.as_view(), name="schedule_list"),
     path("create/", ScheduleCreateView.as_view(), name="schedule_create"),
     path(
-        "update/<slug:Code>/",
+        "update/<int:pk>/",
         ScheduleUpdateView.as_view(),
         name="schedule_update",
     ),
     path(
-        "delete/<slug:Code>/",
+        "delete/<int:pk>/",
         ScheduleDeleteView.as_view(),
         name="schedule_delete",
     ),
