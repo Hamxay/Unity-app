@@ -27,7 +27,7 @@ class BaseModel(models.Model):
 
 class Class(BaseModel):
     Code = models.BigAutoField(primary_key=True)
-    InterfaceId = models.ForeignKey(Interface, on_delete=models.CASCADE)
+    InterfaceId = models.ForeignKey(Interface, on_delete=models.PROTECT)
     Name = models.CharField(max_length=128)
     Description = models.CharField(max_length=250, blank=True, null=True)
     Prefix = models.CharField(max_length=50, blank=True, null=True)

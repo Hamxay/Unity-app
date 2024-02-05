@@ -1,3 +1,4 @@
+from django.db.models import ProtectedError
 from django.shortcuts import redirect, get_object_or_404
 from django import forms
 from django.views.generic import (
@@ -67,12 +68,16 @@ class InterfaceCategoryDeleteView(LoginRequiredMixin, SuccessMessageMixin, Delet
     slug_url_kwarg = 'code'
     
     def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        self.object.deleted_by = request.user
-        self.object.deleted_date = timezone.now()
-        self.object.delete()
-        success_url = self.get_success_url()
-        messages.success(self.request, self.success_message)
+        try:
+            self.object = self.get_object()
+            self.object.deleted_by = request.user
+            self.object.deleted_date = timezone.now()
+            success_url = self.get_success_url()
+            self.object.delete()
+            messages.success(self.request, self.success_message)
+        except ProtectedError as e:
+            # Handle the exception, you may want to log it or provide a specific message
+            messages.error(self.request, "Cannot delete this record because it is referenced through protected foreign keys.")
         return redirect(success_url)
 
 
@@ -115,12 +120,16 @@ class InterfaceTypeDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteVie
     slug_url_kwarg = 'code'
     
     def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        self.object.deleted_by = request.user
-        self.object.deleted_date = timezone.now()
-        self.object.delete()
-        success_url = self.get_success_url()
-        messages.success(self.request, self.success_message)
+        try:
+            self.object = self.get_object()
+            self.object.deleted_by = request.user
+            self.object.deleted_date = timezone.now()
+            success_url = self.get_success_url()
+            self.object.delete()
+            messages.success(self.request, self.success_message)
+        except ProtectedError as e:
+            # Handle the exception, you may want to log it or provide a specific message
+            messages.error(self.request, "Cannot delete this record because it is referenced through protected foreign keys.")
         return redirect(success_url)
 
 
@@ -208,12 +217,16 @@ class InterfaceDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     slug_url_kwarg = 'code'
 
     def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        self.object.deleted_by = request.user
-        self.object.deleted_date = timezone.now()
-        self.object.delete()
-        success_url = self.get_success_url()
-        messages.success(self.request, self.success_message)
+        try:
+            self.object = self.get_object()
+            self.object.deleted_by = request.user
+            self.object.deleted_date = timezone.now()
+            success_url = self.get_success_url()
+            self.object.delete()
+            messages.success(self.request, self.success_message)
+        except ProtectedError as e:
+            # Handle the exception, you may want to log it or provide a specific message
+            messages.error(self.request, "Cannot delete this record because it is referenced through protected foreign keys.")
         return redirect(success_url)
 
 
@@ -286,12 +299,16 @@ class InterfaceDependenceDeleteView(
     success_message = "Record was deleted successfully"
 
     def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        self.object.deleted_by = request.user
-        self.object.deleted_date = timezone.now()
-        self.object.delete()
-        success_url = self.get_success_url()
-        messages.success(self.request, self.success_message)
+        try:
+            self.object = self.get_object()
+            self.object.deleted_by = request.user
+            self.object.deleted_date = timezone.now()
+            success_url = self.get_success_url()
+            self.object.delete()
+            messages.success(self.request, self.success_message)
+        except ProtectedError as e:
+            # Handle the exception, you may want to log it or provide a specific message
+            messages.error(self.request, "Cannot delete this record because it is referenced through protected foreign keys.")
         return redirect(success_url)
 
 

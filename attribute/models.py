@@ -27,7 +27,7 @@ class BaseModel(models.Model):
 
 class Attribute(BaseModel):
     code = models.BigAutoField(primary_key=True)
-    class_id = models.ForeignKey(Class, on_delete=models.CASCADE)
+    class_id = models.ForeignKey(Class, on_delete=models.PROTECT)
     source_name = models.CharField(max_length=128)
     target_name = models.CharField(max_length=128)
     source_description = models.CharField(max_length=250, null=True)

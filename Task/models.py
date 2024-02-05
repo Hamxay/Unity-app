@@ -32,9 +32,9 @@ class BaseModel(models.Model):
 
 class Task(BaseModel):
     Code = models.BigAutoField(primary_key=True)
-    ClassId = models.ForeignKey(Class, on_delete=models.CASCADE)
-    CollectionId = models.ForeignKey(Collection, on_delete=models.CASCADE)
-    LoadPatternId = models.ForeignKey(LoadPattern, on_delete=models.CASCADE)
+    ClassId = models.ForeignKey(Class, on_delete=models.PROTECT)
+    CollectionId = models.ForeignKey(Collection, on_delete=models.PROTECT)
+    LoadPatternId = models.ForeignKey(LoadPattern, on_delete=models.PROTECT)
     Name = models.CharField(max_length=128)
     Description = models.CharField(max_length=250, null=True)
     ProcessName = models.CharField(max_length=128)

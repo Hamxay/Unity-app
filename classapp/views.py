@@ -1,6 +1,7 @@
 import csv
 import pandas
 from django.core.exceptions import ValidationError
+from django.db.models import ProtectedError
 from django.http import HttpResponse
 from django.shortcuts import redirect, get_object_or_404
 from django import forms
@@ -79,21 +80,19 @@ class ClassDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
 
     permission_required = "class.delete_class"
     model = Class
-    slug_url_kwarg = 'Code'
     success_url = reverse_lazy("class:class_list")
     success_message = "Record was deleted successfully"
 
-    def get_object(self, queryset=None):
-        # Retrieve the object based on the slug (code)
-        return get_object_or_404(self.model, Code=self.kwargs[self.slug_url_kwarg])
-
     def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        self.object.deleted_by = request.user
-        self.object.deleted_date = timezone.now()
-        success_url = self.get_success_url()
-        self.object.delete()
-        messages.success(self.request, self.success_message)
+        try:
+            self.object = self.get_object()
+            self.object.deleted_by = request.user
+            self.object.deleted_date = timezone.now()
+            success_url = self.get_success_url()
+            self.object.delete()
+            messages.success(self.request, self.success_message)
+        except ProtectedError as e:
+            messages.error(self.request, "Cannot delete this record because it is referenced through protected foreign keys.")
         return redirect(success_url)
 
 

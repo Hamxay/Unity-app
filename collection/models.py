@@ -31,7 +31,7 @@ class Collection(BaseModel):
         (2, 'Complete'),
     ]
     code = models.BigAutoField(primary_key=True)
-    interfaceid = models.ForeignKey(Interface, on_delete=models.CASCADE)
+    interfaceid = models.ForeignKey(Interface, on_delete=models.PROTECT)
     name = models.CharField(max_length=128)
     description = models.CharField(max_length=250, null=True, blank=True)
     executionorder = models.IntegerField()

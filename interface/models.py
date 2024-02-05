@@ -66,11 +66,11 @@ class Interface(BaseModel):
     ]
     code = models.BigAutoField(primary_key=True)
     interface_category_id = models.ForeignKey(
-        InterfaceCategory, on_delete=models.CASCADE
+        InterfaceCategory, on_delete=models.PROTECT
     )
-    interface_type_id = models.ForeignKey(InterfaceType, on_delete=models.CASCADE)
-    schedule_id = models.ForeignKey(scheduleModel.Schedule, on_delete=models.CASCADE)
-    connection_id = models.ForeignKey(connectionModel.Connection, on_delete=models.CASCADE)
+    interface_type_id = models.ForeignKey(InterfaceType, on_delete=models.PROTECT)
+    schedule_id = models.ForeignKey(scheduleModel.Schedule, on_delete=models.PROTECT)
+    connection_id = models.ForeignKey(connectionModel.Connection, on_delete=models.PROTECT)
     name = models.CharField(max_length=128)
     description = models.CharField(max_length=250, blank=True, null=True)
     priority = models.IntegerField()
@@ -106,10 +106,10 @@ class Interface(BaseModel):
 
 class InterfaceDependence(BaseModel):
     code = models.BigAutoField(primary_key=True)
-    interface_id = models.ForeignKey(Interface, on_delete=models.CASCADE)
+    interface_id = models.ForeignKey(Interface, on_delete=models.PROTECT)
     dependent_on_interface = models.ForeignKey(
         Interface,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         db_column="DependentOnInterfaceId",
         related_name="dependent_interface",
     )

@@ -25,8 +25,8 @@ class BaseModel(models.Model):
 
 class RoleCollectionAccess(BaseModel):
     code = models.BigAutoField(primary_key=True)
-    collectionId = models.ForeignKey(Collection, on_delete=models.CASCADE, null=False)
-    RoleId = models.ForeignKey(Role, on_delete=models.CASCADE, null=False)
+    collectionId = models.ForeignKey(Collection, on_delete=models.PROTECT, null=False)
+    RoleId = models.ForeignKey(Role, on_delete=models.PROTECT, null=False)
 
     def __str__(self):
-        return self.name
+        return self.code
