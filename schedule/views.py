@@ -60,7 +60,6 @@ class ScheduleUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
 
     permission_required = "schedule.change_schedule"
     model = Schedule
-    slug_url_kwarg = 'Code'
     fields = [
         "Name",
         "Frequency",
@@ -83,16 +82,12 @@ class ScheduleUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         form.instance.updated_by = self.request.user
         return super().form_valid(form)
 
-    def get_object(self, queryset=None):
-        return get_object_or_404(self.model, Code=self.kwargs[self.slug_url_kwarg])
-
 
 class ScheduleDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     """Delete the Schedule"""
 
     permission_required = "schedule.delete_schedule"
     model = Schedule
-    slug_url_kwarg = 'Code'
     success_url = reverse_lazy("schedule:schedule_list")
     success_message = "Record was deleted successfully"
 
@@ -105,8 +100,6 @@ class ScheduleDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
         messages.success(self.request, self.success_message)
         return redirect(success_url)
 
-    def get_object(self, queryset=None):
-        return get_object_or_404(self.model, Code=self.kwargs[self.slug_url_kwarg])
 
 class HistoricalScheduleListView(ListView):
     permission_required = "Schedule.view_schedule"

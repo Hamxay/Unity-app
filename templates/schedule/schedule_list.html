@@ -277,8 +277,8 @@ var table = $('#scheduletable').DataTable( {
             var isSuperuser = {% if request.user.is_superuser %}true{% else %}false{% endif %};
                 if (isSuperuser) {
                     let viewURL = "{% url 'schedule:historicalschedule_list' pk=0 %}"
-                    let editURL = "{% url 'schedule:schedule_update' Code=0 %}"
-                    let deleteURL = "{% url 'schedule:schedule_delete' Code=0 %}"
+                    let editURL = "{% url 'schedule:schedule_update' pk=0 %}"
+                    let deleteURL = "{% url 'schedule:schedule_delete' pk=0 %}"
                     let actions = `<ul class="list-inline hstack gap-2 mb-0">`;
 
                     actions += `<li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
