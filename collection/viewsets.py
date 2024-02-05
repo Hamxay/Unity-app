@@ -18,8 +18,8 @@ class CollectionViewset(viewsets.ModelViewSet):
 
 
 class CollectionHistoryViewset(viewsets.ViewSet):
-    def retrieve(self, request, code=None):
-        queryset = Collection.history.filter(code=code)
+    def retrieve(self, request, pk=None):
+        queryset = Collection.history.filter(code=pk)
         serializer = CollectionHistorySerializer(queryset, many=True)
         return Response(serializer.data)
 
