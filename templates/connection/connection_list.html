@@ -186,14 +186,14 @@ var table = $('#classTable').DataTable( {
         // The `rows`argument is an object representing all the data for the current row.
         render: ( data, type, row ) => {
             let viewURL = "{% url 'connection:historicalconnection_list' pk=0 %}"
-            let editURL = "{% url 'connection:connection_update' code=0 %}"
-            let deleteURL = "{% url 'connection:connection_delete' code=0 %}"
+            let editURL = "{% url 'connection:connection_update' pk=0 %}"
+            let deleteURL = "{% url 'connection:connection_delete' pk=0 %}"
             
             let actions =  `<ul class="list-inline hstack gap-2 mb-0">`
                 
             actions += `
             <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="History">
-            <a href="${viewURL.replace('0', row.id)}" class="text-primary d-inline-block">
+            <a href="${viewURL.replace('0', row.code)}" class="text-primary d-inline-block">
                 <i class="mdi mdi-history fs-16"></i>
             </a>
             </li>`

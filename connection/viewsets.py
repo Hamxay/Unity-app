@@ -12,7 +12,7 @@ class ConnectionViewset(viewsets.ModelViewSet):
 
 class ConnectionHistoryViewset(viewsets.ViewSet):
     def retrieve(self, request, pk=None):
-        queryset = Connection.history.filter(id=pk)
+        queryset = Connection.history.filter(code=pk)
         serializer = ConnectionHistorySerializer(queryset, many=True)
         return Response(serializer.data)
 

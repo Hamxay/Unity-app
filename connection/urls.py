@@ -29,17 +29,17 @@ urlpatterns = [
     path("list/", ConnectionListView.as_view(), name="connection_list"),
     path("create/", ConnectionCreateView.as_view(), name="connection_create"),
     path(
-        "update/<slug:code>/",
+        "update/<int:pk>/",
         ConnectionUpdateView.as_view(),
         name="connection_update",
     ),
     path(
-        "delete/<slug:code>/",
+        "delete/<int:pk>/",
         ConnectionDeleteView.as_view(),
         name="connection_delete",
     ),
     path(
-        "relations/<slug:code>/",
+        "relations/<int:pk>/",
         ConnectionDetailView.as_view(),
         name="connection_relations",
     ),

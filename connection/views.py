@@ -62,7 +62,6 @@ class ConnectionUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
 
     permission_required = "connection.change_class"
     model = Connection
-    slug_url_kwarg = 'code'
     fields = [
         "name",
         "description",
@@ -74,9 +73,6 @@ class ConnectionUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     def form_valid(self, form):
         form.instance.updated_by = self.request.user
         return super().form_valid(form)
-    def get_object(self, queryset=None):
-        # Retrieve the object based on the slug (code)
-        return get_object_or_404(self.model, code=self.kwargs[self.slug_url_kwarg])
 
 
 class ConnectionDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
@@ -84,7 +80,6 @@ class ConnectionDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
 
     permission_required = "connection.delete_class"
     model = Connection
-    slug_url_kwarg = 'code'
     success_url = reverse_lazy("connection:connection_list")
     success_message = "Record was deleted successfully"
 
@@ -97,9 +92,6 @@ class ConnectionDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
         messages.success(self.request, self.success_message)
         return redirect(success_url)
 
-    def get_object(self, queryset=None):
-        # Retrieve the object based on the slug (code)
-        return get_object_or_404(self.model, code=self.kwargs[self.slug_url_kwarg])
 
 class HistoricalConnectionListView(ListView):
     permission_required = "connection.view_class"
