@@ -29,6 +29,7 @@ class InterfaceViewset(viewsets.ModelViewSet):
         connection_id = self.request.query_params.get('ConnectionId')
         interface_category_id = self.request.query_params.get('InterfaceCategoryId')
         load_patterns_id = self.request.query_params.get('LoadPatternId')
+        code = self.request.query_params.get('code')
         interface_type_id = self.request.query_params.get('InterfaceTypeId')
         if connection_id:
             queryset = Interface.objects.filter(connection_id_id=connection_id)
@@ -36,6 +37,8 @@ class InterfaceViewset(viewsets.ModelViewSet):
             queryset = Interface.objects.filter(interface_category_id_id=interface_category_id)
         elif interface_type_id:
             queryset = Interface.objects.filter(interface_type_id_id=interface_type_id)
+        elif code:
+            queryset = Interface.objects.filter(code=code)
         # elif load_patterns_id:
         #     queryset = Interface.objects.filter(load_patterns_id_id=load_patterns_id)
         else:

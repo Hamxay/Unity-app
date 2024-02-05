@@ -76,7 +76,6 @@ class InterfaceCategoryDeleteView(LoginRequiredMixin, SuccessMessageMixin, Delet
             self.object.delete()
             messages.success(self.request, self.success_message)
         except ProtectedError as e:
-            # Handle the exception, you may want to log it or provide a specific message
             messages.error(self.request, "Cannot delete this record because it is referenced through protected foreign keys.")
         return redirect(success_url)
 
@@ -128,7 +127,6 @@ class InterfaceTypeDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteVie
             self.object.delete()
             messages.success(self.request, self.success_message)
         except ProtectedError as e:
-            # Handle the exception, you may want to log it or provide a specific message
             messages.error(self.request, "Cannot delete this record because it is referenced through protected foreign keys.")
         return redirect(success_url)
 
@@ -225,7 +223,6 @@ class InterfaceDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
             self.object.delete()
             messages.success(self.request, self.success_message)
         except ProtectedError as e:
-            # Handle the exception, you may want to log it or provide a specific message
             messages.error(self.request, "Cannot delete this record because it is referenced through protected foreign keys.")
         return redirect(success_url)
 
@@ -307,7 +304,6 @@ class InterfaceDependenceDeleteView(
             self.object.delete()
             messages.success(self.request, self.success_message)
         except ProtectedError as e:
-            # Handle the exception, you may want to log it or provide a specific message
             messages.error(self.request, "Cannot delete this record because it is referenced through protected foreign keys.")
         return redirect(success_url)
 

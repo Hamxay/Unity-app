@@ -238,6 +238,7 @@ $('#classTable').on('contextmenu', 'tbody tr', function(e) {
     e.preventDefault();
     var collectionData = table.row(this).data();
     var collectionCode = collectionData.code;
+    var InterfaceCode = collectionData.interfaceid.code;
     var baseUrl = window.location.origin;
     $.ajax({
         url: baseUrl + '/api/references/' + collectionCode + '/',
@@ -247,6 +248,8 @@ $('#classTable').on('contextmenu', 'tbody tr', function(e) {
             var dropdownMenu = $('<div class="dropdown-menu" role="menu"></div>');
             var taskUrl = baseUrl + '/Task/list?CollectionId='+collectionCode;
             dropdownMenu.append('<a class="dropdown-item" href="' + taskUrl + '">Task</a>');
+            var interfaceUrl = baseUrl + '/interface/list?code='+InterfaceCode;
+            dropdownMenu.append('<a class="dropdown-item" href="' + interfaceUrl + '">Interface</a>');
 
             dropdownMenu.css({
                 position: 'absolute',
