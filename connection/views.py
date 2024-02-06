@@ -114,11 +114,11 @@ class HistoricalConnectionUpdateView(LoginRequiredMixin, UpdateView):
     def get(self, request, *args, **kwargs):
         pk = self.kwargs.get("pk")
         data = Connection.history.get(pk=pk)
-        connection_obj = Connection.objects.get(pk=data.id)
+        connection_obj = Connection.objects.get(pk=data.code)
         for field in connection_obj._meta.fields:
             field_name = field.name
             setattr(connection_obj, field_name, getattr(data, field_name))
-        connection_obj.save_without_historical_record()
+        connection_obj.save()
         messages.success(self.request, "Table restored successfully")
         return redirect(reverse_lazy("connection:connection_list"))
 
