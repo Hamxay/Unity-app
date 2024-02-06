@@ -119,7 +119,7 @@ class HistoricalCollectionUpdateView(LoginRequiredMixin, UpdateView):
         for field in collection_obj._meta.fields:
             field_name = field.name
             setattr(collection_obj, field_name, getattr(data, field_name))
-        collection_obj.save_without_historical_record()
+        collection_obj.save()
         messages.success(self.request, "Table restored successfully")
         return redirect(reverse_lazy("collection:collection_list"))
 
