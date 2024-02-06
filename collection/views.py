@@ -115,7 +115,7 @@ class HistoricalCollectionUpdateView(LoginRequiredMixin, UpdateView):
     def get(self, request, *args, **kwargs):
         pk = self.kwargs.get("pk")
         data = Collection.history.get(pk=pk)
-        collection_obj = Collection.objects.get(pk=data.id)
+        collection_obj = Collection.objects.get(pk=data.code)
         for field in collection_obj._meta.fields:
             field_name = field.name
             setattr(collection_obj, field_name, getattr(data, field_name))
