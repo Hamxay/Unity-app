@@ -29,4 +29,4 @@ class RoleCollectionAccess(BaseModel):
     RoleId = models.ForeignKey(Role, on_delete=models.PROTECT, null=False)
 
     def __str__(self):
-        return self.code
+        return str(self.code)

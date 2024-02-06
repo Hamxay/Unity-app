@@ -1,3 +1,4 @@
+from django.db.models import ProtectedError
 from django.shortcuts import redirect
 from .models import Role
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
@@ -45,10 +46,14 @@ class RoleDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     success_message = "Record was deleted successfully"
 
     def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        self.object.deleted_by = request.user
-        self.object.deleted_date = timezone.now()
-        self.object.delete()
-        success_url = self.get_success_url()
-        messages.success(self.request, self.success_message)
+        try:
+            self.object = self.get_object()
+            self.object.deleted_by = request.user
+            self.object.deleted_date = timezone.now()
+            success_url = self.get_success_url()
+            self.object.delete()
+            messages.success(self.request, self.success_message)
+        except ProtectedError as e:
+            messages.error(self.request,
+                           "Cannot delete this record because it is referenced through protected foreign keys.")
         return redirect(success_url)
