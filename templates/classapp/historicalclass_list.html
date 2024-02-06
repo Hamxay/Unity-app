@@ -51,7 +51,6 @@
                                         <thead class="table-light text-muted">
                                             <tr>
                                                 <th>Action</th>
-                                                <th data-data="id" data-name="id">ID</th>
                                                 <th data-data="history_id" data-name="history_id">History ID</th>
                                                 <th data-data="history_type" data-name="history_type">History Type</th>
                                                 <th data-data="Code" data-name="Code">Code</th>
@@ -136,17 +135,12 @@ var table = $('#ClassHistoryTable').DataTable( {
     "dom": 'lrtip',
     "columnDefs": [
     {
-        targets: 1,  // History ID
-        visible: false,
-        searchable: false,
-    },
-    {
-        targets: 2,  // History Type
+        targets: 1,  // History Type
         defaultContent: "-",
         searchable: false,
     },
     {
-        targets: 3,  
+        targets: 2,
         render: function(data, type, row){
             let className = 'btn-soft-primary';
             let text = "Unknown";
@@ -158,86 +152,86 @@ var table = $('#ClassHistoryTable').DataTable( {
         searchable: false,
     },
     {
-        targets: 4,  // Code
+        targets: 3,  // Code
         defaultContent: "-",
         searchable: false,
     },
     {
-        targets: 5,  // InterfaceId
+        targets: 4,  // InterfaceId
         defaultContent: "-",
         searchable: false,
     },
     {
-        targets: 6,  // Name
+        targets: 5,  // Name
         defaultContent: "-",
         searchable: false,
     },
     {
-        targets: 7,  // Description
+        targets: 6,  // Description
         defaultContent: "-",
         searchable: false,
     },
     {
-        targets: 8,  // Prefix
+        targets: 7,  // Prefix
         defaultContent: "-",
         searchable: false,
     },
     {
-        targets: 9,  // Version
+        targets: 8,  // Version
         defaultContent: "-",
         searchable: false,
     },
     {
-        targets: 10,  // TargetAlias
+        targets: 9,  // TargetAlias
         defaultContent: "-",
         searchable: false,
     },
     {
-        targets: 11,  // IgnoreOnIngest
+        targets: 10,  // IgnoreOnIngest
         defaultContent: "-",
         searchable: false,
     },
     {
-        targets: 12,  // Mask
+        targets: 11,  // Mask
         defaultContent: "-",
         searchable: false,
     },
     {
-        targets: 13,  // Filter
+        targets: 12,  // Filter
         defaultContent: "-",
         searchable: false,
     },
     {
-        targets: 14,  // SlideWindowAttribute
+        targets: 13,  // SlideWindowAttribute
         defaultContent: "-",
         searchable: false,
     },
     {
-        targets: 15,  // SlideWindowDays
+        targets: 14,  // SlideWindowDays
         defaultContent: "-",
         searchable: false,
     },
     {
-        targets: 16,  // Created Date
+        targets: 15,  // Created Date
         render: (data, type, row) => {
             return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
         },
         searchable: false,
     },
     {
-        targets: 17,  // Created By
+        targets: 16,  // Created By
         defaultContent: "-",
         searchable: false,
     },
     {
-        targets: 18,  // Updated Date
+        targets: 17,  // Updated Date
         render: (data, type, row) => {
             return moment.utc(row.updated_date).format('MMM DD, YYYY hh:mm A');
         },
         searchable: false,
     },
     {
-        targets: 19,  // Updated By
+        targets: 18,  // Updated By
         defaultContent: "-",
         searchable: false,
     },

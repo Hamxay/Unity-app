@@ -115,12 +115,12 @@ class HistoricalClassUpdateView(LoginRequiredMixin, UpdateView):
         # self.object = self.get_object()
         # selected_version = request.POST.get("historical_version")
         data = Class.history.get(pk=pk)
-        class_obj = Class.objects.get(pk=data.id)
+        class_obj = Class.objects.get(pk=data.Code)
 
         for field in class_obj._meta.fields:
             field_name = field.name
             setattr(class_obj, field_name, getattr(data, field_name))
-        class_obj.save_without_historical_record()
+        class_obj.save()
         messages.success(self.request, "Table restored successfully")
         return redirect(reverse_lazy("class:class_list"))
 
