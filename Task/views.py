@@ -142,7 +142,7 @@ class HistoricalTaskUpdateView(LoginRequiredMixin, UpdateView):
             new_task.save()
             messages.success(request, "New record created successfully")
         else:
-            task_obj = Task.objects.get(pk=historical_record.id)
+            task_obj = Task.objects.get(pk=historical_record.Code)
 
             # Update fields from historical data
             for field in task_obj._meta.fields:

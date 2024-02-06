@@ -316,6 +316,7 @@ var table = $('#TaskTable').DataTable( {
                 
             actions += `
             <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="History">
+                <a href="${viewURL.replace('0', row.Code)}" class="text-primary d-inline-block">
                 <i class="mdi mdi-history fs-16"></i>
             </a>
             </li>`

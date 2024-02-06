@@ -29,7 +29,7 @@ class TaskHistoryViewsetAll(viewsets.ReadOnlyModelViewSet):
 
 class TaskHistoryViewset(viewsets.ViewSet):
     def retrieve(self, request, pk=None):
-        queryset = Task.history.filter(id=pk)
+        queryset = Task.history.filter(Code=pk)
         serializer = TaskHistorySerializer(queryset, many=True)
         return Response(serializer.data)
 
