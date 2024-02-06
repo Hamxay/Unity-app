@@ -28,23 +28,25 @@ class BaseModel(models.Model):
 
 class Schedule(BaseModel):
     FREQUENCY_CHOICES = [
-        (0, 'Once'),
-        (1, 'Daily'),
-        (2, 'Weekly'),
-        (3, 'Monthly'),
-        (4, 'Monthly-Relative'),
+        (0, '0 - Once'),
+        (1, '1 - Daily'),
+        (2, '2 - Weekly'),
+        (3, '3 - Monthly'),
+        (4, '4 - Monthly-Relative'),
     ]
+
     FREQUENCY_SUB_DAY_TYPE_CHOICES = [
-        (1, 'Minutes'),
-        (2, 'Hourly'),
+        (1, '1 - Minutes'),
+        (2, '2 - Hourly'),
     ]
+
     FREQUENCY_RELATIVE_INTERVAL_CHOICES = [
-        (0, 'Unused'),
-        (1, 'First'),
-        (2, 'Second'),
-        (3, 'Third'),
-        (4, 'Fourth'),
-        (5, 'Last'),
+        (0, '0 - Unused'),
+        (1, '1 - First'),
+        (2, '2 - Second'),
+        (3, '3 - Third'),
+        (4, '4 - Fourth'),
+        (5, '5 - Last'),
     ]
     Code = models.BigAutoField(primary_key=True)
     Name = models.CharField(max_length=128)
