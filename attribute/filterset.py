@@ -19,9 +19,9 @@ class AttributeFilterset(django_filters.FilterSet):
     def filter_keyword(self, queryset, name, value):
         if value.isdigit():
             return queryset.filter(
-                Q(code=value) | Q(class_id__Code=value)
+                Q(code__icontains=value) | Q(class_id__Code__icontains=value)
             )
         else:
             return queryset.filter(
-                Q(target_name=value) | Q(source_name=value)
+                Q(target_name__icontains=value) | Q(source_name__icontains=value) | Q(class_id__Name__icontains=value)
             )
