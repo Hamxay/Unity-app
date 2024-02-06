@@ -12,11 +12,15 @@ class TaskViewset(viewsets.ModelViewSet):
 
     def get_queryset(self):
         collection_id = self.request.query_params.get('CollectionId')
+        class_id = self.request.query_params.get('class_id')
         if collection_id:
             queryset = Task.objects.filter(CollectionId_id=collection_id)
+        elif class_id:
+            queryset = Task.objects.filter(ClassId_id=class_id)
         else:
             queryset = Task.objects.all()
         return queryset
+
 
 class TaskHistoryViewsetAll(viewsets.ReadOnlyModelViewSet):
     queryset = Task.history.all()

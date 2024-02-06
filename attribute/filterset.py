@@ -11,6 +11,7 @@ class AttributeFilterset(django_filters.FilterSet):
         label="search",
         widget=TextInput(attrs={"placeholder": "code, class_id, etc..."}),
     )
+
     class Meta:
         model = Attribute
         fields = ["search"]

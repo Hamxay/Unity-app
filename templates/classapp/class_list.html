@@ -334,6 +334,7 @@ $(document).ready(function(){
 $('#classTable').on('contextmenu', 'tbody tr', function(e) {
     e.preventDefault();
     var classData = table.row(this).data();
+    var InterfaceCode = classData.InterfaceId.code;
     var classCode = classData.Code;
     var baseUrl = window.location.origin;
     $.ajax({
@@ -342,8 +343,12 @@ $('#classTable').on('contextmenu', 'tbody tr', function(e) {
         success: function (classData) {
             $('.dropdown-menu').remove();
             var dropdownMenu = $('<div class="dropdown-menu" role="menu"></div>');
-            var interfaceUrl = baseUrl + '/interface/list?class_id=' + classCode;
+            var interfaceUrl = baseUrl + '/interface/list?code=' + InterfaceCode;
             dropdownMenu.append('<a class="dropdown-item" href="' + interfaceUrl + '">Interface</a>');
+            var attributeUrl = baseUrl + '/attribute/list?class_id=' + classCode;
+            dropdownMenu.append('<a class="dropdown-item" href="' + attributeUrl + '">Attribute</a>');
+            var taskUrl = baseUrl + '/Task/list?class_id=' + classCode;
+            dropdownMenu.append('<a class="dropdown-item" href="' + taskUrl + '">Task</a>');
             dropdownMenu.css({
                 position: 'absolute',
                 left: e.pageX,

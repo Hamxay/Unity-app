@@ -185,17 +185,22 @@
 <script src="{% static 'js/moment-2.29.2.min.js' %}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 <script type="text/javascript">
-    var attributeTableParams = {}
-    var table = $('#AttributeTable').DataTable({
-        serverSide: true,
-        processing: true,
-        order: [[21, 'desc']],
-        "ajax": {
-            "url": "/api/attribute/?format=datatables",
-            "data": function (d) {
-                return $.extend(d, attributeTableParams);
-            }
-        },
+var ClassIdParam = new URLSearchParams(window.location.search).get('class_id');
+var url = "/api/attribute/?format=datatables";
+if (ClassIdParam) {
+    url += '&class_id=' + ClassIdParam;
+}
+var attributeTableParams = {};
+var table = $('#AttributeTable').DataTable({
+    serverSide: true,
+    processing: true,
+    order: [[21, 'desc']],
+    "ajax": {
+        "url": url,
+        "data": function (d) {
+            return $.extend(d, attributeTableParams);
+        }
+    },
     "dom": 'lrtip',
     "columnDefs": [
     {

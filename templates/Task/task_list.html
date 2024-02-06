@@ -182,13 +182,22 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 <script type="text/javascript">
 var CollectionIdParam = new URLSearchParams(window.location.search).get('CollectionId');
+var ClassIdParam = new URLSearchParams(window.location.search).get('class_id');
+var url = "/api/Task/?format=datatables";
+if (CollectionIdParam) {
+    url += '&CollectionId=' + CollectionIdParam;
+}
+if (ClassIdParam) {
+    url += '&class_id=' + ClassIdParam;
+}
 var table = $('#TaskTable').DataTable( {
     serverSide: true,
     processing: true,
     order: [[14, 'desc']],
     "ajax": {
-        "url": "/api/Task/?format=datatables" + (CollectionIdParam ? '&CollectionId='+ CollectionIdParam : '')
+        "url": url
     },
+
     "dom": 'lrtip',
     "columnDefs": [
     {

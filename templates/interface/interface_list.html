@@ -142,6 +142,7 @@ var InterfaceCategoryIdParam = new URLSearchParams(window.location.search).get('
 var LoadPatternIdParam = new URLSearchParams(window.location.search).get('LoadPatternId');
 var InterfaceTypeIdParam = new URLSearchParams(window.location.search).get('InterfaceTypeId');
 var InterfaceIdParam = new URLSearchParams(window.location.search).get('code');
+var ClassIdParam = new URLSearchParams(window.location.search).get('class_id');
 var url = "/api/interface/?format=datatables";
 if (ConnectionIdParam) {
     url += '&ConnectionId=' + ConnectionIdParam;
@@ -157,6 +158,9 @@ if (LoadPatternIdParam) {
 }
 if (InterfaceIdParam){
     url += '&code=' + InterfaceIdParam;
+}
+if (ClassIdParam){
+    url += '&class_id=' + ClassIdParam;
 }
 var table = $('#classTable').DataTable( {
     serverSide: true,
