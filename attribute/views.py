@@ -111,11 +111,11 @@ class HistoricalAttributeUpdateView(LoginRequiredMixin, UpdateView):
         # self.object = self.get_object()
         # selected_version = request.POST.get("historical_version")
         data = Attribute.history.get(pk=pk)
-        attribute_obj = Attribute.objects.get(pk=data.id)
+        attribute_obj = Attribute.objects.get(pk=data.code)
         for field in attribute_obj._meta.fields:
             field_name = field.name
             setattr(attribute_obj, field_name, getattr(data, field_name))
-        attribute_obj.save_without_historical_record()
+        attribute_obj.save()
         messages.success(self.request, "Table restored successfully")
         return redirect(reverse_lazy("attribute:attribute_list"))
 
