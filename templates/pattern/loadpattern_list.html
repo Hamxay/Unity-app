@@ -275,8 +275,8 @@ $('#LoadPatternTable').on('contextmenu', 'tbody tr', function(e) {
         success: function (loadPatternData) {
             $('.dropdown-menu').remove();
             var dropdownMenu = $('<div class="dropdown-menu" role="menu"></div>');
-            var interfaceUrl = baseUrl + '/interface/list?LoadPatternId=' + loadPatternCode;
-            dropdownMenu.append('<a class="dropdown-item" href="' + interfaceUrl + '">Interface</a>');
+            var taskUrl = baseUrl + '/Task/list?LoadPatternId=' + loadPatternCode;
+            dropdownMenu.append('<a class="dropdown-item" href="' + taskUrl + '">Task</a>');
             dropdownMenu.css({
                 position: 'absolute',
                 left: e.pageX,

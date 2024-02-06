@@ -183,12 +183,16 @@
 <script type="text/javascript">
 var CollectionIdParam = new URLSearchParams(window.location.search).get('CollectionId');
 var ClassIdParam = new URLSearchParams(window.location.search).get('class_id');
+var LoadPatternIdParam = new URLSearchParams(window.location.search).get('LoadPatternId');
 var url = "/api/Task/?format=datatables";
 if (CollectionIdParam) {
     url += '&CollectionId=' + CollectionIdParam;
 }
 if (ClassIdParam) {
     url += '&class_id=' + ClassIdParam;
+}
+if (LoadPatternIdParam) {
+    url += '&LoadPatternId=' + LoadPatternIdParam;
 }
 var table = $('#TaskTable').DataTable( {
     serverSide: true,
