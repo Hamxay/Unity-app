@@ -143,22 +143,26 @@ var table = $('#InterfaceDependenceTable').DataTable( {
     },
     {
         targets: 3,
-        render: (data, type, row)=>{
-            return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
-        }
-    },
-    {
-        targets: 4,
         defaultContent: "-"
     },
     {
-        targets: 5,
+        targets: 4,
         render: (data, type, row)=>{
             return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
         }
     },
     {
+        targets: 5,
+        defaultContent: "-"
+    },
+    {
         targets: 6,
+        render: (data, type, row)=>{
+            return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
+        }
+    },
+    {
+        targets: 7,
         defaultContent: "-"
     },
     {
