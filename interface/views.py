@@ -248,7 +248,7 @@ class HistoricalInterfaceUpdateView(LoginRequiredMixin, UpdateView):
         for field in interface_obj._meta.fields:
             field_name = field.name
             setattr(interface_obj, field_name, getattr(data, field_name))
-        interface_obj.save_without_historical_record()
+        interface_obj.save()
         messages.success(self.request, "Table restored successfully")
         return redirect(reverse_lazy("interface:interface_list"))
 
