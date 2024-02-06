@@ -26,6 +26,7 @@
                                     <h5 class="card-title mb-0 flex-grow-1">All Status</h5>
                                     <div class="flex-shrink-0">
                                         <a role="button"
+                                            id="create-btn"
                                             href="{% url 'statusupcoming:statusupcoming_create' %}"
                                             class="btn btn-danger add-btn">
                                             <i class="ri-add-line align-bottom me-1"></i> Create Status
@@ -155,6 +156,7 @@
 <script src="{% static 'js/moment-2.29.2.min.js' %}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 <script type="text/javascript">
+var isSuperuser = {% if request.user.is_superuser %}true{% else %}false{% endif %};
 var table = $('#statusupcomingtable').DataTable( {
     serverSide: true,
     processing: true,
@@ -208,7 +210,6 @@ var table = $('#statusupcomingtable').DataTable( {
         // The `data` parameter refers to the data for the cell.
         // The `rows`argument is an object representing all the data for the current row.
         render: ( data, type, row ) => {
-            var isSuperuser = {% if request.user.is_superuser %}true{% else %}false{% endif %};
 
                 if (isSuperuser) {
                     let editURL = "{% url 'statusupcoming:statusupcoming_update' pk=0 %}"
@@ -245,7 +246,7 @@ var table = $('#statusupcomingtable').DataTable( {
                         </ul>`;
                     }
                 }
-                        
+
             },
     ]
 });
@@ -263,6 +264,13 @@ $(document).ready(function(){
     $('#id_search').on('keyup', function () {
         table.search( this.value ).draw();
     } );
+    $('#create-btn').on('click', function(event) {
+        if (!isSuperuser) {
+            event.preventDefault();
+            showAlert();
+            $('#customAlert').css('display', 'block');
+        }
+    });
 })
 $('#id_search').on('keyup', function () {
     var searchValue = this.value;
