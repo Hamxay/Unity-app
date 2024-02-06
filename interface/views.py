@@ -244,7 +244,7 @@ class HistoricalInterfaceUpdateView(LoginRequiredMixin, UpdateView):
     def get(self, request, *args, **kwargs):
         pk = self.kwargs.get("pk")
         data = Interface.history.get(pk=pk)
-        interface_obj = Interface.objects.get(pk=data.id)
+        interface_obj = Interface.objects.get(pk=data.code)
         for field in interface_obj._meta.fields:
             field_name = field.name
             setattr(interface_obj, field_name, getattr(data, field_name))

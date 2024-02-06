@@ -362,6 +362,7 @@ $('#classTable').on('contextmenu', 'tbody tr', function(e) {
     e.preventDefault();
     var interfaceData = table.row(this).data();
     var interfaceCode = interfaceData.code;
+    var scheduleCode = interfaceData.schedule_id.Code;
     var baseUrl = window.location.origin;
     $.ajax({
         url: baseUrl + '/api/references/' + interfaceCode + '/',
@@ -369,14 +370,12 @@ $('#classTable').on('contextmenu', 'tbody tr', function(e) {
         success: function (interfaceData) {
             $('.dropdown-menu').remove();
             var dropdownMenu = $('<div class="dropdown-menu" role="menu"></div>');
-
-            // Create a new dropdown for class, schedule, and collection
             var classUrl = baseUrl + '/class/list?InterfaceId=' + interfaceCode;
-<!--            var scheduleUrl = baseUrl + '/schedule/list?interface_id=' + interfaceCode;-->
+            var scheduleUrl = baseUrl + '/schedule/list?code=' + scheduleCode;
             var collectionUrl = baseUrl + '/collection/list?InterfaceId=' + interfaceCode;
 
             dropdownMenu.append('<a class="dropdown-item" href="' + classUrl + '">Class</a>');
-<!--            dropdownMenu.append('<a class="dropdown-item" href="' + scheduleUrl + '">Schedule</a>');-->
+            dropdownMenu.append('<a class="dropdown-item" href="' + scheduleUrl + '">Schedule</a>');
             dropdownMenu.append('<a class="dropdown-item" href="' + collectionUrl + '">Collection</a>');
 
             dropdownMenu.css({

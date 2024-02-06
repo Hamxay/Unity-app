@@ -7,7 +7,6 @@ from django.db import models
 
 
 class TaskViewset(viewsets.ModelViewSet):
-    queryset = Task.objects.all()
     serializer_class = TaskSerializer
 
     def get_queryset(self):

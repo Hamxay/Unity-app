@@ -166,13 +166,18 @@
 <script src="{% static 'js/moment-2.29.2.min.js' %}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 <script type="text/javascript">
+var CodeParam = new URLSearchParams(window.location.search).get('code');
 var isSuperuser = {% if request.user.is_superuser %}true{% else %}false{% endif %};
-var table = $('#scheduletable').DataTable( {
+var url = "/api/schedule/?format=datatables";
+if (CodeParam) {
+    url += '&code=' + CodeParam;
+}
+var table = $('#scheduletable').DataTable({
     serverSide: true,
     processing: true,
     order: [[2, 'desc']],
     "ajax": {
-        "url": "/api/schedule/?format=datatables"
+        "url": url
     },
     "dom": 'lrtip',
     "columnDefs": [

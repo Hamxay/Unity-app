@@ -51,10 +51,8 @@
                                         <thead class="table-light text-muted">
                                             <tr>
                                                 <th>Action</th>
-                                                <th data-data="id" data-name="id">ID</th>
                                                 <th data-data="history_id" data-name="history_id">History ID</th>
                                                 <th data-data="history_type" data-name="history_type">History Type</th>
-                                                <th data-data="id" data-name="id">ID</th>
                                                 <th data-data="code" data-name="code">Code</th>
                                                 <th data-data="interface_category_id" data-name="interface_category_id">Interface Category ID</th>
                                                 <th data-data="interface_type_id" data-name="interface_type_id">Interface Type ID</th>
@@ -133,22 +131,18 @@
 var table = $('#InterfaceHistoryTable').DataTable( {
     serverSide: true,
     processing: true,
-    order: [[20, 'desc']],
+    order: [[19, 'desc']],
     "ajax": {
         "url": `/api/interface/history/{{object}}/?format=datatables`,
     },
     "dom": 'lrtip',
     "columnDefs": [
     {
-        targets: 1,  // History ID
-        visible: false
-    },
-    {
-        targets: 2,  // History Type
+        targets: 1,  // History Type
         defaultContent: "-"
     },
     {
-        targets: 3,  
+        targets: 2,
         render: function(data, type, row){
             let className = 'btn-soft-primary';
             let text = "Unknown";
@@ -158,10 +152,13 @@ var table = $('#InterfaceHistoryTable').DataTable( {
             return `<button type="button" class="btn btn-sm ${className}">${text}</button>`;
         }
     },
-
+    {
+        targets: 3,
+        defaultContent: "-"
+    },
     {
         targets: 4,
-        defaultContent: "-"
+        visible: false
     },
     {
         targets: 5,
@@ -169,7 +166,7 @@ var table = $('#InterfaceHistoryTable').DataTable( {
     },
     {
         targets: 6,
-        visible: false
+        defaultContent: "-"
     },
     {
         targets: 7,
@@ -181,7 +178,7 @@ var table = $('#InterfaceHistoryTable').DataTable( {
     },
     {
         targets: 9,
-        defaultContent: "-"
+        visible: false
     },
     {
         targets: 10,
@@ -189,7 +186,7 @@ var table = $('#InterfaceHistoryTable').DataTable( {
     },
     {
         targets: 11,
-        visible: false
+        defaultContent: "-"
     },
     {
         targets: 12,
@@ -215,15 +212,17 @@ var table = $('#InterfaceHistoryTable').DataTable( {
         targets: 17,
         defaultContent: "-"
     },
+   
     {
         targets: 18,
-        defaultContent: "-"
+        render: (data, type, row)=>{
+            return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
+        }
     },
     {
         targets: 19,
         defaultContent: "-"
     },
-   
     {
         targets: 20,
         render: (data, type, row)=>{
@@ -232,16 +231,6 @@ var table = $('#InterfaceHistoryTable').DataTable( {
     },
     {
         targets: 21,
-        defaultContent: "-"
-    },
-    {
-        targets: 22,
-        render: (data, type, row)=>{
-            return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
-        }
-    },
-    {
-        targets: 23,
         defaultContent: "-"
     },
     {
