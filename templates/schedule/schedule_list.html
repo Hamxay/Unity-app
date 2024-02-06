@@ -26,9 +26,10 @@
                                     <h5 class="card-title mb-0 flex-grow-1">All Schedule</h5>
                                     <div class="flex-shrink-0">
                                         <a role="button"
+                                            id="createScheduleButton"
                                             href="{% url 'schedule:schedule_create' %}"
                                             class="btn btn-danger add-btn">
-                                            <i class="ri-add-line align-bottom me-1"></i> Create Schedule
+                                            <i class="ri-add-line align-bottom me-1" ></i> Create Schedule
                                         </a>
                                     </div>
                                 </div>
@@ -165,6 +166,7 @@
 <script src="{% static 'js/moment-2.29.2.min.js' %}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 <script type="text/javascript">
+var isSuperuser = {% if request.user.is_superuser %}true{% else %}false{% endif %};
 var table = $('#scheduletable').DataTable( {
     serverSide: true,
     processing: true,
@@ -274,7 +276,6 @@ var table = $('#scheduletable').DataTable( {
         // The `data` parameter refers to the data for the cell.
         // The `rows`argument is an object representing all the data for the current row.
         render: ( data, type, row ) => {
-            var isSuperuser = {% if request.user.is_superuser %}true{% else %}false{% endif %};
                 if (isSuperuser) {
                     let viewURL = "{% url 'schedule:historicalschedule_list' pk=0 %}"
                     let editURL = "{% url 'schedule:schedule_update' pk=0 %}"
@@ -299,12 +300,12 @@ var table = $('#scheduletable').DataTable( {
                     // Non-ADMIN user
                     return `<ul class="list-inline hstack gap-2 mb-0">
                         <li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
-                            <a href="javascript:void(0);" class="text-primary d-inline-block edit-item-btn" onclick="showAlert('${row.code}');">
+                            <a href="javascript:void(0);" class="text-primary d-inline-block edit-item-btn" onclick="showAlert('${row.Code}');">
                                 <i class="ri-pencil-fill fs-16"></i>
                             </a>
                         </li>
                         <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
-                            <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#" onclick="showAlert('${row.code}');">
+                            <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#" onclick="showAlert('${row.Code}');">
                                 <i class="ri-delete-bin-5-fill fs-16"></i>
                             </a>
                         </li>
@@ -314,8 +315,7 @@ var table = $('#scheduletable').DataTable( {
         },
     ]
 });
-function showAlert(code) {
-    console.log('Show alert for row with code:', code);
+function showAlert(Code) {
     document.getElementById("customAlert").style.display = "block";
 }
 
@@ -326,12 +326,16 @@ $(document).ready(function(){
     $('#scheduletable').on('click', '.delete-btn', (event) => {
         $('#delete-record').attr('href', $(event.currentTarget).data('url'))
     })
-
-    // Filters for table
     $('#id_search').on('keyup', function () {
         table.search( this.value ).draw();
-    } );
-
-})
+    });
+    $('#createScheduleButton').on('click', function(event) {
+        if (!isSuperuser) {
+            event.preventDefault();
+            showAlert();
+            $('#customAlert').css('display', 'block');
+        }
+    });
+});
 </script>
 {% endblock extra_js %}

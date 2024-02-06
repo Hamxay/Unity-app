@@ -26,6 +26,7 @@
                                     <h5 class="card-title mb-0 flex-grow-1">All RoleCollectionAccess</h5>
                                     <div class="flex-shrink-0">
                                         <a role="button"
+                                            id="create-btn"
                                             href="{% url 'rolecollectionaccess:rolecollectionaccess_create' %}"
                                             class="btn btn-danger add-btn">
                                             <i class="ri-add-line align-bottom me-1"></i> Create RoleCollectionAccess
@@ -155,8 +156,8 @@
 <script src="{% static 'js/moment-2.29.2.min.js' %}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 <script type="text/javascript">
+var isSuperuser = {% if request.user.is_superuser %}true{% else %}false{% endif %};
 function showAlert(code) {
-    console.log('Show alert for row with code:', code);
     document.getElementById("customAlert").style.display = "block";
 }
 var table = $('#rolecollectionaccesstable').DataTable({
@@ -211,7 +212,6 @@ var table = $('#rolecollectionaccesstable').DataTable({
             sortable: false,
             searchable: false,
             render: function (data, type, row) {
-                var isSuperuser = {% if request.user.is_superuser %}true{% else %}false{% endif %};
 
                 if (isSuperuser) {
                     let editURL = "{% url 'rolecollectionaccess:rolecollectionaccess_update' pk=0 %}";
@@ -263,6 +263,13 @@ $(document).ready(function(){
     $('#id_search').on('keyup', function () {
         table.search( this.value ).draw();
     } );
+    $('#create-btn').on('click', function(event) {
+        if (!isSuperuser) {
+            event.preventDefault();
+            showAlert();
+            $('#customAlert').css('display', 'block');
+        }
+    });
 })
     </script>
 {% endblock extra_js %}
