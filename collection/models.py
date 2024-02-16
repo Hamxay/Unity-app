@@ -27,8 +27,8 @@ class BaseModel(models.Model):
 
 class Collection(BaseModel):
     EXECUTION_TRIGGER_RULE = [
-        (1, 'Success'),
-        (2, 'Complete'),
+        (1, '1 - Success'),
+        (2, '2 - Complete'),
     ]
     code = models.BigAutoField(primary_key=True)
     interfaceid = models.ForeignKey(Interface, on_delete=models.PROTECT)
