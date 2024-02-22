@@ -204,7 +204,7 @@ var table = $('#scheduletable').DataTable({
             frequencyValue = data;
             if ([0,1,2,3,4].includes(data)){
                 return frequency[data];
-            } 
+            } else return data;
         }
 
     },
@@ -226,6 +226,19 @@ var table = $('#scheduletable').DataTable({
         targets: 5,
         defaultContent: "-",
         searchable: false,
+        render:(data, type, row) =>{
+            if ([0,1,2,3,4,5].includes(data)) {
+                const frequencyRelativeInterval = [
+                '0 - Unused',
+                '1 - First',
+                '2 - Second',
+                '3 - Third',
+                '4 - Fourth',
+                '5 - Last',
+                ];
+                return frequencyRelativeInterval[data];
+            } else return data;
+        }
     },
     {
         targets: 6,
@@ -236,6 +249,16 @@ var table = $('#scheduletable').DataTable({
         targets: 7,
         defaultContent: "-",
         searchable: false,
+        render:(data, type, row) =>{
+            console.log(data)
+            if ([1,2].includes(data)) {
+                const subDayType = [
+                '1 - Minutes',
+                '2 - Hourly',
+                ];
+                return subDayType[data-1];
+            } else return data;
+        }
     },
     {
         targets: 8,
