@@ -95,8 +95,8 @@
                                                 <th data-data="FrequencyInterval" data-name="FrequencyInterval">Frequency Interval</th>
                                                 <th data-data="FrequencyRelativeInterval" data-name="FrequencyRelativeInterval">Frequency Relative Interval</th>
                                                 <th data-data="FrequencyRecurrenceFactor" data-name="FrequencyRecurrenceFactor">Frequency Recurrence Factor</th>
-                                                <th data-data="FrequencySubDayType" data-name="FrequencySubDayType">Frequency SubDay Type</th>
-                                                <th data-data="FrequencySubDayInterval" data-name="FrequencySubDayInterval">Frequency SubDay Interval</th>
+                                                <th data-data="FrequencySubDayType" data-name="FrequencySubDayType">Frequency Sub Day Type</th>
+                                                <th data-data="FrequencySubDayInterval" data-name="FrequencySubDayInterval">Frequency Sub Day Interval</th>
                                                 <th data-data="ActiveStartDate" data-name="ActiveStartDate">Active Start Date</th>
                                                 <th data-data="ActiveEndDate" data-name="ActiveEndDate">Active End Date</th>
                                                 <th data-data="ActiveStartTime" data-name="ActiveStartTime">Active Start Time</th>
@@ -172,6 +172,7 @@ var url = "/api/schedule/?format=datatables";
 if (CodeParam) {
     url += '&code=' + CodeParam;
 }
+var frequencyValue;
 var table = $('#scheduletable').DataTable({
     serverSide: true,
     processing: true,
@@ -193,11 +194,33 @@ var table = $('#scheduletable').DataTable({
         targets: 3,
         defaultContent: "-",
         searchable: false,
+        render: (data, type, row) =>{
+            const frequency = [
+            '0 - Once',
+            '1 - Daily', 
+            '2 - Weekly', 
+            '3 - Monthly', 
+            '4 - Monthly-Relative'];
+            frequencyValue = data;
+            if ([0,1,2,3,4].includes(data)){
+                return frequency[data];
+            } 
+        }
+
     },
     {
         targets: 4,
         defaultContent: "-",
         searchable: false,
+        render: (data, type, row) =>{
+            if (frequencyValue == 2){
+                const frequencyInterval = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                return frequencyInterval[data];
+            }else if(frequencyValue == 4){
+                const frequencyInterval = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Weekday', 'Weekend'];
+                return frequencyInterval[data];
+            }else return data
+        }
     },
     {
         targets: 5,
