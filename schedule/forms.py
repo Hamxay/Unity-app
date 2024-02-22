@@ -26,3 +26,15 @@ class ScheduleForm(forms.ModelForm):
             'ActiveStartTime': forms.TimeInput(attrs={'type': 'time'}),
             'ActiveEndTime': forms.TimeInput(attrs={'type': 'time'}),
         }
+        labels = {
+            'IsEnabled': ":Is Enabled",
+            "FrequencyInterval": "Frequency Interval",
+            "FrequencyRelativeInterval": " Frequency Relative Interval",
+            "FrequencyRecurrenceFactor": "Frequency Recurrence Factor",
+            "FrequencySubDayType": "Frequency Sub DayType",
+            "FrequencySubDayInterval": "Frequency Sub Day Interval",
+            "ActiveStartDate": "Active Start Date",
+            "ActiveEndDate": "Active End Date",
+            "ActiveStartTime": "Active Start Time",
+            "ActiveEndTime": "Active End Time",
+        }

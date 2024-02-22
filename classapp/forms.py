@@ -20,6 +20,10 @@ class ClassForm(forms.ModelForm):
         ]
         labels = {
             'InterfaceId': 'Interface',
+            "TargetAlias": "Target Alias",
+            "IgnoreOnIngest": "Ignore On Ingest",
+            "SlideWindowAttribute": "Slide Window Attribute",
+            "SlideWindowDays": "Slide Window Days",
         }
 
 

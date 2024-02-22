@@ -14,5 +14,8 @@ class CollectionForm(forms.ModelForm):
         ]
         labels = {
             'interfaceid': 'Interface ',
+            "name": "Name",
+            "description": "Description",
+            "executionorder": "Execution Order",
+            "executiontriggerrule": "Execution Trigger Rule",
         }
-

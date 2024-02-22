@@ -20,7 +20,11 @@ class TaskForm(forms.ModelForm):
         labels = {
             'ClassId': 'Class',
             'CollectionId': 'Collection',
-            'LoadPatternId': 'LoadPattern',
+            'LoadPatternId': 'Load Pattern',
+            "ProcessName": "Process Name",
+            "ProcessParameters": "Process Parameters",
+            "SubProcessParameters": "Sub-Process Parameters",
+            "DeduplicateSource": "Deduplicate Source",
         }
 
 

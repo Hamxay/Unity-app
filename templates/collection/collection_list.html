@@ -60,7 +60,7 @@
                                                <tr>
                                                 <th>Action</th>
                                                 <th data-data="code" data-name="code">Code</th>
-                                                <th data-data="interfaceid" data-name="interfaceid">Interface(Code - Name)</th>
+                                                <th data-data="interfaceid" data-name="interfaceid">Interface (Code - Name)</th>
                                                 <th data-data="name" data-name="name">Name</th>
                                                 <th data-data="description" data-name="description">Description</th>
                                                 <th data-data="executionorder" data-name="executionorder">Execution Order</th>
@@ -172,6 +172,12 @@ var table = $('#classTable').DataTable( {
         targets: 6,
         defaultContent: "-",
         searchable: false,
+        render:(data,type,row)=>{
+            if (data == 1){
+            return '1 - Success';
+        } else if (data == 2){
+            return '2 - Complete';}
+        }
     },
     {
         targets: 7,

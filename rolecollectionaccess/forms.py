@@ -7,6 +7,6 @@ class RoleCollectionAccessForm(forms.ModelForm):
         model = RoleCollectionAccess
         fields = ["collectionId", "RoleId"]
         labels = {
-            'collectionId': 'collection',
+            'collectionId': 'Collection',
             'RoleId': 'Role',
         }
