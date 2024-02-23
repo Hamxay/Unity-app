@@ -37,7 +37,7 @@ def import_tasks_from_file(file, current_user, success_url, request):
                 LoadPatternId=load_pattern_instance,
                 created_by=current_user,
                 updated_by=current_user,
-                **row.drop(['ClassId', 'CollectionId', 'LoadPatternId',  'created_by', 'updated_by']).to_dict()
+                **row.drop(['ClassId', 'CollectionId', 'LoadPatternId', 'Id']).to_dict()
             )
             task_instance.full_clean()
             task_instance.save()
