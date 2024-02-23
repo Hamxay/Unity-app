@@ -15527,6 +15527,3 @@ span.flatpickr-weekday {
 #explorecard-list .list-element:nth-child(-n+10) {
   display: block;
 }
-.nav-item:active {
-    color: var(--vz-topnav-item-color-active);
-}

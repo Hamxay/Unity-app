@@ -145,28 +145,28 @@
 <!-- Vertical Overlay -->
 <div class="vertical-overlay"></div>
 {% endblock %}
-<script>
-var currentUrl = window.location.href;
-var temp;
-var rootWord = currentUrl.split('/')[3];
-if (rootWord == 'interface' && ['dependence', 'type', 'category'].includes(currentUrl.split('/')[4])) {
-  temp = currentUrl.split('/')[4];
-  rootWord = rootWord + currentUrl.split('/')[4];
-}
-var listItems = document.querySelectorAll('.navbar-nav .nav-item');
-listItems.forEach(function(listItem) {
-    var link = listItem.querySelector('.nav-link');
-    var href = link.getAttribute('href');
-    console.log(href.split('/'))
+<!--<script>-->
+<!--var currentUrl = window.location.href;-->
+<!--var temp;-->
+<!--var rootWord = currentUrl.split('/')[3];-->
+<!--if (rootWord == 'interface' && ['dependence', 'type', 'category'].includes(currentUrl.split('/')[4])) {-->
+<!--  temp = currentUrl.split('/')[4];-->
+<!--  rootWord = rootWord + currentUrl.split('/')[4];-->
+<!--}-->
+<!--var listItems = document.querySelectorAll('.navbar-nav .nav-item');-->
+<!--listItems.forEach(function(listItem) {-->
+<!--    var link = listItem.querySelector('.nav-link');-->
+<!--    var href = link.getAttribute('href');-->
+<!--    console.log(href.split('/'))-->
 
-    var hrefRootWord = href.split('/')[1];
-    if (href, href.split('/').includes(temp)){
-      link.classList.add('active');
-      return;
-    }
-    else if (hrefRootWord === rootWord) {
-      link.classList.add('active');
-    }
-});
+<!--    var hrefRootWord = href.split('/')[1];-->
+<!--    if (href, href.split('/').includes(temp)){-->
+<!--      link.classList.add('active');-->
+<!--      return;-->
+<!--    }-->
+<!--    else if (hrefRootWord === rootWord) {-->
+<!--      link.classList.add('active');-->
+<!--    }-->
+<!--});-->
 
-</script>
+<!--</script>-->
