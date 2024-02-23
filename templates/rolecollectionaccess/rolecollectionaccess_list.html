@@ -91,8 +91,8 @@
                                                <tr>
                                                 <th>Action</th>
                                                 <th data-data="code" data-name="code">Code</th>
-                                                <th data-data="collectionId" data-name="collectionId">Collection ID</th>
-                                                <th data-data="RoleId" data-name="RoleId">Role ID</th>
+                                                <th data-data="collectionId" data-name="collectionId">Collection (Code - Name)</th>
+                                                <th data-data="RoleId" data-name="RoleId">Role (Code - Name)</th>
                                                 <th data-data="created_date" data-name="created_date">Created Date</th>
                                                 <th data-data="created_by" data-name="created_by">Created By</th>
                                                 <th data-data="updated_date" data-name="updated_date">Updated Date</th>
@@ -177,11 +177,17 @@ var table = $('#rolecollectionaccesstable').DataTable({
             targets: 2,
             defaultContent: "-",
             searchable: false,
+            render: (data, type, row)=>{
+                return data.code + ' - ' + data.name
+            }
         },
         {
             targets: 3,
             defaultContent: "-",
             searchable: false,
+            render: (data, type, row)=>{
+                return data.code + ' - ' + data.name
+            }
         },
         {
             targets: 4,
