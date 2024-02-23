@@ -31,7 +31,7 @@ def import_attributes_from_file(file, current_user, success_url, request):
                 class_id=class_instance,
                 created_by=current_user,
                 updated_by=current_user,
-                **row.drop(['class_id', 'created_by', 'updated_by']).to_dict()
+                **row.drop(['class_id', 'id']).to_dict()
             )
             attribute_instance.full_clean()
             attribute_instance.save()
