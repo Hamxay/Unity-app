@@ -6,9 +6,9 @@ from .views import (
     ConnectionListView,
     ConnectionUpdateView,
     HistoricalConnectionListView,
-    HistoricalConnectionUpdateView,
+    HistoricalConnectionUpdateView, ConnectionDetailView,
 )
-from .viewsets import ConnectionViewset, ConnectionHistoryViewset
+from .viewsets import ConnectionViewset, ConnectionHistoryViewset, ConnectionDropdownViewset
 
 router = routers.DefaultRouter()
 router.register("connection", ConnectionViewset, basename="connection")
@@ -16,6 +16,11 @@ router.register(
     "connection/history",
     ConnectionHistoryViewset,
     basename="connection_history",
+)
+router.register(
+    "connection/relations",
+    ConnectionDropdownViewset,
+    basename="connection_relations",
 )
 
 app_name = "connection"
@@ -34,6 +39,11 @@ urlpatterns = [
         name="connection_delete",
     ),
     path(
+        "relations/<int:pk>/",
+        ConnectionDetailView.as_view(),
+        name="connection_relations",
+    ),
+    path(
         "history/list/<int:pk>/",
         HistoricalConnectionListView.as_view(),
         name="historicalconnection_list",
@@ -43,4 +53,6 @@ urlpatterns = [
         HistoricalConnectionUpdateView.as_view(),
         name="historicalconnection_update",
     ),
+    path("id/<int:pk>/", ConnectionDetailView.as_view(), name="connection_detail"),
+
 ]

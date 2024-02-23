@@ -30,6 +30,15 @@
                                             class="btn btn-danger add-btn">
                                             <i class="ri-add-line align-bottom me-1"></i> Create Attribute
                                         </a>
+                                        <a role="button"
+                                        href="{% url 'attribute:downloadTemplate' %}"
+                                         class="btn btn-danger add-btn"
+                                          id="downloadTemplateBtn">
+                                            <i class="ri-file-download-line align-bottom me-1"></i> Download Template
+                                        </a>
+                                        <button type="button" class="btn btn-danger add-btn" data-bs-toggle="modal" data-bs-target="#uploadFileModal">
+                                            Import from csv/excel
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -58,9 +67,8 @@
                                            <thead class="table-light text-muted">
                                                <tr>
                                                 <th>Action</th>
-                                                <th data-data="id" data-name="id">ID</th>
                                                 <th data-data="code" data-name="code">Code</th>
-                                                <th data-data="class_id" data-name="class_id">Class ID</th>
+                                                <th data-data="class_id" data-name="class_id">Class (Code - Name)</th>
                                                 <th data-data="source_name" data-name="source_name">Source Name</th>
                                                 <th data-data="target_name" data-name="target_name">Target Name</th>
                                                 <th data-data="source_description" data-name="source_description">Source Description</th>
@@ -125,6 +133,41 @@
                     </div>
                 </div>
                 <!--end delete modal -->
+                <!-- File Upload Modal -->
+                <<div class="modal fade flip"
+                id="uploadFileModal"
+                tabindex="-1"
+                aria-labelledby="uploadFileModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-body p-5 text-center">
+                            <script src="https://cdn.lordicon.com/lordicon.js"></script>
+                            <lord-icon src="https://cdn.lordicon.com/dxnllioo.json" trigger="loop" colors="primary:#104891,secondary:#e86830" style="width:90px;height:90px"> </lord-icon>
+                            <div class="mt-4 text-center">
+                                <h4>Choose a CSV OR Excel file</h4>
+                                <p class="text-muted fs-14 mb-4">
+                                    Make sure that your file is according to the attribute template.
+                                </p>
+                                <div class="hstack gap-2 justify-content-center remove">
+                                    {% comment %} <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> {% endcomment %}
+                                <form method="post" action="{% url 'attribute:import_class_from_file' %}" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <input type="file" name="file" class="form-control" required>
+                                    <div class="mt-3">
+                                        <button class="btn btn-link btn-ghost-success fw-medium text-decoration-none" data-bs-dismiss="modal">
+                                            <i class="ri-close-line me-1 align-middle"></i> Close
+                                        </button>
+                                        <button type="submit" class="btn btn-danger add-btn">Confirm</button>
+                                    </div>
+                                </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end File Upload Modal -->
             </div>
             <!-- container-fluid -->
         </div>
@@ -142,22 +185,38 @@
 <script src="{% static 'js/moment-2.29.2.min.js' %}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 <script type="text/javascript">
-var table = $('#AttributeTable').DataTable( {
+var ClassIdParam = new URLSearchParams(window.location.search).get('class_id');
+var url = "/api/attribute/?format=datatables";
+if (ClassIdParam) {
+    url += '&class_id=' + ClassIdParam;
+}
+var attributeTableParams = {};
+var table = $('#AttributeTable').DataTable({
     serverSide: true,
     processing: true,
-    order: [[22, 'desc']],
+    order: [[21, 'desc']],
     "ajax": {
-        "url": "/api/attribute/?format=datatables"
+        "url": url,
+        "data": function (d) {
+            return $.extend(d, attributeTableParams);
+        }
     },
     "dom": 'lrtip',
     "columnDefs": [
     {
         targets: 1,
-        visible: false
+        defaultContent: "-"
     },
     {
         targets: 2,
-        defaultContent: "-"
+        defaultContent: "-",
+        render: function (data, type, row) {
+        if (typeof data === 'object' && data !== null) {
+            return data.Code + ' - ' + data.Name;
+        } else {
+            return data;
+        }
+        }
     },
     {
         targets: 3,
@@ -169,97 +228,115 @@ var table = $('#AttributeTable').DataTable( {
     },
     {
         targets: 5,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 6,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 7,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 8,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 9,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 10,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 11,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 12,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 13,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 14,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 15,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 16,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 17,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 18,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 19,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 20,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 21,
-        defaultContent: "-"
+        searchable: false,
+        render: (data, type, row)=>{
+            return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
+        }
     },
     {
         targets: 22,
-        render: (data, type, row)=>{
-            return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
-        }
+        defaultContent: "-",
+        searchable: false,
+
     },
     {
         targets: 23,
-        defaultContent: "-"
-    },
-    {
-        targets: 24,
+        searchable: false,
         render: (data, type, row)=>{
             return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
         }
     },
     {
-        targets: 25,
-        defaultContent: "-"
+        targets: 24,
+        defaultContent: "-",
+        searchable: false,
+
     },
     {
         targets: 0,  // 0 the first, 1 the second, etc.
         sortable: false,
         searchable: false,
-        // The `data` parameter refers to the data for the cell.
+        // The `data` arameter refers to the data for the cell.
         // The `rows`argument is an object representing all the data for the current row.
         render: ( data, type, row ) => {
             let viewURL = "{% url 'attribute:historicalattribute_list' pk=0 %}"
@@ -270,18 +347,18 @@ var table = $('#AttributeTable').DataTable( {
                 
             actions += `
             <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="History">
-            <a href="${viewURL.replace('0', row.id)}" class="text-primary d-inline-block">
+            <a href="${viewURL.replace('0', row.code)}" class="text-primary d-inline-block">
                 <i class="mdi mdi-history fs-16"></i>
             </a>
             </li>`
             actions += `<li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
-                <a href="${editURL.replace('0', row.id)}" class="text-primary d-inline-block edit-item-btn">
+                <a href="${editURL.replace('0', row.code)}" class="text-primary d-inline-block edit-item-btn">
                     <i class="ri-pencil-fill fs-16"></i>
                 </a>
             </li>`
         
             actions += `<li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
-            <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder" data-url="${deleteURL.replace('0', row.id)}">
+            <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder" data-url="${deleteURL.replace('0', row.code)}">
             <i class="ri-delete-bin-5-fill fs-16"></i>
                 </a>
             </li>`
@@ -301,9 +378,9 @@ $(document).ready(function(){
     
     // Filters for table
     $('#id_search').on('keyup', function () {
-        table.search( this.value ).draw();
-    } );
-    
+        attributeTableParams.search = $(this).val();
+        table.ajax.reload();
+    });
 })
 </script>
 {% endblock extra_js %}

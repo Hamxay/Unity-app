@@ -58,7 +58,7 @@
                                            <thead class="table-light text-muted">
                                                <tr>
                                                 <th>Action</th>
-                                                <th data-data="id" data-name="id">ID</th>
+                                                <th data-data="code" data-name="code">Code</th>
                                                 <th data-data="interface_id" data-name="interface_id">Interface ID</th>
                                                 <th data-data="dependent_on_interface" data-name="dependent_on_interface">Dependent On Interface</th>
                                                 <th data-data="created_date" data-name="created_date">Created Date</th>
@@ -127,7 +127,7 @@
 var table = $('#InterfaceDependenceTable').DataTable( {
     serverSide: true,
     processing: true,
-    order: [[4, 'desc']],
+    order: [[3, 'desc']],
     "ajax": {
         "url": "/api/interface/dependence/?format=datatables"
     },
@@ -135,11 +135,14 @@ var table = $('#InterfaceDependenceTable').DataTable( {
     "columnDefs": [
     {
         targets: 1,
-        visible: false
+        defaultContent: "-"
     },
     {
         targets: 2,
-        defaultContent: "-"
+        defaultContent: "-",
+        render: (data)=>{
+        return data.code +' - '+ data.name
+        }
     },
     {
         targets: 3,
@@ -178,13 +181,13 @@ var table = $('#InterfaceDependenceTable').DataTable( {
             let actions =  `<ul class="list-inline hstack gap-2 mb-0">`
 
             actions += `<li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
-                <a href="${editURL.replace('0', row.id)}" class="text-primary d-inline-block edit-item-btn">
+                <a href="${editURL.replace('0', row.code)}" class="text-primary d-inline-block edit-item-btn">
                     <i class="ri-pencil-fill fs-16"></i>
                 </a>
             </li>`
         
             actions += `<li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
-            <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder" data-url="${deleteURL.replace('0', row.id)}">
+            <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder" data-url="${deleteURL.replace('0', row.code)}">
             <i class="ri-delete-bin-5-fill fs-16"></i>
                 </a>
             </li>`

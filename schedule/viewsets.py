@@ -5,8 +5,15 @@ from .serializer import ScheduleSerializer, ScheduleHistorySerializer
 
 
 class ScheduleViewset(viewsets.ModelViewSet):
-    queryset = Schedule.objects.all()
     serializer_class = ScheduleSerializer
+
+    def get_queryset(self):
+        code = self.request.query_params.get('code')
+        if code:
+            queryset = Schedule.objects.filter(Code=code)
+        else:
+            queryset = Schedule.objects.all()
+        return queryset
 
 
 class ScheduleHistoryViewset(viewsets.ViewSet):

@@ -22,7 +22,7 @@ class BaseModel(models.Model):
 
 
 class StatusUpcoming(BaseModel):
-    code = models.IntegerField(unique=True)
+    code = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=250, blank=False, null=False)
     description = models.TextField(max_length=500, blank=True, null=True)
 

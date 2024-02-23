@@ -1,16 +1,19 @@
+from django.db.models import ProtectedError
 from django.shortcuts import redirect
 from django import forms
 from django.views.generic import (
     ListView,
     CreateView,
     UpdateView,
-    DeleteView,
+    DeleteView, DetailView,
 )
 from django.utils import timezone
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.contrib import messages
+
+from .forms import CollectionForm
 from .models import Collection
 
 
@@ -43,15 +46,7 @@ class CollectionCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 
     permission_required = "collection.add_class"
     model = Collection
-    fields = [
-        "code",
-        "precedingcollectionid",
-        "interfaceid",
-        "name",
-        "description",
-        "executionorder",
-        "executiontriggerrule",
-    ]
+    form_class = CollectionForm
 
     success_url = reverse_lazy("collection:collection_list")
     success_message = "Collection was added successfully"
@@ -67,8 +62,6 @@ class CollectionUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     permission_required = "collection.change_class"
     model = Collection
     fields = [
-        "code",
-        "precedingcollectionid",
         "interfaceid",
         "name",
         "description",
@@ -93,12 +86,15 @@ class CollectionDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     success_message = "Record was deleted successfully"
 
     def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        self.object.deleted_by = request.user
-        self.object.deleted_date = timezone.now()
-        self.object.delete()
-        success_url = self.get_success_url()
-        messages.success(self.request, self.success_message)
+        try:
+            self.object = self.get_object()
+            self.object.deleted_by = request.user
+            self.object.deleted_date = timezone.now()
+            success_url = self.get_success_url()
+            self.object.delete()
+            messages.success(self.request, self.success_message)
+        except ProtectedError:
+            messages.error(self.request, "Cannot delete this record because it is referenced through protected foreign keys.")
         return redirect(success_url)
 
 
@@ -119,10 +115,15 @@ class HistoricalCollectionUpdateView(LoginRequiredMixin, UpdateView):
     def get(self, request, *args, **kwargs):
         pk = self.kwargs.get("pk")
         data = Collection.history.get(pk=pk)
-        collection_obj = Collection.objects.get(pk=data.id)
+        collection_obj = Collection.objects.get(pk=data.code)
         for field in collection_obj._meta.fields:
             field_name = field.name
             setattr(collection_obj, field_name, getattr(data, field_name))
-        collection_obj.save_without_historical_record()
+        collection_obj.save()
         messages.success(self.request, "Table restored successfully")
         return redirect(reverse_lazy("collection:collection_list"))
+
+
+class CollectionDetailView(LoginRequiredMixin, DetailView):
+    permission_required = "collection.collection_relations"
+    model = Collection

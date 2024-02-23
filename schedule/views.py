@@ -1,10 +1,11 @@
-from django.shortcuts import redirect
+from django.db.models import ProtectedError
+from django.shortcuts import get_object_or_404, redirect
 from django import forms
 from django.views.generic import (
     ListView,
     CreateView,
     UpdateView,
-    DeleteView,
+    DeleteView, DetailView,
 )
 from django.utils import timezone
 from django.contrib.messages.views import SuccessMessageMixin
@@ -13,6 +14,7 @@ from django.urls import reverse_lazy
 from django.contrib import messages
 
 from historyconfiguration.helper import history_enable
+from .forms import ScheduleForm
 from .models import Schedule
 
 
@@ -45,22 +47,7 @@ class ScheduleCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 
     permission_required = "schedule.add_schedule"
     model = Schedule
-    fields = [
-        "Code",
-        "Name",
-        "Frequency",
-        "FrequencyInterval",
-        "FrequencyRelativeInterval",
-        "FrequencyRecurrenceFactor",
-        "FrequencySubDayType",
-        "FrequencySubDayInterval",
-        "ActiveStartDate",
-        "ActiveEndDate",
-        "ActiveStartTime",
-        "ActiveEndTime",
-        "IsEnabled",
-        "Version",
-    ]
+    form_class = ScheduleForm
     success_url = reverse_lazy("schedule:schedule_list")
     success_message = "Schedule was added successfully"
 
@@ -75,7 +62,6 @@ class ScheduleUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     permission_required = "schedule.change_schedule"
     model = Schedule
     fields = [
-        "Code",
         "Name",
         "Frequency",
         "FrequencyInterval",
@@ -107,12 +93,16 @@ class ScheduleDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     success_message = "Record was deleted successfully"
 
     def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        self.object.deleted_by = self.request.user
-        self.object.deleted_date = timezone.now()
-        self.object.delete()
-        success_url = self.get_success_url()
-        messages.success(self.request, self.success_message)
+        try:
+            self.object = self.get_object()
+            self.object.deleted_by = request.user
+            self.object.deleted_date = timezone.now()
+            success_url = self.get_success_url()
+            self.object.delete()
+            messages.success(self.request, self.success_message)
+        except ProtectedError as e:
+            messages.error(self.request,
+                           "Cannot delete this record because it is referenced through protected foreign keys.")
         return redirect(success_url)
 
 
@@ -142,3 +132,8 @@ class HistoricalScheduleUpdateView(LoginRequiredMixin, UpdateView):
         Schedule_obj.save_without_historical_record()
         messages.success(self.request, "Table restored successfully")
         return redirect(reverse_lazy("schedule:schedule_list"))
+
+
+class ScheduleDetailView(LoginRequiredMixin, DetailView):
+    permission_required = "schedule.schedule_detail"
+    model = Schedule

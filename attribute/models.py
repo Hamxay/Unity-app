@@ -2,6 +2,7 @@ from django.db import models
 from accounts.models import User
 from simple_history.models import HistoricalRecords
 
+from classapp.models import Class
 from collection.models import HistoricalModel
 
 
@@ -25,8 +26,8 @@ class BaseModel(models.Model):
 
 
 class Attribute(BaseModel):
-    code = models.IntegerField(unique=True)
-    class_id = models.IntegerField()
+    code = models.BigAutoField(primary_key=True)
+    class_id = models.ForeignKey(Class, on_delete=models.PROTECT)
     source_name = models.CharField(max_length=128)
     target_name = models.CharField(max_length=128)
     source_description = models.CharField(max_length=250, null=True)
@@ -41,11 +42,10 @@ class Attribute(BaseModel):
     target_precision = models.IntegerField(null=True)
     source_scale = models.IntegerField(null=True)
     target_scale = models.IntegerField(null=True)
-    is_primary_key = models.CharField(max_length=1)
-    is_snapshot_key = models.CharField(max_length=1)
-    is_nullable = models.CharField(max_length=1)
-    ignore_on_ingest = models.CharField(max_length=1)
-
+    is_primary_key = models.BooleanField(default=False)
+    is_snapshot_key = models.BooleanField(default=False)
+    is_nullable = models.BooleanField(default=False)
+    ignore_on_ingest = models.BooleanField(default=False)
     history = HistoricalRecords(bases=[HistoricalModel])
 
     def save_without_historical_record(self, *args, **kwargs):

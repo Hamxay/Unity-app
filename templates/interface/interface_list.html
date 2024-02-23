@@ -35,6 +35,23 @@
                             </div>
                             
                             <!--end card-body-->
+                            <div class="card-body border border-dashed border-end-0 border-start-0">
+                                <form>
+                                    <div class="row g-3">
+                                        <div class="col-xxl-5 col-sm-12">
+                                            <div class="search-box">
+                                                <input type="text"
+                                                       class="form-control search bg-light border-light"
+                                                       placeholder="Search..."
+                                                       id="id_search">
+                                                <i class="ri-search-line search-icon"></i>
+                                            </div>
+                                        </div>
+                                        <!--end col-->
+                                    </div>
+                                    <!--end row-->
+                                </form>
+                            </div>
                             <div class="card-body">
                                 <div class="table-responsive table-card mb-4">
                                     <table class="table align-middle table-nowrap mb-0"
@@ -42,12 +59,11 @@
                                            <thead class="table-light text-muted">
                                                <tr>
                                                     <th>Action</th>
-                                                    <th data-data="id" data-name="id">ID</th>
                                                     <th data-data="code" data-name="code">Code</th>
-                                                    <th data-data="interface_category_id" data-name="interface_category_id">Interface Category ID</th>
-                                                    <th data-data="interface_type_id" data-name="interface_type_id">Interface Type ID</th>
-                                                    <th data-data="schedule_id" data-name="schedule_id">Schedule ID</th>
-                                                    <th data-data="connection_id" data-name="connection_id">Connection ID</th>
+                                                    <th data-data="interface_category_id" data-name="interface_category_id">Interface Category (Code - Name)</th>
+                                                    <th data-data="interface_type_id" data-name="interface_type_id">Interface Type (Code - Name)</th>
+                                                    <th data-data="schedule_id" data-name="schedule_id">Schedule (Code - Name)</th>
+                                                    <th data-data="connection_id" data-name="connection_id">Connection (Code - Name) </th>
                                                     <th data-data="name" data-name="name">Name</th>
                                                     <th data-data="description" data-name="description">Description</th>
                                                     <th data-data="priority" data-name="priority">Priority</th>
@@ -64,7 +80,7 @@
                                                     <th data-data="updated_by" data-name="updated_by">Updated By</th>
                                                 </tr>
                                             </thead>
-                                        <tbody class="list form-check-all">
+                                        <tbody id="tableContent" class="list form-check-all">
                                         </tbody>
                                     </table>
                                     <!--end table-->
@@ -121,99 +137,173 @@
 <script src="{% static 'js/moment-2.29.2.min.js' %}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 <script type="text/javascript">
+var ConnectionIdParam = new URLSearchParams(window.location.search).get('ConnectionId');
+var InterfaceCategoryIdParam = new URLSearchParams(window.location.search).get('InterfaceCategoryId');
+var LoadPatternIdParam = new URLSearchParams(window.location.search).get('LoadPatternId');
+var InterfaceTypeIdParam = new URLSearchParams(window.location.search).get('InterfaceTypeId');
+var InterfaceIdParam = new URLSearchParams(window.location.search).get('code');
+var ClassIdParam = new URLSearchParams(window.location.search).get('class_id');
+var url = "/api/interface/?format=datatables";
+if (ConnectionIdParam) {
+    url += '&ConnectionId=' + ConnectionIdParam;
+}
+if (InterfaceCategoryIdParam) {
+    url += '&InterfaceCategoryId=' + InterfaceCategoryIdParam;
+}
+if (InterfaceTypeIdParam) {
+    url += '&InterfaceTypeId=' + InterfaceTypeIdParam;
+}
+if (LoadPatternIdParam) {
+    url += '&LoadPatternId=' + LoadPatternIdParam;
+}
+if (InterfaceIdParam){
+    url += '&code=' + InterfaceIdParam;
+}
+if (ClassIdParam){
+    url += '&class_id=' + ClassIdParam;
+}
 var table = $('#classTable').DataTable( {
     serverSide: true,
     processing: true,
-    order: [[17, 'desc']],
+    order: [[16, 'desc']],
     "ajax": {
-        "url": "/api/interface/?format=datatables"
+        "url": url
     },
     "dom": 'lrtip',
     "columnDefs": [
     {
         targets: 1,
-        visible: false
+        defaultContent: "-"
     },
     {
         targets: 2,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
+        render: function (data, type, row) {
+            if (typeof data === 'object' && data !== null) {
+                return data.code + ' - ' + data.name;
+            } else {
+                return data;
+            }
+        }
     },
     {
         targets: 3,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
+        render: function (data, type, row) {
+            if (typeof data === 'object' && data !== null) {
+                return data.code + ' - ' + data.name;
+            } else {
+                return data;
+            }
+        }
     },
     {
         targets: 4,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
+        render: function (data, type, row) {
+            if (typeof data === 'object' && data !== null) {
+                return data.Code + ' - ' + data.Name;
+            } else {
+                return data;
+            }
+        }
     },
     {
         targets: 5,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
+        render: function (data, type, row) {
+            if (typeof data === 'object' && data !== null) {
+                return data.code + ' - ' + data.name;
+            } else {
+                return data;
+            }
+        }
     },
     {
         targets: 6,
-        visible: false
+        defaultContent: "-"
     },
     {
         targets: 7,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 8,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 9,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 10,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 11,
-        visible: false
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 12,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 13,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 14,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 15,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
+        render: function (data, type, row) {
+            if (data === 1) {
+                return "1 - Execute Regardless";
+            } else if (data === 2) {
+                return "2 - Stop/Do Not Execute";
+            } else {
+                return "-";
+            }
+        },
     },
     {
         targets: 16,
-        defaultContent: "-"
-    },
-   
-    {
-        targets: 17,
+        searchable: false,
         render: (data, type, row)=>{
             return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
         }
+    },
+    {
+        targets: 17,
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 18,
-        defaultContent: "-"
-    },
-    {
-        targets: 19,
+        searchable: false,
         render: (data, type, row)=>{
             return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
         }
     },
     {
-        targets: 20,
-        defaultContent: "-"
+        targets: 19,
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 0,  // 0 the first, 1 the second, etc.
@@ -225,23 +315,24 @@ var table = $('#classTable').DataTable( {
             let viewURL = "{% url 'interface:historicalinterface_list' pk=0 %}"
             let editURL = "{% url 'interface:interface_update' pk=0 %}"
             let deleteURL = "{% url 'interface:interface_delete' pk=0 %}"
+            let dropdownURL = "{% url 'interface:references' pk=0 %}"
             
             let actions =  `<ul class="list-inline hstack gap-2 mb-0">`
                 
             actions += `
             <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="History">
-            <a href="${viewURL.replace('0', row.id)}" class="text-primary d-inline-block">
+            <a href="${viewURL.replace('0', row.code)}" class="text-primary d-inline-block">
                 <i class="mdi mdi-history fs-16"></i>
             </a>
             </li>`
             actions += `<li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
-                <a href="${editURL.replace('0', row.id)}" class="text-primary d-inline-block edit-item-btn">
+                <a href="${editURL.replace('0', row.code)}" class="text-primary d-inline-block edit-item-btn">
                     <i class="ri-pencil-fill fs-16"></i>
                 </a>
             </li>`
         
             actions += `<li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
-            <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder" data-url="${deleteURL.replace('0', row.id)}">
+            <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder" data-url="${deleteURL.replace('0', row.code)}">
             <i class="ri-delete-bin-5-fill fs-16"></i>
                 </a>
             </li>`
@@ -260,10 +351,56 @@ $(document).ready(function(){
     })
     
     // Filters for table
-    $('#id_search').on('keyup', function () {
-        table.search( this.value ).draw();
-    } );
-    
+    $("#example_wrapper input[type='search']").on("keydown", function(evt){
+        if(evt.keyCode == 13){
+          $("#example").DataTable().search($("input[type='search']").val()).draw();
+        }
+   });
 })
+
+$('#classTable').on('contextmenu', 'tbody tr', function(e) {
+    e.preventDefault();
+    var interfaceData = table.row(this).data();
+    var interfaceCode = interfaceData.code;
+    var scheduleCode = interfaceData.schedule_id.Code;
+    var baseUrl = window.location.origin;
+    $.ajax({
+        url: baseUrl + '/api/references/' + interfaceCode + '/',
+        method: 'GET',
+        success: function (interfaceData) {
+            $('.dropdown-menu').remove();
+            var dropdownMenu = $('<div class="dropdown-menu" role="menu"></div>');
+            var classUrl = baseUrl + '/class/list?InterfaceId=' + interfaceCode;
+            var scheduleUrl = baseUrl + '/schedule/list?code=' + scheduleCode;
+            var collectionUrl = baseUrl + '/collection/list?InterfaceId=' + interfaceCode;
+
+            dropdownMenu.append('<a class="dropdown-item" href="' + classUrl + '">Class</a>');
+            dropdownMenu.append('<a class="dropdown-item" href="' + scheduleUrl + '">Schedule</a>');
+            dropdownMenu.append('<a class="dropdown-item" href="' + collectionUrl + '">Collection</a>');
+
+            dropdownMenu.css({
+                position: 'absolute',
+                left: e.pageX,
+                top: e.pageY,
+                display: 'block',
+            });
+            $('body').append(dropdownMenu);
+            $(document).on('click.contextMenu', function () {
+                dropdownMenu.remove();
+                $(document).off('click.contextMenu');
+            });
+        },
+        error: function () {
+            console.error('Error fetching interface by ID', interfaceId);
+        }
+    });
+});
+
+$('#id_search').on('keyup', function () {
+    var searchValue = this.value;
+    table.search(searchValue).draw();
+});
+
+
 </script>
 {% endblock extra_js %}

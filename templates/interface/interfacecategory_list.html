@@ -33,6 +33,35 @@
                                     </div>
                                 </div>
                             </div>
+                            <style>
+                                /* Alert box styles */
+                                .alert-admin {
+                                    padding: 20px;
+                                    background-color: #f44336; /* Red background color */
+                                    color: white; /* White text color */
+                                    margin-bottom: 15px;
+                                    position: relative;
+                                }
+                                /* Close button styles */
+                                .closebtn-admin {
+                                    margin-left: 15px;
+                                    color: white;
+                                    font-weight: bold;
+                                    float: right;
+                                    font-size: 22px;
+                                    line-height: 20px;
+                                    cursor: pointer;
+                                    transition: 0.3s;
+                                }
+                                .closebtn-admin:hover {
+                                    color: black;
+                                }
+                            </style>
+                            <!-- Custom alert box -->
+                            <div id="customAlert" class="alert-admin" style="display: none;">
+                                <span class="closebtn-admin" onclick="document.getElementById('customAlert').style.display='none';">&times;</span>
+                                This action is only allowed for admin users.
+                            </div>
                             <div class="card-body border border-dashed border-end-0 border-start-0">
                                 <form>
                                     <div class="row g-3">
@@ -58,7 +87,6 @@
                                            <thead class="table-light text-muted">
                                                <tr>
                                                 <th>Action</th>
-                                                <th data-data="id" data-name="id">ID</th>
                                                 <th data-data="code" data-name="code">Code</th>
                                                 <th data-data="name" data-name="name">Name</th>
                                                 <th data-data="description" data-name="description">Description</th>
@@ -128,7 +156,7 @@
 var table = $('#InterfaceCategoryTable').DataTable( {
     serverSide: true,
     processing: true,
-    order: [[5, 'desc']],
+    order: [[4, 'desc']],
     "ajax": {
         "url": "/api/interface/category/?format=datatables"
     },
@@ -136,39 +164,40 @@ var table = $('#InterfaceCategoryTable').DataTable( {
     "columnDefs": [
     {
         targets: 1,
-        visible: false
+        defaultContent: "-",
     },
     {
         targets: 2,
-        defaultContent: "-"
+        defaultContent: "-",
     },
     {
         targets: 3,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 4,
-        defaultContent: "-"
+        searchable: false,
+        render: (data, type, row)=>{
+            return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
+        }
     },
     {
         targets: 5,
-        render: (data, type, row)=>{
-            return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
-        }
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 6,
-        defaultContent: "-"
-    },
-    {
-        targets: 7,
+        searchable: false,
         render: (data, type, row)=>{
             return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
         }
     },
     {
-        targets: 8,
-        defaultContent: "-"
+        targets: 7,
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 0,  // 0 the first, 1 the second, etc.
@@ -177,27 +206,80 @@ var table = $('#InterfaceCategoryTable').DataTable( {
         // The `data` parameter refers to the data for the cell.
         // The `rows`argument is an object representing all the data for the current row.
         render: ( data, type, row ) => {
-            let editURL = "{% url 'interface:interface_category_update' pk=0 %}"
-            let deleteURL = "{% url 'interface:interface_category_delete' pk=0 %}"
-            
-            let actions =  `<ul class="list-inline hstack gap-2 mb-0">`
+        var isSuperuser = {% if request.user.is_superuser %}true{% else %}false{% endif %};
+                if (isSuperuser) {
+                    let editURL = "{% url 'interface:interface_category_update' pk=0 %}"
+                    let deleteURL = "{% url 'interface:interface_category_delete' pk=0 %}"
+                    let actions =  `<ul class="list-inline hstack gap-2 mb-0">`
+                    actions += `<li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
+                        <a href="${editURL.replace('0', row.code)}" class="text-primary d-inline-block edit-item-btn">
+                            <i class="ri-pencil-fill fs-16"></i>
+                        </a>
+                    </li>`;
 
-            actions += `<li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
-                <a href="${editURL.replace('0', row.id)}" class="text-primary d-inline-block edit-item-btn">
-                    <i class="ri-pencil-fill fs-16"></i>
-                </a>
-            </li>`
-        
-            actions += `<li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
-            <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder" data-url="${deleteURL.replace('0', row.id)}">
-            <i class="ri-delete-bin-5-fill fs-16"></i>
-                </a>
-            </li>`
+                    actions += `<li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
+                        <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder" data-url="${deleteURL.replace('0', row.code)}">
+                            <i class="ri-delete-bin-5-fill fs-16"></i>
+                        </a>
+                    </li>`;
 
-            actions += `</ul>`
-            return actions
+                    actions += `</ul>`;
+                    return actions;
+                } else {
+                    // Non-ADMIN user
+                    return `<ul class="list-inline hstack gap-2 mb-0">
+                        <li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
+                            <a href="javascript:void(0);" class="text-primary d-inline-block edit-item-btn" onclick="showAlert('${row.code}');">
+                                <i class="ri-pencil-fill fs-16"></i>
+                            </a>
+                        </li>
+                        <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
+                            <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#" onclick="showAlert('${row.code}');">
+                                <i class="ri-delete-bin-5-fill fs-16"></i>
+                            </a>
+                        </li>
+                        </ul>`;
+                }
+            },
         },
-    }]
+    ]
+});
+function showAlert(code) {
+    console.log('Show alert for row with code:', code);
+    document.getElementById("customAlert").style.display = "block";
+}
+
+
+
+$('#InterfaceCategoryTable').on('contextmenu', 'tbody tr', function(e) {
+    e.preventDefault();
+    var interfaceCategoryData = table.row(this).data();
+    var interfaceCategoryCode = interfaceCategoryData.code;
+    var baseUrl = window.location.origin;
+    $.ajax({
+        url: baseUrl + '/api/references/' + interfaceCategoryCode + '/',
+        method: 'GET',
+        success: function (interfaceCategoryData) {
+            $('.dropdown-menu').remove();
+            var dropdownMenu = $('<div class="dropdown-menu" role="menu"></div>');
+            var InterfaceUrl = baseUrl + '/interface/list?InterfaceCategoryId=' + interfaceCategoryCode;
+            dropdownMenu.append('<a class="dropdown-item" href="' + InterfaceUrl + '">Interface</a>');
+            dropdownMenu.css({
+                position: 'absolute',
+                left: e.pageX,
+                top: e.pageY,
+                display: 'block',
+            });
+            $('body').append(dropdownMenu);
+            $(document).on('click.contextMenu', function () {
+                dropdownMenu.remove();
+                $(document).off('click.contextMenu');
+            });
+        },
+        error: function () {
+            console.error('Error fetching interface by ID', interfaceId);
+        }
+    });
 });
 
 $(document).ready(function(){

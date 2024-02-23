@@ -2,6 +2,7 @@ from django.db import models
 from accounts.models import User
 from simple_history.models import HistoricalRecords
 from historyconfiguration.models import HistoricalModel
+from interface.models import Interface
 
 
 # Create your models here.
@@ -25,13 +26,16 @@ class BaseModel(models.Model):
 
 
 class Collection(BaseModel):
-    code = models.IntegerField(unique=True)
-    precedingcollectionid = models.IntegerField(null=True, blank=True)
-    interfaceid = models.IntegerField()
+    EXECUTION_TRIGGER_RULE = [
+        (1, '1 - Success'),
+        (2, '2 - Complete'),
+    ]
+    code = models.BigAutoField(primary_key=True)
+    interfaceid = models.ForeignKey(Interface, on_delete=models.PROTECT)
     name = models.CharField(max_length=128)
     description = models.CharField(max_length=250, null=True, blank=True)
     executionorder = models.IntegerField()
-    executiontriggerrule = models.SmallIntegerField()
+    executiontriggerrule = models.SmallIntegerField(choices=EXECUTION_TRIGGER_RULE)
 
     history = HistoricalRecords(bases=[HistoricalModel])
 
@@ -44,4 +48,4 @@ class Collection(BaseModel):
         return ret
 
     def __str__(self):
-        return self.name
+        return f'({self.code} - {self.name})'

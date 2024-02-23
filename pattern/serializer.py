@@ -9,3 +9,9 @@ class LoadPatternSerializer(serializers.ModelSerializer):
     class Meta:
         model = LoadPattern
         fields = "__all__"
+
+
+class LoadPatternDisplaySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LoadPattern
+        fields = ['code', 'name']

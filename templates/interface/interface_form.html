@@ -2,7 +2,7 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% block title %}
-    Create Attribute
+    Create Interface
 {% endblock title %}
 {% block extra_css %}
     <!-- Plugins css -->
@@ -10,35 +10,36 @@
           rel="stylesheet"
           type="text/css"/>
           <style>
-            .toggle {
-    /* Simple toggle switch styling */
-    appearance: none;
-    width: 60px;
-    height: 30px;
-    background-color: #ddd;
-    border-radius: 15px;
-    position: relative;
-    outline: none;
-    cursor: pointer;
-}
+                .toggle {
+                    /* Simple toggle switch styling */
+                    appearance: none;
+                    width: 60px;
+                    height: 30px;
+                    background-color: #ddd;
+                    border-radius: 15px;
+                    position: relative;
+                    outline: none;
+                    cursor: pointer;
+                }
 
-.toggle:after {
-    content: '';
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    width: 20px;
-    height: 20px;
-    background-color: white;
-    border-radius: 50%;
-    transition: 0.3s;
-}
+                .toggle:after {
+                    content: '';
+                    position: absolute;
+                    top: 5px;
+                    left: 5px;
+                    width: 20px;
+                    height: 20px;
+                    background-color: white;
+                    border-radius: 50%;
+                    transition: 0.3s;
+                }
 
-.toggle:checked:after {
-    left: 35px;
-}
-
+                .toggle:checked:after {
+                    left: 35px;
+                }
         </style>
+    <!-- stylesheet for select2 -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css">
 {% endblock extra_css %}
 {% block content %}
     <!-- ============================================================== -->
@@ -49,9 +50,9 @@
             <div class="container-fluid">
                 {% block pagetitle %}
                     {% if object %}
-                        {% include "partials/page-title.html" with pagetitle="Connection" title="Update Connection" %}
+                        {% include "partials/page-title.html" with pagetitle="Interface" title="Update Interface" %}
                     {% else %}
-                        {% include "partials/page-title.html" with pagetitle="Connection" title="Create Connection" %}
+                        {% include "partials/page-title.html" with pagetitle="Interface" title="Create Interface" %}
                     {% endif %}
                 {% endblock pagetitle %}
                 <form action="" method="post" id="ConnectionForm">
@@ -62,19 +63,16 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-lg-6">
-                                            <div class="mb-3">{{ form.code|as_crispy_field }}</div>
-                                        </div>
-                                        <div class="col-lg-6">
                                             <div class="mb-3">{{ form.interface_category_id|as_crispy_field }}</div>
                                         </div>
                                         <div class="col-lg-6">
-                                            <div class="mb-3">{{ form.interface_type_id|as_crispy_field }}</div>
+                                            <div class="mb-3">{{ form.interface_type_id|as_crispy_field}}</div>
                                         </div>
                                         <div class="col-lg-6">
-                                            <div class="mb-3">{{ form.schedule_id|as_crispy_field }}</div>
+                                            <div class="mb-3" id ="schedule_id">{{ form.schedule_id|as_crispy_field }}</div>
                                         </div>
                                         <div class="col-lg-6">
-                                            <div class="mb-3">{{ form.connection_id|as_crispy_field }}</div>
+                                            <div class="mb-3" id ="connection_id">{{ form.connection_id|as_crispy_field }}</div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">{{ form.name|as_crispy_field }}</div>
@@ -151,4 +149,46 @@
     <script src="{% static 'js/pages/project-create.init.js'%}"></script>
     <!-- jquery.js-->
     <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+    <!-- for the script of select2-->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#id_schedule_id').select2({
+                search: true,
+                placeholder: 'Select an option',
+            });
+        });
+        $(document).ready(function() {
+            $('#id_connection_id').select2({
+                search: true,
+                placeholder: 'Select an option',
+            });
+        });
+        $(document).ready(function() {
+            $('#id_interface_category_id').select2({
+                search: true,
+                placeholder: 'Select an option',
+            });
+        });
+        $(document).ready(function() {
+            $('#id_interface_category_id').select2({
+                search: true,
+                placeholder: 'Select an option',
+            });
+        });
+        $(document).ready(function() {
+            $('#id_interface_type_id').select2({
+                search: true,
+                placeholder: 'Select an option',
+            });
+        });
+        $(document).ready(function() {
+            $('#id_wait_action').select2({
+                placeholder: 'Select an option',
+                minimumResultsForSearch: Infinity
+            });
+        });
+    </script>
+    
 {% endblock extra_js %}

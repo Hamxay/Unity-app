@@ -51,10 +51,8 @@
                                         <thead class="table-light text-muted">
                                             <tr>
                                                 <th>Action</th>
-                                                <th data-data="id" data-name="id">ID</th>
                                                 <th data-data="history_id" data-name="history_id">History ID</th>
                                                 <th data-data="history_type" data-name="history_type">History Type</th>
-                                                <th data-data="id" data-name="id">ID</th>
                                                 <th data-data="code" data-name="code">Code</th>
                                                 <th data-data="name" data-name="name">Name</th>
                                                 <th data-data="description" data-name="description">Description</th>
@@ -133,11 +131,7 @@ var table = $('#ConnectionHistoryTable').DataTable( {
         visible: false
     },
     {
-        targets: 2,  // History Type
-        defaultContent: "-"
-    },
-    {
-        targets: 3,  
+        targets: 2,
         render: function(data, type, row){
             let className = 'btn-soft-primary';
             let text = "Unknown";
@@ -148,35 +142,35 @@ var table = $('#ConnectionHistoryTable').DataTable( {
         }
     },
     {
-        targets: 4,  // Code
+        targets: 3,  // Code
         defaultContent: "-"
     },
     {
-        targets: 5,  // Name
+        targets: 4,  // Name
         defaultContent: "-"
     },
     {
-        targets: 6,  // Description
+        targets: 5,  // Description
         defaultContent: "-"
     },
     {
-        targets: 7,  // Created Date
+        targets: 6,  // Created Date
         render: (data, type, row) => {
             return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
         }
     },
     {
-        targets: 8,  // Created By
+        targets: 7,  // Created By
         defaultContent: "-"
     },
     {
-        targets: 9,  // Updated Date
+        targets: 8,  // Updated Date
         render: (data, type, row) => {
             return moment.utc(row.updated_date).format('MMM DD, YYYY hh:mm A');
         }
     },
     {
-        targets: 10,  // Updated By
+        targets: 9,  // Updated By
         defaultContent: "-"
     },
     {

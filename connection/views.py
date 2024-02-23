@@ -1,10 +1,11 @@
-from django.shortcuts import redirect
+from django.db.models import ProtectedError
+from django.shortcuts import get_object_or_404, redirect
 from django import forms
 from django.views.generic import (
     ListView,
     CreateView,
     UpdateView,
-    DeleteView,
+    DeleteView, DetailView,
 )
 from django.utils import timezone
 from django.contrib.messages.views import SuccessMessageMixin
@@ -44,7 +45,6 @@ class ConnectionCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     permission_required = "connection.add_class"
     model = Connection
     fields = [
-        "code",
         "name",
         "description",
         "connection_string"
@@ -63,9 +63,7 @@ class ConnectionUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
 
     permission_required = "connection.change_class"
     model = Connection
-    
     fields = [
-        "code",
         "name",
         "description",
         "connection_string"
@@ -87,12 +85,15 @@ class ConnectionDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     success_message = "Record was deleted successfully"
 
     def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        self.object.deleted_by = request.user
-        self.object.deleted_date = timezone.now()
-        self.object.delete()
-        success_url = self.get_success_url()
-        messages.success(self.request, self.success_message)
+        try:
+            self.object = self.get_object()
+            self.object.deleted_by = request.user
+            self.object.deleted_date = timezone.now()
+            success_url = self.get_success_url()
+            self.object.delete()
+            messages.success(self.request, self.success_message)
+        except ProtectedError:
+            messages.error(self.request, "Cannot delete this record because it is referenced through protected foreign keys.")
         return redirect(success_url)
 
 
@@ -113,10 +114,15 @@ class HistoricalConnectionUpdateView(LoginRequiredMixin, UpdateView):
     def get(self, request, *args, **kwargs):
         pk = self.kwargs.get("pk")
         data = Connection.history.get(pk=pk)
-        connection_obj = Connection.objects.get(pk=data.id)
+        connection_obj = Connection.objects.get(pk=data.code)
         for field in connection_obj._meta.fields:
             field_name = field.name
             setattr(connection_obj, field_name, getattr(data, field_name))
-        connection_obj.save_without_historical_record()
+        connection_obj.save()
         messages.success(self.request, "Table restored successfully")
         return redirect(reverse_lazy("connection:connection_list"))
+
+
+class ConnectionDetailView(LoginRequiredMixin, DetailView):
+    permission_required = "connection.connection_detail"
+    model = Connection

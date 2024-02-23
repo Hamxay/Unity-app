@@ -51,7 +51,6 @@
                                         <thead class="table-light text-muted">
                                             <tr>
                                                 <th>Action</th>
-                                                <th data-data="id" data-name="id">ID</th>
                                                 <th data-data="history_id" data-name="history_id">History ID</th>
                                                 <th data-data="history_type" data-name="history_type">History Type</th>
                                                 <th data-data="id" data-name="id">ID</th>
@@ -132,15 +131,11 @@ var table = $('#CollectionHistoryTable').DataTable( {
     "dom": 'lrtip',
     "columnDefs": [
     {
-        targets: 1,  // History ID
-        visible: false
-    },
-    {
-        targets: 2,  // History Type
+        targets: 1,  // History Type
         defaultContent: "-"
     },
     {
-        targets: 3,  
+        targets: 2,
         render: function(data, type, row){
             let className = 'btn-soft-primary';
             let text = "Unknown";
@@ -151,56 +146,56 @@ var table = $('#CollectionHistoryTable').DataTable( {
         }
     },
     {
-        targets: 4,  // Code
+        targets: 3,  // Code
         defaultContent: "-"
     },
     {
-        targets: 5,  // InterfaceId
+        targets: 4,  // InterfaceId
         defaultContent: "-"
     },
     {
-        targets: 6,  // Name
+        targets: 5,  // Name
         defaultContent: "-"
     },
     {
-        targets: 7,  // Description
+        targets: 6,  // Description
         defaultContent: "-"
     },
     {
-        targets: 8,  // Prefix
+        targets: 7,  // Prefix
         defaultContent: "-"
     },
     {
-        targets: 9,  // Version
+        targets: 8,  // Version
         defaultContent: "-"
     },
     {
-        targets: 10,  // TargetAlias
+        targets: 9,  // TargetAlias
         defaultContent: "-"
     },
     {
-        targets: 11,  // IgnoreOnIngest
+        targets: 10,  // IgnoreOnIngest
         defaultContent: "-"
     },
     
     {
-        targets: 12,  // Created Date
+        targets: 11,  // Created Date
         render: (data, type, row) => {
             return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
         }
     },
     {
-        targets: 13,  // Created By
+        targets: 12,  // Created By
         defaultContent: "-"
     },
     {
-        targets: 14,  // Updated Date
+        targets: 13,  // Updated Date
         render: (data, type, row) => {
             return moment.utc(row.updated_date).format('MMM DD, YYYY hh:mm A');
         }
     },
     {
-        targets: 15,  // Updated By
+        targets: 14,  // Updated By
         defaultContent: "-"
     },
     {

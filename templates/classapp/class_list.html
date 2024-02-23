@@ -30,6 +30,15 @@
                                             class="btn btn-danger add-btn">
                                             <i class="ri-add-line align-bottom me-1"></i> Create Class
                                         </a>
+                                        <a role="button"
+                                        href="{% url 'class:downloadTemplate' %}"
+                                         class="btn btn-danger add-btn"
+                                          id="downloadTemplateBtn">
+                                            <i class="ri-file-download-line align-bottom me-1"></i> Download Template
+                                        </a>
+                                        <button type="button" class="btn btn-danger add-btn" data-bs-toggle="modal" data-bs-target="#uploadFileModal">
+                                            Import from csv/excel
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -58,26 +67,25 @@
                                            <thead class="table-light text-muted">
                                                <tr>
                                                 <th>Action</th>
-                                                <th data-data="id" data-name="id">ID</th> <!-- Keeping this as it seems you still want to display IDs -->
                                                 <th data-data="Code" data-name="Code">Code</th>
-                                                <th data-data="InterfaceId" data-name="InterfaceId">InterfaceId</th>
+                                                <th data-data="InterfaceId" data-name="InterfaceId">Interface (Code - Name)</th>
                                                 <th data-data="Name" data-name="Name">Name</th>
                                                 <th data-data="Description" data-name="Description">Description</th>
                                                 <th data-data="Prefix" data-name="Prefix">Prefix</th>
                                                 <th data-data="Version" data-name="Version">Version</th>
-                                                <th data-data="TargetAlias" data-name="TargetAlias">TargetAlias</th>
-                                                <th data-data="IgnoreOnIngest" data-name="IgnoreOnIngest">IgnoreOnIngest</th>
+                                                <th data-data="TargetAlias" data-name="TargetAlias">Target Alias</th>
+                                                <th data-data="IgnoreOnIngest" data-name="IgnoreOnIngest">Ignore On Ingest</th>
                                                 <th data-data="Mask" data-name="Mask">Mask</th>
                                                 <th data-data="Filter" data-name="Filter">Filter</th>
-                                                <th data-data="SlideWindowAttribute" data-name="SlideWindowAttribute">SlideWindowAttribute</th>
-                                                <th data-data="SlideWindowDays" data-name="SlideWindowDays">SlideWindowDays</th>                                            
+                                                <th data-data="SlideWindowAttribute" data-name="SlideWindowAttribute">Slide Window Attribute</th>
+                                                <th data-data="SlideWindowDays" data-name="SlideWindowDays">Slide Window Days</th>
                                                 <th data-data="created_date" data-name="created_date">Created Date</th>
                                                 <th data-data="created_by" data-name="created_by">Created By</th>
                                                 <th data-data="updated_date" data-name="updated_date">Updated Date</th>
                                                 <th data-data="updated_by" data-name="updated_by">Updated By</th>
                                             </tr>
                                         </thead>
-                                        <tbody class="list form-check-all">
+                                        <tbody id="tableContent" class="list form-check-all">
                                         </tbody>
                                     </table>
                                     <!--end table-->
@@ -117,6 +125,43 @@
                     </div>
                 </div>
                 <!--end delete modal -->
+
+                <!-- File Upload Modal -->
+                <<div class="modal fade flip"
+                id="uploadFileModal"
+                tabindex="-1"
+                aria-labelledby="uploadFileModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-body p-5 text-center">
+                            <script src="https://cdn.lordicon.com/lordicon.js"></script>
+                            <lord-icon src="https://cdn.lordicon.com/dxnllioo.json" trigger="loop" colors="primary:#104891,secondary:#f06548" style="width:90px;height:90px"></lord-icon>
+                            <div class="mt-4 text-center">
+                                <h4>Choose a CSV OR Excel file</h4>
+                                <p class="text-muted fs-14 mb-4">
+                                    Make sure that your file is according to the class template.
+                                </p>
+                                <div class="hstack gap-2 justify-content-center remove">
+                                    {% comment %} <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> {% endcomment %}
+                                <form method="post" action="{% url 'class:import_class_from_file' %}" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <input type="file" name="file" class="form-control" required>
+                                    <div class="mt-3">
+                                        <button class="btn btn-link btn-ghost-success fw-medium text-decoration-none" data-bs-dismiss="modal">
+                                            <i class="ri-close-line me-1 align-middle"></i> Close
+                                        </button>
+                                        <button type="submit" class="btn btn-danger add-btn">Confirm</button>
+                                    </div>
+                                </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end File Upload Modal -->
+            
             </div>
             <!-- container-fluid -->
         </div>
@@ -134,22 +179,32 @@
 <script src="{% static 'js/moment-2.29.2.min.js' %}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 <script type="text/javascript">
+var interfaceIdParam = new URLSearchParams(window.location.search).get('InterfaceId');
+
 var table = $('#classTable').DataTable( {
     serverSide: true,
     processing: true,
-    order: [[14, 'desc']],
+    order: [[13, 'desc']],
     "ajax": {
-        "url": "/api/class/?format=datatables"
+        "url": "/api/class/?format=datatables" + (interfaceIdParam ? '&InterfaceId=' + interfaceIdParam : '')
     },
     "dom": 'lrtip',
     "columnDefs": [
     {
         targets: 1,
-        visible: false
+        defaultContent: "-"
     },
     {
         targets: 2,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
+        render: function (data, type, row) {
+            if (typeof data === 'object' && data !== null) {
+                return data.code + ' - ' + data.name;
+            } else {
+                return data;
+            }
+        }
     },
     {
         targets: 3,
@@ -157,65 +212,75 @@ var table = $('#classTable').DataTable( {
     },
     {
         targets: 4,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 5,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 6,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 7,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 8,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 9,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 10,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     
     {
         targets: 11,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 12,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 13,
-        defaultContent: "-"
+        searchable: false,
+        render: (data, type, row)=>{
+            return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
+        }
     },
     {
         targets: 14,
-        render: (data, type, row)=>{
-            return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
-        }
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 15,
-        defaultContent: "-"
-    },
-    {
-        targets: 16,
+        searchable: false,
         render: (data, type, row)=>{
             return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
         }
     },
     {
-        targets: 17,
-        defaultContent: "-"
+        targets: 16,
+        defaultContent: "-",
+        searchable: false,
     },
+
     {
         targets: 0,  // 0 the first, 1 the second, etc.
         sortable: false,
@@ -226,23 +291,22 @@ var table = $('#classTable').DataTable( {
             let viewURL = "{% url 'class:historicalclass_list' pk=0 %}"
             let editURL = "{% url 'class:class_update' pk=0 %}"
             let deleteURL = "{% url 'class:class_delete' pk=0 %}"
-            
             let actions =  `<ul class="list-inline hstack gap-2 mb-0">`
                 
             actions += `
             <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="History">
-            <a href="${viewURL.replace('0', row.id)}" class="text-primary d-inline-block">
+            <a href="${viewURL.replace('0', row.Code)}" class="text-primary d-inline-block">
                 <i class="mdi mdi-history fs-16"></i>
             </a>
             </li>`
             actions += `<li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
-                <a href="${editURL.replace('0', row.id)}" class="text-primary d-inline-block edit-item-btn">
+                <a href="${editURL.replace('0', row.Code)}" class="text-primary d-inline-block edit-item-btn">
                     <i class="ri-pencil-fill fs-16"></i>
                 </a>
             </li>`
         
             actions += `<li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
-            <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder" data-url="${deleteURL.replace('0', row.id)}">
+            <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder" data-url="${deleteURL.replace('0', row.Code)}">
             <i class="ri-delete-bin-5-fill fs-16"></i>
                 </a>
             </li>`
@@ -254,17 +318,57 @@ var table = $('#classTable').DataTable( {
 });
 
 $(document).ready(function(){
- 
     // Update the Delete URL in Delete Confirm Modal
     $('#classTable').on('click', '.delete-btn', (event) => {
         $('#delete-record').attr('href', $(event.currentTarget).data('url'))
     })
-    
     // Filters for table
     $('#id_search').on('keyup', function () {
         table.search( this.value ).draw();
     } );
     
 })
+
+// right click feature
+
+$('#classTable').on('contextmenu', 'tbody tr', function(e) {
+    e.preventDefault();
+    var classData = table.row(this).data();
+    var InterfaceCode = classData.InterfaceId.code;
+    var classCode = classData.Code;
+    var baseUrl = window.location.origin;
+    $.ajax({
+        url: baseUrl + '/api/class/relations/' + classCode + '/',
+        method: 'GET',
+        success: function (classData) {
+            $('.dropdown-menu').remove();
+            var dropdownMenu = $('<div class="dropdown-menu" role="menu"></div>');
+            var interfaceUrl = baseUrl + '/interface/list?code=' + InterfaceCode;
+            dropdownMenu.append('<a class="dropdown-item" href="' + interfaceUrl + '">Interface</a>');
+            var attributeUrl = baseUrl + '/attribute/list?class_id=' + classCode;
+            dropdownMenu.append('<a class="dropdown-item" href="' + attributeUrl + '">Attribute</a>');
+            var taskUrl = baseUrl + '/Task/list?class_id=' + classCode;
+            dropdownMenu.append('<a class="dropdown-item" href="' + taskUrl + '">Task</a>');
+            dropdownMenu.css({
+                position: 'absolute',
+                left: e.pageX,
+                top: e.pageY,
+                display: 'block',
+            });
+            $('body').append(dropdownMenu);
+            $(document).on('click.contextMenu', function () {
+                dropdownMenu.remove();
+                $(document).off('click.contextMenu');
+            });
+        },
+        error: function () {
+            console.error('Error fetching class by Code', classCode);
+        }
+    });
+});
+
+
+
+
 </script>
 {% endblock extra_js %}

@@ -1,0 +1,113 @@
+{% extends "partials/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}
+    Schedule
+{% endblock title %}
+{% block extra_css %}
+{% endblock extra_css %}
+{% block content %}
+    <!-- ============================================================== -->
+    <!-- Start right Content here -->
+    <!-- ============================================================== -->
+    <div class="main-content">
+        <div class="page-content">
+            <div class="container-fluid">
+                {% block pagetitle %}
+                    {% include "partials/page-title.html" with pagetitle="Schedule" title="Schedule" %}
+                {% endblock pagetitle %}
+                <div class="row">
+                    <div class="col-xl-9">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="d-flex align-items-center">
+                                    <h5 class="card-title flex-grow-1 mb-0">Schedule </h5>
+                                    <div class="flex-shrink-0"></div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="pt-3">
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                            <table class="table table-borderless">
+                                                <tr>
+                                                    <th>Code</th>
+                                                    <td>{{ schedule.Code }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <td>{{ schedule.Name }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Frequency</th>
+                                                    <td>{{ schedule.Frequency }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Frequency Interval</th>
+                                                    <td>{{ schedule.FrequencyInterval }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Frequency Relative Interval</th>
+                                                    <td>{{ schedule.FrequencyRelativeInterval }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Frequency Recurrence Factor</th>
+                                                    <td>{{ schedule.FrequencyRecurrenceFactor }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Frequency SubDay Type</th>
+                                                    <td>{{ schedule.FrequencySubDayType }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Frequency SubDay Interval</th>
+                                                    <td>{{ schedule.FrequencySubDayInterval }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Active Start Date</th>
+                                                    <td>{{ schedule.ActiveStartDate }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Active End Date</th>
+                                                    <td>{{ schedule.ActiveEndDate }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Active Start Time</th>
+                                                    <td>{{ schedule.ActiveStartTime }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Active End Time</th>
+                                                    <td>{{ schedule.ActiveEndTime }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Is Enabled</th>
+                                                    <td>{{ schedule.IsEnabled }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Version</th>
+                                                    <td>{{ schedule.Version }}</td>
+                                                </tr>
+
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--end card-->
+                    </div>
+                    <!--end col-->
+                </div>
+                <!--end row-->
+            </div>
+            <!-- container-fluid -->
+        </div>
+        <!-- End Page-content -->
+        {% block footer %}
+            {% include "partials/footer.html" %}
+        {% endblock footer %}
+    </div>
+    <!-- end main content-->
+{% endblock content %}
+{% block extra_js %}
+    <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+{% endblock extra_js %}

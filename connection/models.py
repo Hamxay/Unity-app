@@ -25,7 +25,7 @@ class BaseModel(models.Model):
 
 
 class Connection(BaseModel):
-    code = models.IntegerField(unique=True)
+    code = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=128)
     description = models.CharField(max_length=250, blank=True, null=True)
     connection_string = models.TextField(blank=True, null=True)
@@ -39,3 +39,6 @@ class Connection(BaseModel):
         finally:
             del self.skip_history_when_saving
         return ret
+
+    def __str__(self) :
+        return f"({self.code} - {self.name})"

@@ -18,3 +18,9 @@ class ConnectionHistorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Connection.history.model
         fields = "__all__"
+
+
+class ConnectionDisplaySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Connection
+        fields = ['code', 'name']

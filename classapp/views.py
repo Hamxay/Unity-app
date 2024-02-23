@@ -1,16 +1,28 @@
-from django.shortcuts import redirect
+import csv
+import pandas
+from django.core.exceptions import ValidationError
+from django.db.models import ProtectedError
+from django.http import HttpResponse
+from django.shortcuts import redirect, get_object_or_404
 from django import forms
+from django.views import View
 from django.views.generic import (
     ListView,
     CreateView,
     UpdateView,
-    DeleteView,
+    DeleteView, DetailView, FormView,
 )
 from django.utils import timezone
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.contrib import messages
+
+import accounts.models
+from interface.models import Interface
+from .download_template import generate_class_csv_template
+from .forms import ClassForm, ImportFileForm
+from .import_class import import_class_from_file
 from .models import Class
 
 
@@ -38,23 +50,9 @@ class ClassListView(LoginRequiredMixin, ListView):
 
 class ClassCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     """Add Class"""
-
+    form_class = ClassForm
     permission_required = "class.add_class"
     model = Class
-    fields = [
-        "Code",
-        "InterfaceId",
-        "Name",
-        "Description",
-        "Prefix",
-        "Version",
-        "TargetAlias",
-        "IgnoreOnIngest",
-        "Mask",
-        "Filter",
-        "SlideWindowAttribute",
-        "SlideWindowDays",
-    ]
     success_url = reverse_lazy("class:class_list")
     success_message = "Class was added successfully"
 
@@ -68,20 +66,7 @@ class ClassUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
 
     permission_required = "class.change_class"
     model = Class
-    fields = [
-        "Code",
-        "InterfaceId",
-        "Name",
-        "Description",
-        "Prefix",
-        "Version",
-        "TargetAlias",
-        "IgnoreOnIngest",
-        "Mask",
-        "Filter",
-        "SlideWindowAttribute",
-        "SlideWindowDays",
-    ]
+    form_class = ClassForm
     success_url = reverse_lazy("class:class_list")
     success_message = "Class was updated successfully"
 
@@ -99,12 +84,15 @@ class ClassDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     success_message = "Record was deleted successfully"
 
     def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        self.object.deleted_by = request.user
-        self.object.deleted_date = timezone.now()
-        success_url = self.get_success_url()
-        self.object.delete()
-        messages.success(self.request, self.success_message)
+        try:
+            self.object = self.get_object()
+            self.object.deleted_by = request.user
+            self.object.deleted_date = timezone.now()
+            success_url = self.get_success_url()
+            self.object.delete()
+            messages.success(self.request, self.success_message)
+        except ProtectedError as e:
+            messages.error(self.request, "Cannot delete this record because it is referenced through protected foreign keys.")
         return redirect(success_url)
 
 
@@ -127,11 +115,50 @@ class HistoricalClassUpdateView(LoginRequiredMixin, UpdateView):
         # self.object = self.get_object()
         # selected_version = request.POST.get("historical_version")
         data = Class.history.get(pk=pk)
-        class_obj = Class.objects.get(pk=data.id)
+        class_obj = Class.objects.get(pk=data.Code)
 
         for field in class_obj._meta.fields:
             field_name = field.name
             setattr(class_obj, field_name, getattr(data, field_name))
-        class_obj.save_without_historical_record()
+        class_obj.save()
         messages.success(self.request, "Table restored successfully")
         return redirect(reverse_lazy("class:class_list"))
+
+
+class ClassDropdownView(
+    LoginRequiredMixin, SuccessMessageMixin, CreateView
+):
+    success_url = reverse_lazy("class:references")
+    success_message = "Class related data requested successfully"
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(self.model, Code=self.kwargs[self.slug_url_kwarg])
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.user = request.user
+        success_url = self.get_success_url()
+        return redirect(success_url)
+
+
+class ClassDetailView(LoginRequiredMixin, DetailView):
+    permission_required = "class.detail"
+    model = Class
+
+
+class DownloadTemplateView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        return generate_class_csv_template()
+
+
+class ImportClassFromFileView(LoginRequiredMixin, FormView):
+    form_class = ImportFileForm
+    success_url = reverse_lazy("class:class_list")
+
+    def form_valid(self, form):
+        file = self.request.FILES['file']
+        current_user = self.request.user
+
+        import_class_from_file(file, current_user, self.success_url, self.request)
+
+        return redirect(self.get_success_url())

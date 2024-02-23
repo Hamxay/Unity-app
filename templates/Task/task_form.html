@@ -5,6 +5,8 @@
     Create Task
 {% endblock title %}
 {% block extra_css %}
+    <!-- stylesheet for select2 -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css">
     <!-- Plugins css -->
     <link href="{% static 'libs/dropzone/dist/dropzone.css' %}"
           rel="stylesheet"
@@ -32,16 +34,13 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-lg-6">
-                                            <div class="mb-3">{{ form.Code|as_crispy_field }}</div>
+                                            <div class="mb-3" id="class_id">{{ form.ClassId|as_crispy_field }}</div>
                                         </div>
                                         <div class="col-lg-6">
-                                            <div class="mb-3">{{ form.ClassId|as_crispy_field }}</div>
+                                            <div class="mb-3" id="collection_id">{{ form.CollectionId|as_crispy_field }}</div>
                                         </div>
                                         <div class="col-lg-6">
-                                            <div class="mb-3">{{ form.CollectionId|as_crispy_field }}</div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="mb-3">{{ form.LoadPatternId|as_crispy_field }}</div>
+                                            <div class="mb-3" id="load_pattern_id">{{ form.LoadPatternId|as_crispy_field }}</div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">{{ form.Name|as_crispy_field }}</div>
@@ -50,13 +49,13 @@
                                             <div class="mb-3">{{ form.Description|as_crispy_field }}</div>
                                         </div>
                                         <div class="col-lg-6">
-                                            <div class="mb-3">{{ form.PipelineName|as_crispy_field }}</div>
+                                            <div class="mb-3">{{ form.ProcessName|as_crispy_field }}</div>
                                         </div>
                                         <div class="col-lg-6">
-                                            <div class="mb-3">{{ form.PipelineParameters|as_crispy_field }}</div>
+                                            <div class="mb-3">{{ form.ProcessParameters|as_crispy_field }}</div>
                                         </div>
                                         <div class="col-lg-6">
-                                            <div class="mb-3">{{ form.SubPipelineParameters|as_crispy_field }}</div>
+                                            <div class="mb-3">{{ form.SubProcessParameters|as_crispy_field }}</div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="mb-3">{{ form.DeduplicateSource|as_crispy_field }}</div>
@@ -107,4 +106,27 @@
     <script src="{% static 'js/pages/project-create.init.js'%}"></script>
     <!-- jquery.js-->
     <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+    <!-- for the script of select2-->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#id_ClassId').select2({
+                search: true,
+                placeholder: 'Select an option'
+            });
+        });
+        $(document).ready(function() {
+            $('#id_CollectionId').select2({
+                search: true,
+                placeholder: 'Select an option'
+            });
+        });
+        $(document).ready(function() {
+            $('#id_LoadPatternId').select2({
+                search: true,
+                placeholder: 'Select an option'
+                
+            });
+        });
+    </script>
 {% endblock extra_js %}

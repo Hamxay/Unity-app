@@ -35,6 +35,15 @@
                                             class="btn btn-danger add-btn">
                                             <i class="ri-add-line align-bottom me-1"></i> Create Task
                                         </a>
+                                        <a role="button"
+                                        href="{% url 'Task:downloadTemplate' %}"
+                                         class="btn btn-danger add-btn"
+                                          id="downloadTemplateBtn">
+                                            <i class="ri-file-download-line align-bottom me-1"></i> Download Template
+                                        </a>
+                                        <button type="button" class="btn btn-danger add-btn" data-bs-toggle="modal" data-bs-target="#uploadFileModal">
+                                            Import from csv/excel
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -63,17 +72,16 @@
                                            <thead class="table-light text-muted">
                                                <tr>
                                                 <th>Action</th>
-                                                <th data-data="id" data-name="id">ID</th> <!-- Keeping this as it seems you still want to display IDs -->
                                                 <th data-data="Code" data-name="Code">Code</th>
-                                                <th data-data="ClassId" data-name="ClassId">ClassId</th>
-                                                <th data-data="CollectionId" data-name="CollectionId">CollectionId</th>
-                                                <th data-data="LoadPatternId" data-name="LoadPatternId">LoadPatternId</th>
+                                                <th data-data="ClassId" data-name="ClassId">Class (Code - Name)</th>
+                                                <th data-data="CollectionId" data-name="CollectionId">Collection (Code - Name)</th>
+                                                <th data-data="LoadPatternId" data-name="LoadPatternId">Load Pattern (Code - Name)</th>
                                                 <th data-data="Name" data-name="Name">Name</th>
                                                 <th data-data="Description" data-name="Description">Description</th>
-                                                <th data-data="PipelineName" data-name="PipelineName">PipelineName</th>
-                                                <th data-data="PipelineParameters" data-name="PipelineParameters">PipelineParameters</th>
-                                                <th data-data="SubPipelineParameters" data-name="SubPipelineParameters">SubPipelineParameters</th>
-                                                <th data-data="DeduplicateSource" data-name="DeduplicateSource">DeduplicateSource</th>
+                                                <th data-data="ProcessName" data-name="ProcessName">Process Name</th>
+                                                <th data-data="ProcessParameters" data-name="ProcessParameters">Process Parameters</th>
+                                                <th data-data="SubProcessParameters" data-name="SubProcessParameters">Sub-Process Parameters</th>
+                                                <th data-data="DeduplicateSource" data-name="DeduplicateSource">Deduplicate Source</th>
                                                 <th data-data="Priority" data-name="Priority">Priority</th>
                                                 <th data-data="created_date" data-name="created_date">Created Date</th>
                                                 <th data-data="created_by" data-name="created_by">Created By</th>
@@ -121,6 +129,41 @@
                     </div>
                 </div>
                 <!--end delete modal -->
+                <!-- File Upload Modal -->
+                <<div class="modal fade flip"
+                id="uploadFileModal"
+                tabindex="-1"
+                aria-labelledby="uploadFileModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-body p-5 text-center">
+                            <script src="https://cdn.lordicon.com/lordicon.js"></script>
+                            <lord-icon src="https://cdn.lordicon.com/dxnllioo.json" trigger="loop" colors="primary:#104891,secondary:#e86830" style="width:90px;height:90px"> </lord-icon>
+                            <div class="mt-4 text-center">
+                                <h4>Choose a CSV OR Excel file</h4>
+                                <p class="text-muted fs-14 mb-4">
+                                    Make sure that your file is according to the task template.
+                                </p>
+                                <div class="hstack gap-2 justify-content-center remove">
+                                    {% comment %} <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> {% endcomment %}
+                                <form method="post" action="{% url 'Task:import_class_from_file' %}" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <input type="file" name="file" class="form-control" required>
+                                    <div class="mt-3">
+                                        <button class="btn btn-link btn-ghost-success fw-medium text-decoration-none" data-bs-dismiss="modal">
+                                            <i class="ri-close-line me-1 align-middle"></i> Close
+                                        </button>
+                                        <button type="submit" class="btn btn-danger add-btn">Confirm</button>
+                                    </div>
+                                </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end File Upload Modal -->
             </div>
             <!-- container-fluid -->
         </div>
@@ -138,30 +181,69 @@
 <script src="{% static 'js/moment-2.29.2.min.js' %}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 <script type="text/javascript">
+var CollectionIdParam = new URLSearchParams(window.location.search).get('CollectionId');
+var ClassIdParam = new URLSearchParams(window.location.search).get('class_id');
+var LoadPatternIdParam = new URLSearchParams(window.location.search).get('LoadPatternId');
+var url = "/api/Task/?format=datatables";
+if (CollectionIdParam) {
+    url += '&CollectionId=' + CollectionIdParam;
+}
+if (ClassIdParam) {
+    url += '&class_id=' + ClassIdParam;
+}
+if (LoadPatternIdParam) {
+    url += '&LoadPatternId=' + LoadPatternIdParam;
+}
 var table = $('#TaskTable').DataTable( {
     serverSide: true,
     processing: true,
     order: [[14, 'desc']],
     "ajax": {
-        "url": "/api/Task/?format=datatables"
+        "url": url
     },
+
     "dom": 'lrtip',
     "columnDefs": [
     {
         targets: 1,
-        visible: false
+        defaultContent: "-"
+
     },
     {
         targets: 2,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
+        render: function (data, type, row) {
+            if (typeof data === 'object' && data !== null) {
+                return data.Code + ' - ' + data.Name;
+            } else {
+                return data;
+            }
+        }
     },
     {
         targets: 3,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
+        render: function (data, type, row) {
+            if (typeof data === 'object' && data !== null) {
+                return data.code + ' - ' + data.name;
+            } else {
+                return data;
+            }
+        }
     },
     {
         targets: 4,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
+        render: function (data, type, row) {
+            if (typeof data === 'object' && data !== null) {
+                return data.code + ' - ' + data.name;
+            } else {
+                return data;
+            }
+        }
     },
     {
         targets: 5,
@@ -169,52 +251,59 @@ var table = $('#TaskTable').DataTable( {
     },
     {
         targets: 6,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 7,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 8,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 9,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 10,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     
     {
         targets: 11,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 12,
-        defaultContent: "-"
-    },
-    {
-        targets: 13,
+        searchable: false,
         render: (data, type, row)=>{
             return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
         }
     },
     {
-        targets: 14,
-        defaultContent: "-"
+        targets: 13,
+        defaultContent: "-",
+        searchable: false,
+
     },
     {
-        targets: 15,
+        targets: 14,
+        searchable: false,
         render: (data, type, row)=>{
-            return moment.utc(row.updated_date).format('MMM DD, YYYY hh:mm A');
+            return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
         }
     },
     {
-        targets: 16,
-        defaultContent: "-"
+        targets: 15,
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 0,  // 0 the first, 1 the second, etc.
@@ -231,18 +320,18 @@ var table = $('#TaskTable').DataTable( {
                 
             actions += `
             <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="History">
-            <a href="${viewURL.replace('0', row.id)}" class="text-primary d-inline-block">
+                <a href="${viewURL.replace('0', row.Code)}" class="text-primary d-inline-block">
                 <i class="mdi mdi-history fs-16"></i>
             </a>
             </li>`
             actions += `<li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
-                <a href="${editURL.replace('0', row.id)}" class="text-primary d-inline-block edit-item-btn">
+                <a href="${editURL.replace('0', row.Code)}" class="text-primary d-inline-block edit-item-btn">
                     <i class="ri-pencil-fill fs-16"></i>
                 </a>
             </li>`
         
             actions += `<li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
-            <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder" data-url="${deleteURL.replace('0', row.id)}">
+            <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder" data-url="${deleteURL.replace('0', row.Code)}">
             <i class="ri-delete-bin-5-fill fs-16"></i>
                 </a>
             </li>`
@@ -252,6 +341,52 @@ var table = $('#TaskTable').DataTable( {
         },
     }]
 });
+
+<!--$('#TaskTable').on('contextmenu', 'tbody tr', function(e) {-->
+<!--    e.preventDefault();-->
+<!--    var taskData = table.row(this).data();-->
+<!--    console.log(taskData)-->
+<!--    var taskCode = taskData.Code;-->
+<!--    var baseUrl = window.location.origin;-->
+<!--    $.ajax({-->
+<!--        url: baseUrl + '/api/Task/relations/' + taskCode + '/',-->
+<!--        method: 'GET',-->
+<!--        success: function (taskData) {-->
+<!--            $('.dropdown-menu').remove();-->
+<!--            var dropdownMenu = $('<div class="dropdown-menu" role="menu"></div>');-->
+<!--            for (var key in taskData) {-->
+<!--                if (taskData.hasOwnProperty(key)) {-->
+<!--                    if ((key.endsWith('Id') || key.endsWith('id')) && key !== 'id') {-->
+<!--                        var foreignKeyRecordId = taskData[key];-->
+<!--                        var keyMapping = {-->
+<!--                            'ClassId': 'class/id',-->
+<!--                            'CollectionId': 'collection/id',-->
+<!--                            'LoadPatternId': 'pattern/loadpattern/id',-->
+<!--                        };-->
+<!--                        var modifiedKey = keyMapping[key] || key.replace(/_/g, '/');-->
+<!--                        dropdownMenu.append('<a class="dropdown-item" href="' + baseUrl + '/' + modifiedKey + '/' + foreignKeyRecordId + '">' + key.replace(/_/g, ' ') + ' : ' + taskData[key] + '</a>');-->
+<!--                    } else {-->
+<!--                        dropdownMenu.append('<a class="dropdown-item" href="">' + key + ': ' + taskData[key] + '</a>');-->
+<!--                    }-->
+<!--                }-->
+<!--            }-->
+<!--            dropdownMenu.css({-->
+<!--                position: 'absolute',-->
+<!--                left: e.pageX,-->
+<!--                top: e.pageY,-->
+<!--                display: 'block',-->
+<!--            });-->
+<!--            $('body').append(dropdownMenu);-->
+<!--            $(document).on('click.contextMenu', function () {-->
+<!--                dropdownMenu.remove();-->
+<!--                $(document).off('click.contextMenu');-->
+<!--            });-->
+<!--        },-->
+<!--        error: function () {-->
+<!--            console.error('Error fetching task by code', taskCode);-->
+<!--        }-->
+<!--    });-->
+<!--});-->
 
 $(document).ready(function(){
  

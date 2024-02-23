@@ -26,12 +26,42 @@
                                     <h5 class="card-title mb-0 flex-grow-1">All Schedule</h5>
                                     <div class="flex-shrink-0">
                                         <a role="button"
+                                            id="createScheduleButton"
                                             href="{% url 'schedule:schedule_create' %}"
                                             class="btn btn-danger add-btn">
-                                            <i class="ri-add-line align-bottom me-1"></i> Create Schedule
+                                            <i class="ri-add-line align-bottom me-1" ></i> Create Schedule
                                         </a>
                                     </div>
                                 </div>
+                            </div>
+                            <style>
+                                /* Alert box styles */
+                                .alert-admin {
+                                    padding: 20px;
+                                    background-color: #f44336; /* Red background color */
+                                    color: white; /* White text color */
+                                    margin-bottom: 15px;
+                                    position: relative;
+                                }
+                                /* Close button styles */
+                                .closebtn-admin {
+                                    margin-left: 15px;
+                                    color: white;
+                                    font-weight: bold;
+                                    float: right;
+                                    font-size: 22px;
+                                    line-height: 20px;
+                                    cursor: pointer;
+                                    transition: 0.3s;
+                                }
+                                .closebtn-admin:hover {
+                                    color: black;
+                                }
+                        </style>
+                            <!-- Custom alert box -->
+                            <div id="customAlert" class="alert-admin" style="display: none;">
+                                <span class="closebtn-admin" onclick="document.getElementById('customAlert').style.display='none';">&times;</span>
+                                This action is only allowed for admin users.
                             </div>
                             <div class="card-body border border-dashed border-end-0 border-start-0">
                                 <form>
@@ -50,6 +80,7 @@
                                     <!--end row-->
                                 </form>
                             </div>
+
                             <!--end card-body-->
                             <div class="card-body">
                                 <div class="table-responsive table-card mb-4">
@@ -58,20 +89,19 @@
                                            <thead class="table-light text-muted">
                                                <tr>
                                                 <th>Action</th>
-                                                <th data-data="id" data-name="id">ID</th>
                                                 <th data-data="Code" data-name="Code">Code</th>
                                                 <th data-data="Name" data-name="Name">Name</th>
                                                 <th data-data="Frequency" data-name="Frequency">Frequency</th>
                                                 <th data-data="FrequencyInterval" data-name="FrequencyInterval">Frequency Interval</th>
                                                 <th data-data="FrequencyRelativeInterval" data-name="FrequencyRelativeInterval">Frequency Relative Interval</th>
                                                 <th data-data="FrequencyRecurrenceFactor" data-name="FrequencyRecurrenceFactor">Frequency Recurrence Factor</th>
-                                                <th data-data="FrequencySubDayType" data-name="FrequencySubDayType">Frequency SubDay Type</th>
-                                                <th data-data="FrequencySubDayInterval" data-name="FrequencySubDayInterval">Frequency SubDay Interval</th>
+                                                <th data-data="FrequencySubDayType" data-name="FrequencySubDayType">Frequency Sub Day Type</th>
+                                                <th data-data="FrequencySubDayInterval" data-name="FrequencySubDayInterval">Frequency Sub Day Interval</th>
                                                 <th data-data="ActiveStartDate" data-name="ActiveStartDate">Active Start Date</th>
                                                 <th data-data="ActiveEndDate" data-name="ActiveEndDate">Active End Date</th>
                                                 <th data-data="ActiveStartTime" data-name="ActiveStartTime">Active Start Time</th>
                                                 <th data-data="ActiveEndTime" data-name="ActiveEndTime">Active End Time</th>
-                                                <th data-data="IsEnabled" data-name="IsEnabled">IsEnabled</th>
+                                                <th data-data="IsEnabled" data-name="IsEnabled">Is Enabled</th>
                                                 <th data-data="Version" data-name="Version">Version</th>
                                                 <th data-data="created_date" data-name="created_date">Created Date</th>
                                                 <th data-data="created_by" data-name="created_by">Created By</th>
@@ -136,18 +166,25 @@
 <script src="{% static 'js/moment-2.29.2.min.js' %}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 <script type="text/javascript">
-var table = $('#scheduletable').DataTable( {
+var CodeParam = new URLSearchParams(window.location.search).get('code');
+var isSuperuser = {% if request.user.is_superuser %}true{% else %}false{% endif %};
+var url = "/api/schedule/?format=datatables";
+if (CodeParam) {
+    url += '&code=' + CodeParam;
+}
+var frequencyValue;
+var table = $('#scheduletable').DataTable({
     serverSide: true,
     processing: true,
-    order: [[3, 'desc']],
+    order: [[2, 'desc']],
     "ajax": {
-        "url": "/api/schedule/?format=datatables"
+        "url": url
     },
     "dom": 'lrtip',
     "columnDefs": [
     {
         targets: 1,
-        visible: false
+        defaultContent: "-"
     },
     {
         targets: 2,
@@ -155,75 +192,133 @@ var table = $('#scheduletable').DataTable( {
     },
     {
         targets: 3,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
+        render: (data, type, row) =>{
+            const frequency = [
+            '0 - Once',
+            '1 - Daily', 
+            '2 - Weekly', 
+            '3 - Monthly', 
+            '4 - Monthly-Relative'];
+            frequencyValue = data;
+            if ([0,1,2,3,4].includes(data)){
+                return frequency[data];
+            } else return data;
+        }
+
     },
     {
         targets: 4,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
+        render: (data, type, row) =>{
+            if (frequencyValue == 2){
+                const frequencyInterval = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                return frequencyInterval[data];
+            }else if(frequencyValue == 4){
+                const frequencyInterval = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Weekday', 'Weekend'];
+                return frequencyInterval[data];
+            }else return data
+        }
     },
     {
         targets: 5,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
+        render:(data, type, row) =>{
+            if ([0,1,2,3,4,5].includes(data)) {
+                const frequencyRelativeInterval = [
+                '0 - Unused',
+                '1 - First',
+                '2 - Second',
+                '3 - Third',
+                '4 - Fourth',
+                '5 - Last',
+                ];
+                return frequencyRelativeInterval[data];
+            } else return data;
+        }
     },
     {
         targets: 6,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 7,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
+        render:(data, type, row) =>{
+            console.log(data)
+            if ([1,2].includes(data)) {
+                const subDayType = [
+                '1 - Minutes',
+                '2 - Hourly',
+                ];
+                return subDayType[data-1];
+            } else return data;
+        }
     },
     {
         targets: 8,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 9,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 10,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 11,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 12,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 13,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
+   
     {
         targets: 14,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 15,
-        defaultContent: "-"
-    },
-    {
-        targets: 16,
+        searchable: false,
         render: (data, type, row)=>{
             return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
         }
     },
     {
-        targets: 17,
-        defaultContent: "-"
+        targets: 16,
+        defaultContent: "-",
+        searchable: false,
     },
     {
-        targets: 18,
+        targets: 17,
+        searchable: false,
         render: (data, type, row)=>{
             return moment.utc(row.updated_date).format('MMM DD, YYYY hh:mm A');
         }
     },
     {
-        targets: 19,
-        defaultContent: "-"
+        targets: 18,
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 0,  // 0 the first, 1 the second, etc.
@@ -232,35 +327,49 @@ var table = $('#scheduletable').DataTable( {
         // The `data` parameter refers to the data for the cell.
         // The `rows`argument is an object representing all the data for the current row.
         render: ( data, type, row ) => {
-            let viewURL = "{% url 'schedule:historicalschedule_list' pk=0 %}"
-            let editURL = "{% url 'schedule:schedule_update' pk=0 %}"
-            let deleteURL = "{% url 'schedule:schedule_delete' pk=0 %}"
+                if (isSuperuser) {
+                    let viewURL = "{% url 'schedule:historicalschedule_list' pk=0 %}"
+                    let editURL = "{% url 'schedule:schedule_update' pk=0 %}"
+                    let deleteURL = "{% url 'schedule:schedule_delete' pk=0 %}"
+                    let actions = `<ul class="list-inline hstack gap-2 mb-0">`;
 
-            let actions =  `<ul class="list-inline hstack gap-2 mb-0">`
+                    actions += `<li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
+                        <a href="${editURL.replace('0', row.Code)}" class="text-primary d-inline-block edit-item-btn">
+                            <i class="ri-pencil-fill fs-16"></i>
+                        </a>
+                    </li>`;
 
-            actions += `
-            <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="History">
-            <a href="${viewURL.replace('0', row.id)}" class="text-primary d-inline-block">
-                <i class="mdi mdi-history fs-16"></i>
-            </a>
-            </li>`
-            actions += `<li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
-                <a href="${editURL.replace('0', row.id)}" class="text-primary d-inline-block edit-item-btn">
-                    <i class="ri-pencil-fill fs-16"></i>
-                </a>
-            </li>`
+                    actions += `<li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
+                        <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder" data-url="${deleteURL.replace('0', row.Code)}">
+                            <i class="ri-delete-bin-5-fill fs-16"></i>
+                        </a>
+                    </li>`;
 
-            actions += `<li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
-            <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder" data-url="${deleteURL.replace('0', row.id)}">
-            <i class="ri-delete-bin-5-fill fs-16"></i>
-                </a>
-            </li>`
-
-            actions += `</ul>`
-            return actions
+                    actions += `</ul>`;
+                    return actions;
+                } else {
+                    // Non-ADMIN user
+                    return `<ul class="list-inline hstack gap-2 mb-0">
+                        <li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
+                            <a href="javascript:void(0);" class="text-primary d-inline-block edit-item-btn" onclick="showAlert('${row.Code}');">
+                                <i class="ri-pencil-fill fs-16"></i>
+                            </a>
+                        </li>
+                        <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
+                            <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#" onclick="showAlert('${row.Code}');">
+                                <i class="ri-delete-bin-5-fill fs-16"></i>
+                            </a>
+                        </li>
+                        </ul>`;
+                }
+            },
         },
-    }]
+    ]
 });
+function showAlert(Code) {
+    document.getElementById("customAlert").style.display = "block";
+}
+
 
 $(document).ready(function(){
 
@@ -268,12 +377,16 @@ $(document).ready(function(){
     $('#scheduletable').on('click', '.delete-btn', (event) => {
         $('#delete-record').attr('href', $(event.currentTarget).data('url'))
     })
-
-    // Filters for table
     $('#id_search').on('keyup', function () {
         table.search( this.value ).draw();
-    } );
-
-})
+    });
+    $('#createScheduleButton').on('click', function(event) {
+        if (!isSuperuser) {
+            event.preventDefault();
+            showAlert();
+            $('#customAlert').css('display', 'block');
+        }
+    });
+});
 </script>
 {% endblock extra_js %}

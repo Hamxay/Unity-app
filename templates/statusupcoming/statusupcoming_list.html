@@ -26,6 +26,7 @@
                                     <h5 class="card-title mb-0 flex-grow-1">All Status</h5>
                                     <div class="flex-shrink-0">
                                         <a role="button"
+                                            id="create-btn"
                                             href="{% url 'statusupcoming:statusupcoming_create' %}"
                                             class="btn btn-danger add-btn">
                                             <i class="ri-add-line align-bottom me-1"></i> Create Status
@@ -35,6 +36,53 @@
                             </div>
 
                             <!--end card-body-->
+                            <style>
+                                /* Alert box styles */
+                                .alert-admin {
+                                    padding: 20px;
+                                    background-color: #f44336; /* Red background color */
+                                    color: white; /* White text color */
+                                    margin-bottom: 15px;
+                                    position: relative;
+                                }
+                                /* Close button styles */
+                                .closebtn-admin {
+                                    margin-left: 15px;
+                                    color: white;
+                                    font-weight: bold;
+                                    float: right;
+                                    font-size: 22px;
+                                    line-height: 20px;
+                                    cursor: pointer;
+                                    transition: 0.3s;
+                                }
+                                .closebtn-admin:hover {
+                                    color: black;
+                                }
+                            </style>
+                            <!-- Custom alert box -->
+                            <div id="customAlert" class="alert-admin" style="display: none;">
+                                <span class="closebtn-admin" onclick="document.getElementById('customAlert').style.display='none';">&times;</span>
+                                This action is only allowed for admin users.
+                            </div>
+                            <div class="card-body border border-dashed border-end-0 border-start-0">
+                                <form>
+                                    <div class="row g-3">
+                                        <div class="col-xxl-5 col-sm-12">
+                                            <div class="search-box">
+                                                <input type="text"
+                                                       class="form-control search bg-light border-light"
+                                                       placeholder="Search..."
+                                                       id="id_search">
+                                                <i class="ri-search-line search-icon"></i>
+                                            </div>
+                                        </div>
+                                        <!--end col-->
+                                    </div>
+                                    <!--end row-->
+                                </form>
+                            </div>
+
                             <div class="card-body">
                                 <div class="table-responsive table-card mb-4">
                                     <table class="table align-middle table-nowrap mb-0"
@@ -42,7 +90,6 @@
                                            <thead class="table-light text-muted">
                                                <tr>
                                                 <th>Action</th>
-                                                <th data-data="id" data-name="id">ID</th>
                                                 <th data-data="code" data-name="code">Code</th>
                                                 <th data-data="name" data-name="name">Name</th>
                                                 <th data-data="description" data-name="description">Description</th>
@@ -109,10 +156,11 @@
 <script src="{% static 'js/moment-2.29.2.min.js' %}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 <script type="text/javascript">
+var isSuperuser = {% if request.user.is_superuser %}true{% else %}false{% endif %};
 var table = $('#statusupcomingtable').DataTable( {
     serverSide: true,
     processing: true,
-    order: [[3, 'desc']],
+    order: [[2, 'desc']],
     "ajax": {
         "url": "/api/statusupcoming/?format=datatables"
     },
@@ -120,7 +168,7 @@ var table = $('#statusupcomingtable').DataTable( {
     "columnDefs": [
     {
         targets: 1,
-        visible: false
+        defaultContent: "-"
     },
     {
         targets: 2,
@@ -128,31 +176,32 @@ var table = $('#statusupcomingtable').DataTable( {
     },
     {
         targets: 3,
-        defaultContent: "-"
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 4,
-        defaultContent: "-"
-    },
-    {
-        targets: 5,
+        searchable: false,
         render: (data, type, row)=>{
             return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
         }
     },
     {
-        targets: 6,
-        defaultContent: "-"
+        targets: 5,
+        defaultContent: "-",
+        searchable: false,
     },
     {
-        targets: 7,
+        targets: 6,
+        searchable: false,
         render: (data, type, row)=>{
             return moment.utc(row.updated_date).format('MMM DD, YYYY hh:mm A');
         }
     },
     {
-        targets: 8,
-        defaultContent: "-"
+        targets: 7,
+        defaultContent: "-",
+        searchable: false,
     },
     {
         targets: 0,  // 0 the first, 1 the second, etc.
@@ -161,29 +210,50 @@ var table = $('#statusupcomingtable').DataTable( {
         // The `data` parameter refers to the data for the cell.
         // The `rows`argument is an object representing all the data for the current row.
         render: ( data, type, row ) => {
-            let editURL = "{% url 'statusupcoming:statusupcoming_update' pk=0 %}"
-            let deleteURL = "{% url 'statusupcoming:statusupcoming_delete' pk=0 %}"
 
-            let actions =  `<ul class="list-inline hstack gap-2 mb-0">`
+                if (isSuperuser) {
+                    let editURL = "{% url 'statusupcoming:statusupcoming_update' pk=0 %}"
+                    let deleteURL = "{% url 'statusupcoming:statusupcoming_delete' pk=0 %}"
+                    let actions = `<ul class="list-inline hstack gap-2 mb-0">`;
 
-            actions += `<li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
-                <a href="${editURL.replace('0', row.id)}" class="text-primary d-inline-block edit-item-btn">
-                    <i class="ri-pencil-fill fs-16"></i>
-                </a>
-            </li>`
+                    actions += `<li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
+                        <a href="${editURL.replace('0', row.code)}" class="text-primary d-inline-block edit-item-btn">
+                            <i class="ri-pencil-fill fs-16"></i>
+                        </a>
+                    </li>`;
 
-            actions += `<li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
-            <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder" data-url="${deleteURL.replace('0', row.id)}">
-            <i class="ri-delete-bin-5-fill fs-16"></i>
-                </a>
-            </li>`
+                    actions += `<li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
+                        <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder" data-url="${deleteURL.replace('0', row.code)}">
+                            <i class="ri-delete-bin-5-fill fs-16"></i>
+                        </a>
+                    </li>`;
 
-            actions += `</ul>`
-            return actions
-        },
-    }]
+                    actions += `</ul>`;
+                    return actions;
+                } else {
+                    // Non-ADMIN user
+                    return `<ul class="list-inline hstack gap-2 mb-0">
+                        <li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
+                            <a href="javascript:void(0);" class="text-primary d-inline-block edit-item-btn" onclick="showAlert('${row.code}');">
+                                <i class="ri-pencil-fill fs-16"></i>
+                            </a>
+                        </li>
+                        <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
+                            <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#" onclick="showAlert('${row.code}');">
+                                <i class="ri-delete-bin-5-fill fs-16"></i>
+                            </a>
+                        </li>
+                        </ul>`;
+                    }
+                }
+
+            },
+    ]
 });
-
+function showAlert(code) {
+    console.log('Show alert for row with code:', code);
+    document.getElementById("customAlert").style.display = "block";
+}
 $(document).ready(function(){
     // Update the Delete URL in Delete Confirm Modal
     $('#statusupcomingtable').on('click', '.delete-btn', (event) => {
@@ -194,6 +264,17 @@ $(document).ready(function(){
     $('#id_search').on('keyup', function () {
         table.search( this.value ).draw();
     } );
+    $('#create-btn').on('click', function(event) {
+        if (!isSuperuser) {
+            event.preventDefault();
+            showAlert();
+            $('#customAlert').css('display', 'block');
+        }
+    });
 })
+$('#id_search').on('keyup', function () {
+    var searchValue = this.value;
+    table.search(searchValue).draw();
+});
     </script>
 {% endblock extra_js %}

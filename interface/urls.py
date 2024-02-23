@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path,include
 from rest_framework import routers
 from .views import (
     HistoricalInterfaceListView,
@@ -18,7 +18,8 @@ from .views import (
     InterfaceTypeDeleteView,
     InterfaceTypeListView,
     InterfaceTypeUpdateView,
-    InterfaceUpdateView,
+    InterfaceUpdateView, InterfaceDropdownView, InterfaceTypeDetailView, InterfaceCategoryDetailView,
+    InterfaceDetailView,
 )
 from .viewsets import (
     InterfaceCategoryViewset,
@@ -26,6 +27,7 @@ from .viewsets import (
     InterfaceHistoryViewset,
     InterfaceTypeViewset,
     InterfaceViewset,
+    InterfaceDropdownViewSet, InterfaceTypeDetailViewSet
 )
 
 router = routers.DefaultRouter()
@@ -37,6 +39,8 @@ router.register(
     "interface/dependence", InterfaceDependenceViewset, basename="interface_dependence"
 )
 router.register("interface", InterfaceViewset, basename="interface")
+router.register("references", InterfaceDropdownViewSet, basename="references")
+router.register("interface/type/relations", InterfaceTypeDetailViewSet, basename="interface_type_relations")
 router.register(
     "interface/history",
     InterfaceHistoryViewset,
@@ -70,6 +74,11 @@ urlpatterns = [
         "type/list/",
         InterfaceTypeListView.as_view(),
         name="interface_type_list",
+    ),
+    path(
+        "type/relations/",
+        InterfaceTypeDetailView.as_view(),
+        name="interface_type_relations",
     ),
     path(
         "type/create/",
@@ -128,4 +137,13 @@ urlpatterns = [
         InterfaceDependenceDeleteView.as_view(),
         name="interface_dependence_delete",
     ),
+    path(
+        "references/<int:pk>",
+        InterfaceDropdownView.as_view(),
+        name='references'
+    ),
+    path("type/id/<int:pk>/", InterfaceTypeDetailView.as_view(), name="interface_type_detail"),
+    path("category/id/<int:pk>/", InterfaceCategoryDetailView.as_view(), name="interface_category_detail"),
+    path("id/<int:pk>/", InterfaceDetailView.as_view(), name="interface_detail"),
+
 ]

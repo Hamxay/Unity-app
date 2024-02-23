@@ -1,10 +1,13 @@
 from rest_framework import serializers
+
+from classapp.serializer import ClassDisplaySerializer
 from .models import Attribute
 
 
 class AttributeSerializer(serializers.ModelSerializer):
     created_by = serializers.ReadOnlyField(source="created_by.get_full_name")
     updated_by = serializers.ReadOnlyField(source="created_by.get_full_name")
+    class_id = ClassDisplaySerializer()
 
     class Meta:
         model = Attribute

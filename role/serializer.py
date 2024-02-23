@@ -9,3 +9,9 @@ class RoleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Role
         fields = "__all__"
+
+
+class RoleDisplaySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Role
+        fields = ['code', 'name']

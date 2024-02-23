@@ -1,10 +1,12 @@
+from django.db.models import ProtectedError
 from django.shortcuts import redirect
 from django import forms
+from django.views import View
 from django.views.generic import (
     ListView,
     CreateView,
     UpdateView,
-    DeleteView,
+    DeleteView, FormView,
 )
 from django.utils import timezone
 from django.contrib.messages.views import SuccessMessageMixin
@@ -12,8 +14,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.contrib import messages
 
-from historyconfiguration.helper import history_enable
+from .forms import AttributeForm, ImportFileForm
+from .import_attribute import import_attributes_from_file
 from .models import Attribute
+from .download_template import AttributeTemplateCSVGenerator
 
 
 class RestoreHistoricalVersionForm(forms.Form):
@@ -42,31 +46,9 @@ class AttributeListView(LoginRequiredMixin, ListView):
 
 class AttributeCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     """Add Attribute"""
-
+    form_class = AttributeForm
     permission_required = "attribute.add_attribute"
     model = Attribute
-    fields = [
-        "code",
-        "class_id",
-        "source_name",
-        "target_name",
-        "source_description",
-        "target_description",
-        "source_ordinal_position",
-        "target_ordinal_position",
-        "source_data_type",
-        "target_data_type",
-        "source_max_length",
-        "target_max_length",
-        "source_precision",
-        "target_precision",
-        "source_scale",
-        "target_scale",
-        "is_primary_key",
-        "is_snapshot_key",
-        "is_nullable",
-        "ignore_on_ingest",
-    ]
     success_url = reverse_lazy("attribute:attribute_list")
     success_message = "Attribute was added successfully"
 
@@ -80,28 +62,7 @@ class AttributeUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
 
     permission_required = "attribute.change_attribute"
     model = Attribute
-    fields = [
-        "code",
-        "class_id",
-        "source_name",
-        "target_name",
-        "source_description",
-        "target_description",
-        "source_ordinal_position",
-        "target_ordinal_position",
-        "source_data_type",
-        "target_data_type",
-        "source_max_length",
-        "target_max_length",
-        "source_precision",
-        "target_precision",
-        "source_scale",
-        "target_scale",
-        "is_primary_key",
-        "is_snapshot_key",
-        "is_nullable",
-        "ignore_on_ingest",
-    ]
+    form_class = AttributeForm
     success_url = reverse_lazy("attribute:attribute_list")
     success_message = "Attribute was updated successfully"
 
@@ -119,12 +80,15 @@ class AttributeDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     success_message = "Record was deleted successfully"
 
     def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        self.object.deleted_by = self.request.user
-        self.object.deleted_date = timezone.now()
-        self.object.delete()
-        success_url = self.get_success_url()
-        messages.success(self.request, self.success_message)
+        try:
+            self.object = self.get_object()
+            self.object.deleted_by = request.user
+            self.object.deleted_date = timezone.now()
+            success_url = self.get_success_url()
+            self.object.delete()
+            messages.success(self.request, self.success_message)
+        except ProtectedError:
+            messages.error(self.request, "Cannot delete this record because it is referenced through protected foreign keys.")
         return redirect(success_url)
 
 
@@ -147,10 +111,29 @@ class HistoricalAttributeUpdateView(LoginRequiredMixin, UpdateView):
         # self.object = self.get_object()
         # selected_version = request.POST.get("historical_version")
         data = Attribute.history.get(pk=pk)
-        attribute_obj = Attribute.objects.get(pk=data.id)
+        attribute_obj = Attribute.objects.get(pk=data.code)
         for field in attribute_obj._meta.fields:
             field_name = field.name
             setattr(attribute_obj, field_name, getattr(data, field_name))
-        attribute_obj.save_without_historical_record()
+        attribute_obj.save()
         messages.success(self.request, "Table restored successfully")
         return redirect(reverse_lazy("attribute:attribute_list"))
+
+
+class AttributeDownloadTemplateView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        response = AttributeTemplateCSVGenerator.generate_csv()
+        return response
+
+
+class AttributeImportClassFromFileView(LoginRequiredMixin, FormView):
+    form_class = ImportFileForm
+    success_url = reverse_lazy("attribute:attribute_list")
+
+    def form_valid(self, form):
+        file = self.request.FILES['file']
+        current_user = self.request.user
+
+        import_attributes_from_file(file, current_user, self.success_url, self.request)
+
+        return redirect(self.get_success_url())
