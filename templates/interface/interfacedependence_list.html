@@ -139,7 +139,10 @@ var table = $('#InterfaceDependenceTable').DataTable( {
     },
     {
         targets: 2,
-        defaultContent: "-"
+        defaultContent: "-",
+        render: (data)=>{
+        return data.code +' - '+ data.name
+        }
     },
     {
         targets: 3,
