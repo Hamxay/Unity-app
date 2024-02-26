@@ -67,6 +67,7 @@ class InterfaceDependenceSerializer(serializers.ModelSerializer):
     created_by = serializers.ReadOnlyField(source="created_by.get_full_name")
     updated_by = serializers.ReadOnlyField(source="created_by.get_full_name")
     interface_id = InterfaceDisplaySerializer()
+    dependent_on_interface = InterfaceDisplaySerializer()
 
     class Meta:
         model = InterfaceDependence
