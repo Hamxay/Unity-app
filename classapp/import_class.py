@@ -31,7 +31,7 @@ def import_class_from_file(file, current_user, success_url, request):
                 InterfaceId=interface_instance,
                 created_by=current_user,
                 updated_by=current_user,
-                **row.drop(['InterfaceId', 'created_by', 'updated_by']).to_dict()
+                **row.drop(['InterfaceId', 'Id',]).to_dict()
             )
             class_instance.full_clean()
             class_instance.save()
@@ -45,7 +45,4 @@ def import_class_from_file(file, current_user, success_url, request):
     except (TypeError, AttributeError, ValueError, Exception) as error:
         messages.error(request, error)
         return redirect(success_url)
-
-
-
     return redirect(success_url)
