@@ -7,7 +7,7 @@ def generate_task_csv_template():
     response['Content-Disposition'] = 'attachment; filename="TaskTemplate.csv"'
     csv_writer = csv.writer(response)
     csv_writer.writerow([
-        "Id", "ClassId", "CollectionId", "LoadPatternId", "Name", "Description", "ProcessName", "ProcessParameters",
+        "Code", "ClassId", "CollectionId", "LoadPatternId", "Name", "Description", "ProcessName", "ProcessParameters",
         "SubProcessParameters", "DeduplicateSource", "Priority",
     ])
     csv_writer.writerow([

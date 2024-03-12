@@ -27,14 +27,31 @@ def import_attributes_from_file(file, current_user, success_url, request):
                 messages.error(request, f"Invalid classID {class_id},  It should be a number.")
                 return redirect(success_url)
 
-            attribute_instance = Attribute(
-                class_id=class_instance,
-                created_by=current_user,
-                updated_by=current_user,
-                **row.drop(['class_id', 'id']).to_dict()
-            )
-            attribute_instance.full_clean()
-            attribute_instance.save()
+            if row.get('code') and isinstance(row['code'], int):
+                try:
+                    attribute_instance = Attribute.objects.get(code=row['code'])
+                    attribute_instance.class_id = class_instance
+                    attribute_instance.created_by = current_user
+                    attribute_instance.updated_by = current_user
+                    for key, value in row.items():
+                        if key != 'class_id':  # Exclude class_id as it's already updated
+                            setattr(attribute_instance, key, value)
+                    attribute_instance.full_clean()
+                    attribute_instance.save()
+                except Attribute.DoesNotExist:
+                    messages.error(request=request, message=f"No attribute found with code: {row['code']}")
+                except Exception as e:
+                    messages.error(request=request, message=str(e))
+            else:
+                # Create a new attribute record if 'code' is not provided
+                attribute_instance = Attribute(
+                    class_id=class_instance,
+                    created_by=current_user,
+                    updated_by=current_user,
+                    **row.drop(['class_id', 'code']).to_dict()
+                )
+                attribute_instance.full_clean()
+                attribute_instance.save()
 
         messages.success(request, "Attribute(s) imported successfully")
 
@@ -43,6 +60,7 @@ def import_attributes_from_file(file, current_user, success_url, request):
             for error in errors:
                 messages.error(request, f"Error in field '{field}': {error}")
     except (TypeError, AttributeError, ValueError, Exception) as error:
-        messages.error(request, error)
+        messages.error(request, str(error))
         return redirect(success_url)
+
     return redirect(success_url)

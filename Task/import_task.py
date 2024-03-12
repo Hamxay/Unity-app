@@ -31,16 +31,35 @@ def import_tasks_from_file(file, current_user, success_url, request):
                 messages.error(request, "Invalid ID(s). They should be numbers.")
                 return redirect(success_url)
 
-            task_instance = Task(
-                ClassId=class_instance,
-                CollectionId=collection_instance,
-                LoadPatternId=load_pattern_instance,
-                created_by=current_user,
-                updated_by=current_user,
-                **row.drop(['ClassId', 'CollectionId', 'LoadPatternId', 'Id']).to_dict()
-            )
-            task_instance.full_clean()
-            task_instance.save()
+            if row.get('Code') and isinstance(row['Code'], int):
+                try:
+                    task_instance = Task.objects.get(Code=row['Code'])
+                    task_instance.ClassId = class_instance
+                    task_instance.CollectionId = collection_instance
+                    task_instance.LoadPatternId = load_pattern_instance
+                    task_instance.created_by = current_user
+                    task_instance.updated_by = current_user
+                    for key, value in row.items():
+                        if key != 'ClassId' and key != 'CollectionId' and key != 'LoadPatternId':  # Exclude IDs as they're already updated
+                            setattr(task_instance, key, value)
+                    task_instance.full_clean()
+                    task_instance.save()
+                except Task.DoesNotExist:
+                    messages.error(request=request, message=f"No task found with code: {row['Code']}")
+                except Exception as e:
+                    messages.error(request=request, message=str(e))
+            else:
+                # Create a new task record if 'Code' is not provided
+                task_instance = Task(
+                    ClassId=class_instance,
+                    CollectionId=collection_instance,
+                    LoadPatternId=load_pattern_instance,
+                    created_by=current_user,
+                    updated_by=current_user,
+                    **row.drop(['ClassId', 'CollectionId', 'LoadPatternId', 'Code']).to_dict()
+                )
+                task_instance.full_clean()
+                task_instance.save()
 
         messages.success(request, "Task(s) imported successfully")
 
@@ -49,6 +68,7 @@ def import_tasks_from_file(file, current_user, success_url, request):
             for error in errors:
                 messages.error(request, f"Error in field '{field}': {error}")
     except (TypeError, AttributeError, ValueError, Exception) as error:
-        messages.error(request, error)
+        messages.error(request, str(error))
         return redirect(success_url)
+
     return redirect(success_url)
