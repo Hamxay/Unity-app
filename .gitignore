@@ -1,5 +1,4 @@
 .venv
-.env
 venv
 env
 __pycache__/# Byte-compiled / optimized / DLL files
@@ -109,7 +108,6 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
 .venv
 env/
 venv/
@@ -144,3 +142,5 @@ tests/
 
 .idea/
 */.idea/
+config.bat
+node_modules
