@@ -34,7 +34,7 @@ def import_tasks_from_file(file, current_user, success_url, request):
                 except (ValueError, TypeError):
                     raise ValidationError(f"Invalid IDs, Every Id should be a valid integer.")
 
-                if not math.isnan(row.get('code')):
+                if not math.isnan(row.get('Code')):
                     try:
                         task_instance = Task.objects.get(Code=row['Code'])
                         task_instance.ClassId = class_instance
