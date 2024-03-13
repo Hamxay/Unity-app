@@ -9,7 +9,7 @@ class AttributeTemplateCSVGenerator:
         response['Content-Disposition'] = 'attachment; filename="AttributeTemplate.csv"'
         csv_writer = csv.writer(response)
         csv_writer.writerow([
-            "id", "class_id", "source_name", "target_name", "source_description", "target_description",
+            "code", "class_id", "source_name", "target_name", "source_description", "target_description",
             "source_ordinal_position", "target_ordinal_position", "source_data_type", "target_data_type",
             "source_max_length", "target_max_length", "source_precision", "target_precision",
             "source_scale", "target_scale", "is_primary_key", "is_snapshot_key", "is_nullable",
@@ -18,8 +18,8 @@ class AttributeTemplateCSVGenerator:
         ])
 
         csv_writer.writerow([
-            "1",   # class_id - Assuming the first Class instance has ID 1
             "1",   # id - Assuming the first Attribute instance has ID 1
+            "1",  # class_id - Assuming the first Class instance has ID 1
             "Default source_name", "Default target_name", "Default source_description", "Default target_description",
             "1",  # source_ordinal_position
             "1",  # target_ordinal_position

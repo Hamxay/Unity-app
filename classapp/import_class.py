@@ -1,9 +1,21 @@
+import datetime
+import math
+
 import pandas as pd
+from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import ValidationError
 from django.contrib import messages
 from django.shortcuts import redirect
 from .models import Interface, Class
+
+import pandas as pd
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib import messages
+from django.core.exceptions import ValidationError
+from .models import Class
+from interface.models import Interface
+from django.utils import timezone
 
 
 def import_class_from_file(file, current_user, success_url, request):
@@ -15,34 +27,52 @@ def import_class_from_file(file, current_user, success_url, request):
     elif file.name.endswith('.csv'):
         df = pd.read_csv(file)
     else:
-        messages.error(request, "Unsupported file format")
+        messages.error(request, "Unsupported file format. Only Excel files (.xlsx, .xls) and CSV files are supported.")
         return redirect(success_url)
 
     try:
-        for _, row in df.iterrows():
-            interface_id = row['InterfaceId']
-            try:
-                interface_instance = get_object_or_404(Interface, pk=int(interface_id))
-            except (ValueError, TypeError):
-                messages.error(request, f"Invalid Interface ID: {interface_id}. It should be a number.")
-                return redirect(success_url)
+        with transaction.atomic():
+            for _, row in df.iterrows():
+                interface_id = row['InterfaceId']
+                try:
+                    interface_instance = get_object_or_404(Interface, pk=int(interface_id))
+                except (ValueError, TypeError):
+                    raise ValidationError(f"Invalid classID \'{interface_id}\',  It should be a number.")
+                class_id = row.get('Code')
+                if not math.isnan(class_id):
+                    try:
+                        record_to_update = Class.objects.get(Code=class_id)
+                        record_to_update.InterfaceId = interface_instance
+                        record_to_update.created_by = current_user
+                        record_to_update.updated_by = current_user
+                        for key, value in row.items():
+                            if key != 'InterfaceId':
+                                setattr(record_to_update, key, value)
+                        record_to_update.full_clean()
+                        record_to_update.save()
+                    except Class.DoesNotExist:
+                        raise ValidationError(f"No attribute found with code: {class_id}")
+                    except Exception as e:
+                        messages.error(request=request, message=str(e))
+                        raise ValidationError("An error occurred during import. Transaction rolled back.")
+                else:
+                    try:
+                        class_instance = Class(
+                            InterfaceId=interface_instance,
+                            created_by=current_user,
+                            updated_by=current_user,
+                            **row.drop(['InterfaceId', 'Code']).to_dict()
+                        )
+                        class_instance.full_clean()
+                        class_instance.save()
+                    except Exception as e:
+                        messages.error(request=request, message=str(e))
 
-            class_instance = Class(
-                InterfaceId=interface_instance,
-                created_by=current_user,
-                updated_by=current_user,
-                **row.drop(['InterfaceId', 'Id',]).to_dict()
-            )
-            class_instance.full_clean()
-            class_instance.save()
-
-        messages.success(request, "Class(s) imported successfully")
-
-    except ValidationError as e:
-        for field, errors in e.message_dict.items():
-            for error in errors:
-                messages.error(request, f"Error in field '{field}': {error}")
+            messages.success(request, "Class(es) imported successfully")
+    except ValidationError as errors:
+        for error in errors:
+            messages.error(request, error)
     except (TypeError, AttributeError, ValueError, Exception) as error:
-        messages.error(request, error)
-        return redirect(success_url)
+        messages.error(request, str(error))
+
     return redirect(success_url)
