@@ -18,7 +18,8 @@ def import_attributes_from_file(file, current_user, success_url, request):
     elif file.name.endswith('.csv'):
         df = pd.read_csv(file)
     else:
-        messages.error(request, "Unsupported file format. Only Excel files (.xlsx, .xls) and CSV files are supported.")
+        messages.error(request, "Unable to import data (Attribute) from the file. Only csv, xlsx and xls files are "
+                                "supported")
         return redirect(success_url)
 
     try:
@@ -27,8 +28,8 @@ def import_attributes_from_file(file, current_user, success_url, request):
                 class_id = row['class_id']
                 try:
                     class_instance = get_object_or_404(Class, pk=int(class_id))
-                except (ValueError, TypeError):
-                    raise ValidationError(f"Invalid classID \'{class_id}\',  It should be a number.")
+                except (ValueError, TypeError) as error:
+                    raise ValidationError(f"Unable to import data (Attribute) from the file because `{error}`")
 
                 if not math.isnan(row.get('code')):
                     try:
@@ -41,11 +42,8 @@ def import_attributes_from_file(file, current_user, success_url, request):
                                 setattr(attribute_instance, key, value)
                         attribute_instance.full_clean()
                         attribute_instance.save()
-                    except Attribute.DoesNotExist:
-                        raise ValidationError(f"No attribute found with code: {row['code']}")
-                    except Exception as e:
-                        messages.error(request=request, message=str(e))
-                        raise ValidationError("An error occurred during import. Transaction rolled back.")
+                    except (Attribute.DoesNotExist, Exception) as error:
+                        raise ValidationError(f"Unable to import data (Attribute) from the file because `{error}`")
                 else:
                     attribute_instance = Attribute(
                         class_id=class_instance,
@@ -62,6 +60,6 @@ def import_attributes_from_file(file, current_user, success_url, request):
             messages.error(request, error)
 
     except (TypeError, AttributeError, ValueError, Exception) as error:
-        messages.error(request, f"Error : {error}")
+        messages.error(request, f" Unable to import data (Attribute) because `{error}`")
 
     return redirect(success_url)

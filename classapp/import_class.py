@@ -27,7 +27,8 @@ def import_class_from_file(file, current_user, success_url, request):
     elif file.name.endswith('.csv'):
         df = pd.read_csv(file)
     else:
-        messages.error(request, "Unsupported file format. Only Excel files (.xlsx, .xls) and CSV files are supported.")
+        messages.error(request, "Unable to import data (Class) from the file. Only csv, xlsx and xls files are "
+                                "supported")
         return redirect(success_url)
 
     try:
@@ -36,8 +37,8 @@ def import_class_from_file(file, current_user, success_url, request):
                 interface_id = row['InterfaceId']
                 try:
                     interface_instance = get_object_or_404(Interface, pk=int(interface_id))
-                except (ValueError, TypeError):
-                    raise ValidationError(f"Invalid classID \'{interface_id}\',  It should be a number.")
+                except (ValueError, TypeError) as error:
+                    raise ValidationError(f"Unable to import data (Class) from the file because `{error}`")
                 class_id = row.get('Code')
                 if not math.isnan(class_id):
                     try:
@@ -50,11 +51,8 @@ def import_class_from_file(file, current_user, success_url, request):
                                 setattr(record_to_update, key, value)
                         record_to_update.full_clean()
                         record_to_update.save()
-                    except Class.DoesNotExist:
-                        raise ValidationError(f"No attribute found with code: {class_id}")
-                    except Exception as e:
-                        messages.error(request=request, message=str(e))
-                        raise ValidationError("An error occurred during import. Transaction rolled back.")
+                    except (Class.DoesNotExist, Exception) as error:
+                        raise ValidationError(f"Unable to import data (Class) from the file because `{error}`")
                 else:
                     try:
                         class_instance = Class(
@@ -73,6 +71,6 @@ def import_class_from_file(file, current_user, success_url, request):
         for error in errors:
             messages.error(request, error)
     except (TypeError, AttributeError, ValueError, Exception) as error:
-        messages.error(request, str(error))
+        messages.error(request, f" Unable to import data (Class) because `{error}`")
 
     return redirect(success_url)

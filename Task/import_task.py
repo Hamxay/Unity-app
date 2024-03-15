@@ -18,7 +18,8 @@ def import_tasks_from_file(file, current_user, success_url, request):
     elif file.name.endswith('.csv'):
         df = pd.read_csv(file)
     else:
-        messages.error(request, "Unsupported file format. Only Excel files (.xlsx, .xls) and CSV files are supported.")
+        messages.error(request, "Unable to import data (Task) from the file. Only csv, xlsx and xls files are "
+                                "supported")
         return redirect(success_url)
 
     try:
@@ -31,8 +32,8 @@ def import_tasks_from_file(file, current_user, success_url, request):
                     class_instance = get_object_or_404(Class, pk=int(class_id))
                     collection_instance = get_object_or_404(Collection, pk=int(collection_id))
                     load_pattern_instance = get_object_or_404(LoadPattern, pk=int(load_pattern_id))
-                except (ValueError, TypeError):
-                    raise ValidationError(f"Invalid IDs, Every Id should be a valid integer.")
+                except (ValueError, TypeError) as error:
+                    raise ValidationError(f"Unable to import data (Task) from the file because `{error}`")
 
                 if not math.isnan(row.get('Code')):
                     try:
@@ -47,10 +48,8 @@ def import_tasks_from_file(file, current_user, success_url, request):
                                 setattr(task_instance, key, value)
                         task_instance.full_clean()
                         task_instance.save()
-                    except Task.DoesNotExist:
-                        raise ValidationError(f"No task found with code: {row['Code']}")
-                    except Exception as e:
-                        raise ValidationError("An error occurred during import. Transaction rolled back.")
+                    except (Task.DoesNotExist, Exception) as error:
+                        raise ValidationError(f"Unable to import data (Task) from the file because `{error}`")
                 else:
                     task_instance = Task(
                         ClassId=class_instance,
@@ -68,6 +67,6 @@ def import_tasks_from_file(file, current_user, success_url, request):
         for error in errors:
             messages.error(request, error)
     except (TypeError, AttributeError, ValueError, Exception) as error:
-        messages.error(request, str(error))
+        messages.error(request, message=f"Unable to import data (Task) from the file because `{error}`")
 
     return redirect(success_url)
