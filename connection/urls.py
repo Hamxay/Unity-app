@@ -6,7 +6,7 @@ from .views import (
     ConnectionListView,
     ConnectionUpdateView,
     HistoricalConnectionListView,
-    HistoricalConnectionUpdateView, ConnectionDetailView,
+    HistoricalConnectionUpdateView, ConnectionDetailView, ConnectionBulkDeleteView,
 )
 from .viewsets import ConnectionViewset, ConnectionHistoryViewset, ConnectionDropdownViewset
 
@@ -54,5 +54,5 @@ urlpatterns = [
         name="historicalconnection_update",
     ),
     path("id/<int:pk>/", ConnectionDetailView.as_view(), name="connection_detail"),
-
+    path('bulkDelete/', ConnectionBulkDeleteView.as_view(), name='connection_bulk_delete'),
 ]
