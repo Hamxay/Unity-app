@@ -6,7 +6,7 @@ from .views import (
     ScheduleDeleteView,
     ScheduleUpdateView,
     HistoricalScheduleListView,
-    HistoricalScheduleUpdateView, ScheduleDetailView
+    HistoricalScheduleUpdateView, ScheduleDetailView, ScheduleBulkDeleteView
 )
 from .viewsets import ScheduleViewset, ScheduleHistoryViewset
 
@@ -44,5 +44,6 @@ urlpatterns = [
         name="historicalschedule_update",
     ),
     path("id/<int:pk>/", ScheduleDetailView.as_view(), name="schedule_detail"),
-
+    path('bulkDelete/', ScheduleBulkDeleteView.as_view(),
+         name='schedule_bulk_delete'),
 ]
