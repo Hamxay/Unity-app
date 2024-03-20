@@ -5,7 +5,7 @@ from Task.views import (
     TaskListView,
     HistoricalTaskListView,
     TaskDeleteView, TaskCreateView, TaskUpdateView, HistoricalTaskUpdateView, HistoricalTaskViewAll, TaskDetailView,
-    TaskDownloadTemplateView, TaskImportClassFromFileView
+    TaskDownloadTemplateView, TaskImportClassFromFileView, TaskBulkDeleteView
 )
 from Task.viewsets import TaskViewset, TaskHistoryViewset, TaskHistoryViewsetAll, TaskDropdownViewset
 
@@ -53,4 +53,6 @@ urlpatterns = [
     ),
     path('downloadTemplate/', TaskDownloadTemplateView.as_view(), name='downloadTemplate'),
     path('import/', TaskImportClassFromFileView.as_view(), name='import_class_from_file'),
+    path('bulkDelete/', TaskBulkDeleteView.as_view(),
+         name='Task_bulk_delete'),
 ]

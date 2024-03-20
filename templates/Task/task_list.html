@@ -45,6 +45,9 @@
                                             <i class="ri-file-download-line align-bottom me-1"></i> Download Template
                                         </a>
                                     </div>
+                                    <div class="flex-shrink-0 ml-2" style="margin-left:3px">
+                                        <a id="deleteAllButton" style="display: none;" type="button" class="btn btn-danger add-btn">Delete All</a>
+                                    </div>
                                 </div>
                             </div>
                             <div class="card-body border border-dashed border-end-0 border-start-0">
@@ -181,6 +184,7 @@
 <script src="{% static 'js/moment-2.29.2.min.js' %}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 <script type="text/javascript">
+var recordToDelete = new Set();
 var CollectionIdParam = new URLSearchParams(window.location.search).get('CollectionId');
 var ClassIdParam = new URLSearchParams(window.location.search).get('class_id');
 var LoadPatternIdParam = new URLSearchParams(window.location.search).get('LoadPatternId');
@@ -317,7 +321,10 @@ var table = $('#TaskTable').DataTable( {
             let deleteURL = "{% url 'Task:Task_delete' pk=0 %}"
             
             let actions =  `<ul class="list-inline hstack gap-2 mb-0">`
-                
+            actions += `<div class="form-check">
+                        <input class="form-check-input checkbox" type="checkbox" value="${row.Code}" id="checkboxID">
+                        <label class="form-check-label" for="checkboxID"></label>
+                    </div>`
             actions += `
             <li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="History">
                 <a href="${viewURL.replace('0', row.Code)}" class="text-primary d-inline-block">
@@ -400,6 +407,51 @@ $(document).ready(function(){
         table.search( this.value ).draw();
     } );
     
+$('.checkbox').each(function() {
+        $(this).on('change', function() {
+            var deleteAllButton = $('#deleteAllButton');
+            var atLeastOneChecked = false;
+            $('.checkbox').each(function() {
+                var elements = document.querySelectorAll(".checkbox");
+                    elements.forEach(function(element) {
+                        if(element.checked){
+                            console.log(element.value)
+                            recordToDelete.add(element.value)
+                        }
+                        else{
+                            recordToDelete.delete(element.value)
+                        }
+                    });
+                if ($(this).prop('checked')) {
+                    atLeastOneChecked = true;
+                    return false;
+                }
+            });
+            if (atLeastOneChecked) {
+                deleteAllButton.show();
+            } else {
+                deleteAllButton.hide();
+            }
+        });
+    });
+    $('#deleteAllButton').on('click', function(){
+        var baseUrl = window.location.origin;
+        var recordIds = Array.from(recordToDelete.values());
+        $.ajax({
+            url: baseUrl + '/Task/bulkDelete/' ,
+            data: JSON.stringify(recordIds),
+            method: 'GET',
+            success: function () {
+                // Success handling
+            },
+            error: function (error) {
+                alert("Error deleting records");
+            }
+        })
+        .done(function() {
+            location.reload();
+        });
+    });
 })
 </script>
 {% endblock extra_js %}
