@@ -1,6 +1,6 @@
 from django.urls import path
 from rest_framework import routers
-from .views import RoleListView, RoleCreateView, RoleUpdateView, RoleDeleteView
+from .views import RoleListView, RoleCreateView, RoleUpdateView, RoleDeleteView, RoleBulkDeleteView
 from .viewsets import RoleViewset
 
 router = routers.DefaultRouter()
@@ -21,4 +21,6 @@ urlpatterns = [
         RoleDeleteView.as_view(),
         name="role_delete",
     ),
+    path('bulkDelete/', RoleBulkDeleteView.as_view(),
+         name='role_bulk_delete'),
 ]
