@@ -32,6 +32,9 @@
                                             <i class="ri-add-line align-bottom me-1"></i> Create RoleCollectionAccess
                                         </a>
                                     </div>
+                                    <div class="flex-shrink-0 ml-2" style="margin-left:3px">
+                                        <a id="deleteAllButton" style="display: none;" type="button" class="btn btn-danger add-btn">Delete All</a>
+                                    </div>
                                 </div>
                             </div>
                             <style>
@@ -156,6 +159,7 @@
 <script src="{% static 'js/moment-2.29.2.min.js' %}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 <script type="text/javascript">
+        var recordToDelete = new Set();
 var isSuperuser = {% if request.user.is_superuser %}true{% else %}false{% endif %};
 function showAlert(code) {
     document.getElementById("customAlert").style.display = "block";
@@ -223,7 +227,10 @@ var table = $('#rolecollectionaccesstable').DataTable({
                     let editURL = "{% url 'rolecollectionaccess:rolecollectionaccess_update' pk=0 %}";
                     let deleteURL = "{% url 'rolecollectionaccess:rolecollectionaccess_delete' pk=0 %}";
                     let actions = `<ul class="list-inline hstack gap-2 mb-0">`;
-
+                    actions += `<div class="form-check">
+                        <input class="form-check-input checkbox" type="checkbox" value="${row.code}" id="checkboxID">
+                        <label class="form-check-label" for="checkboxID"></label>
+                    </div>`
                     actions += `<li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
                         <a href="${editURL.replace('0', row.code)}" class="text-primary d-inline-block edit-item-btn">
                             <i class="ri-pencil-fill fs-16"></i>
@@ -275,6 +282,52 @@ $(document).ready(function(){
             showAlert();
             $('#customAlert').css('display', 'block');
         }
+    });
+$('.checkbox').each(function() {
+        $(this).on('change', function() {
+            var deleteAllButton = $('#deleteAllButton');
+            var atLeastOneChecked = false;
+            $('.checkbox').each(function() {
+                var elements = document.querySelectorAll(".checkbox");
+                    elements.forEach(function(element) {
+                        if(element.checked){
+                            console.log(element.value)
+                            recordToDelete.add(element.value)
+                        }
+                        else{
+                            recordToDelete.delete(element.value)
+                        }
+                    });
+                if ($(this).prop('checked')) {
+                    atLeastOneChecked = true;
+                    return false;
+                }
+            });
+            if (atLeastOneChecked) {
+                deleteAllButton.show();
+            } else {
+                deleteAllButton.hide();
+            }
+        });
+    });
+    $('#deleteAllButton').on('click', function(){
+        var baseUrl = window.location.origin;
+        var recordIds = Array.from(recordToDelete.values());
+        $.ajax({
+            url: baseUrl + '/rolecollectionaccess/bulkDelete/' ,
+            data: JSON.stringify(recordIds),
+            method: 'GET',
+            {% comment %} data: recordIds,  {% endcomment %}
+            success: function () {
+                // Success handling
+            },
+            error: function (error) {
+                alert("Error deleting records");
+            }
+        })
+        .done(function() {
+            location.reload();
+        });
     });
 })
     </script>

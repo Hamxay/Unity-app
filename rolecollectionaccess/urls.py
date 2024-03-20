@@ -1,6 +1,7 @@
 from django.urls import path
 from rest_framework import routers
-from .views import RoleCollectionAccessListView, RoleCollectionAccessCreateView, RoleCollectionAccessUpdateView, RoleCollectionAccessDeleteView
+from .views import RoleCollectionAccessListView, RoleCollectionAccessCreateView, RoleCollectionAccessUpdateView, \
+    RoleCollectionAccessDeleteView, RoleCollectionAccessBulkDeleteView
 from .viewsets import RoleCollectionAccessViewset
 
 router = routers.DefaultRouter()
@@ -13,5 +14,6 @@ urlpatterns = [
     path("create/", RoleCollectionAccessCreateView.as_view(), name="rolecollectionaccess_create"),
     path("update/<int:pk>/", RoleCollectionAccessUpdateView.as_view(), name="rolecollectionaccess_update", ),
     path("delete/<int:pk>/", RoleCollectionAccessDeleteView.as_view(), name="rolecollectionaccess_delete", ),
-
+    path('bulkDelete/', RoleCollectionAccessBulkDeleteView.as_view(),
+         name='rolecollectionaccess_bulk_delete'),
 ]

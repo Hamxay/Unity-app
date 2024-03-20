@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.db import transaction
 from django.db.models import ProtectedError
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
@@ -58,3 +59,27 @@ class RoleCollectionAccessDeleteView(LoginRequiredMixin, SuccessMessageMixin, De
         except ProtectedError:
             messages.error(self.request, "Cannot delete this record because it is referenced through protected foreign keys.")
         return redirect(success_url)
+
+
+class RoleCollectionAccessBulkDeleteView(LoginRequiredMixin, DeleteView):
+    """Delete multiple Role"""
+
+    permission_required = "collection.collection_bulk_delete"
+    model = RoleCollectionAccess
+    success_url = reverse_lazy("collection:collection_list")
+    success_message = "Records were deleted successfully"
+
+    def get(self, request, *args, **kwargs):
+        try:
+            with transaction.atomic():
+                records = []
+                values = request.GET
+                for key, value in values.items():
+                    records = [int(num.strip('"')) for num in key.strip('[]').split(',')]
+                queryset = self.model.objects.filter(pk__in=records)
+                queryset.delete()
+                messages.success(request, self.success_message)
+        except ProtectedError:
+            messages.error(self.request, "Cannot delete one or more records because they are referenced through protected foreign keys.")
+
+        return redirect(self.success_url)
