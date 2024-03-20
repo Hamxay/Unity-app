@@ -7,6 +7,7 @@ from .views import (
     AttributeDeleteView,
     HistoricalAttributeListView,
     HistoricalAttributeUpdateView, AttributeDownloadTemplateView, AttributeImportClassFromFileView,
+    AttributeBulkDeleteView,
 )
 from .viewsets import AttributeViewset, AttributeHistoryViewset
 
@@ -45,4 +46,5 @@ urlpatterns = [
     ),
     path('downloadTemplate/', AttributeDownloadTemplateView.as_view(), name='downloadTemplate'),
     path('import/', AttributeImportClassFromFileView.as_view(), name='import_class_from_file'),
+    path('bulkDelete/', AttributeBulkDeleteView.as_view(), name='attribute_bulk_delete'),
 ]
