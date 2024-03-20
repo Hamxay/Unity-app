@@ -4,7 +4,7 @@ from .views import (
     CollectionListView,
     HistoricalCollectionListView,
     CollectionDeleteView, CollectionCreateView, CollectionUpdateView, HistoricalCollectionUpdateView,
-    CollectionDetailView
+    CollectionDetailView, CollectionBulkDeleteView
 )
 from .viewsets import CollectionViewset, CollectionHistoryViewset, CollectionRelationsViewset
 
@@ -47,4 +47,6 @@ urlpatterns = [
         CollectionDetailView.as_view(),
         name='collection_relations'
     ),
+    path('bulkDelete/', CollectionBulkDeleteView.as_view(), name='attribute_bulk_delete'),
+
 ]

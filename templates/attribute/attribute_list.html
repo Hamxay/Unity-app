@@ -346,7 +346,6 @@ var table = $('#AttributeTable').DataTable({
             let viewURL = "{% url 'attribute:historicalattribute_list' pk=0 %}"
             let editURL = "{% url 'attribute:attribute_update' pk=0 %}"
             let deleteURL = "{% url 'attribute:attribute_delete' pk=0 %}"
-            
             let actions =  `<ul class="list-inline hstack gap-2 mb-0">`
             actions += `<div class="form-check">
                 <input class="form-check-input checkbox" type="checkbox" value="${row.code}" id="checkboxID">
@@ -423,15 +422,14 @@ $(document).ready(function(){
             success: function () {
                 // Success handling
             },
-            {% comment %} error: function (error) {
+            error: function (error) {
                 alert("Error deleting records");
-            } {% endcomment %}
+            }
         })
         .done(function() { 
-            location.reload();  // Reload the page
+            location.reload();
         });
     });
-    
 })
 </script>
 {% endblock extra_js %}
