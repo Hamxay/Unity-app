@@ -19,7 +19,8 @@ from .views import (
     InterfaceTypeListView,
     InterfaceTypeUpdateView,
     InterfaceUpdateView, InterfaceDropdownView, InterfaceTypeDetailView, InterfaceCategoryDetailView,
-    InterfaceDetailView,
+    InterfaceDetailView, InterfaceBulkDeleteView, InterfaceCategoryBulkDeleteView, InterfaceDependenceBulkDeleteView,
+    InterfaceTypeBulkDeleteView,
 )
 from .viewsets import (
     InterfaceCategoryViewset,
@@ -145,5 +146,9 @@ urlpatterns = [
     path("type/id/<int:pk>/", InterfaceTypeDetailView.as_view(), name="interface_type_detail"),
     path("category/id/<int:pk>/", InterfaceCategoryDetailView.as_view(), name="interface_category_detail"),
     path("id/<int:pk>/", InterfaceDetailView.as_view(), name="interface_detail"),
+    path('bulkDelete/', InterfaceBulkDeleteView.as_view(), name='interface_bulk_delete'),
+    path('category/bulkDelete/', InterfaceCategoryBulkDeleteView.as_view(), name='interface_category_bulk_delete'),
+    path('type/bulkDelete/', InterfaceTypeBulkDeleteView.as_view(), name='interface_type_bulk_delete'),
+    path('dependence/bulkDelete/', InterfaceDependenceBulkDeleteView.as_view(), name='interface_dependence_bulk_delete'),
 
 ]

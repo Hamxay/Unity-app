@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.db.models import ProtectedError
 from django.shortcuts import redirect, get_object_or_404
 from django import forms
@@ -66,7 +67,7 @@ class InterfaceCategoryDeleteView(LoginRequiredMixin, SuccessMessageMixin, Delet
     success_url = reverse_lazy("interface:interface_category_list")
     success_message = "Record was deleted successfully"
     slug_url_kwarg = 'code'
-    
+
     def get(self, request, *args, **kwargs):
         try:
             self.object = self.get_object()
@@ -76,8 +77,34 @@ class InterfaceCategoryDeleteView(LoginRequiredMixin, SuccessMessageMixin, Delet
             self.object.delete()
             messages.success(self.request, self.success_message)
         except ProtectedError as e:
-            messages.error(self.request, "Cannot delete this record because it is referenced through protected foreign keys.")
+            messages.error(self.request,
+                           "Cannot delete this record because it is referenced through protected foreign keys.")
         return redirect(success_url)
+
+
+class InterfaceCategoryBulkDeleteView(LoginRequiredMixin, DeleteView):
+    """Delete multiple InterfaceCategory"""
+
+    permission_required = "interface.interfacecategory_bulk_delete"
+    model = InterfaceCategory
+    success_url = reverse_lazy("interface:interface_category_list")
+    success_message = "Records were deleted successfully"
+
+    def get(self, request, *args, **kwargs):
+        try:
+            with transaction.atomic():
+                records = []
+                values = request.GET
+                for key, value in values.items():
+                    records = [int(num.strip('"')) for num in key.strip('[]').split(',')]
+                queryset = self.model.objects.filter(pk__in=records)
+                queryset.delete()
+                messages.success(request, self.success_message)
+        except ProtectedError:
+            messages.error(self.request,
+                           "Cannot delete one or more records because they are referenced through protected foreign keys.")
+
+        return redirect(self.success_url)
 
 
 # InterfaceType CRUD
@@ -105,11 +132,11 @@ class InterfaceTypeUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateVie
     success_url = reverse_lazy("interface:interface_type_list")
     success_message = "Record was updated successfully"
     slug_url_kwarg = 'code'
-    
+
     def form_valid(self, form):
         form.instance.updated_by = self.request.user
         return super().form_valid(form)
-    
+
 
 class InterfaceTypeDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     permission_required = "interface.delete_interfacetype"
@@ -117,7 +144,7 @@ class InterfaceTypeDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteVie
     success_url = reverse_lazy("interface:interface_type_list")
     success_message = "Record was deleted successfully"
     slug_url_kwarg = 'code'
-    
+
     def get(self, request, *args, **kwargs):
         try:
             self.object = self.get_object()
@@ -127,13 +154,39 @@ class InterfaceTypeDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteVie
             self.object.delete()
             messages.success(self.request, self.success_message)
         except ProtectedError as e:
-            messages.error(self.request, "Cannot delete this record because it is referenced through protected foreign keys.")
+            messages.error(self.request,
+                           "Cannot delete this record because it is referenced through protected foreign keys.")
         return redirect(success_url)
 
 
 class InterfaceTypeDetailView(LoginRequiredMixin, DetailView):
     permission_required = "interface.interfacetype_detail"
     model = InterfaceType
+
+
+class InterfaceTypeBulkDeleteView(LoginRequiredMixin, DeleteView):
+    """Delete multiple InterfaceType"""
+
+    permission_required = "interface.interfacetype_bulk_delete"
+    model = InterfaceType
+    success_url = reverse_lazy("interface:interface_type_list")
+    success_message = "Records were deleted successfully"
+
+    def get(self, request, *args, **kwargs):
+        try:
+            with transaction.atomic():
+                records = []
+                values = request.GET
+                for key, value in values.items():
+                    records = [int(num.strip('"')) for num in key.strip('[]').split(',')]
+                queryset = self.model.objects.filter(pk__in=records)
+                queryset.delete()
+                messages.success(request, self.success_message)
+        except ProtectedError:
+            messages.error(self.request,
+                           "Cannot delete one or more records because they are referenced through protected foreign keys.")
+
+        return redirect(self.success_url)
 
 
 class RestoreHistoricalVersionForm(forms.Form):
@@ -223,8 +276,34 @@ class InterfaceDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
             self.object.delete()
             messages.success(self.request, self.success_message)
         except ProtectedError as e:
-            messages.error(self.request, "Cannot delete this record because it is referenced through protected foreign keys.")
+            messages.error(self.request,
+                           "Cannot delete this record because it is referenced through protected foreign keys.")
         return redirect(success_url)
+
+
+class InterfaceBulkDeleteView(LoginRequiredMixin, DeleteView):
+    """Delete multiple Interfaces"""
+
+    permission_required = "interface.interface_bulk_delete"
+    model = Interface
+    success_url = reverse_lazy("interface:interface_list")
+    success_message = "Records were deleted successfully"
+
+    def get(self, request, *args, **kwargs):
+        try:
+            with transaction.atomic():
+                records = []
+                values = request.GET
+                for key, value in values.items():
+                    records = [int(num.strip('"')) for num in key.strip('[]').split(',')]
+                queryset = self.model.objects.filter(pk__in=records)
+                queryset.delete()
+                messages.success(request, self.success_message)
+        except ProtectedError:
+            messages.error(self.request,
+                           "Cannot delete one or more records because they are referenced through protected foreign keys.")
+
+        return redirect(self.success_url)
 
 
 class HistoricalInterfaceListView(ListView):
@@ -304,14 +383,35 @@ class InterfaceDependenceDeleteView(
             self.object.delete()
             messages.success(self.request, self.success_message)
         except ProtectedError as e:
-            messages.error(self.request, "Cannot delete this record because it is referenced through protected foreign keys.")
+            messages.error(self.request,
+                           "Cannot delete this record because it is referenced through protected foreign keys.")
         return redirect(success_url)
 
 
-class InterfaceDropdownView(
-    LoginRequiredMixin, SuccessMessageMixin, CreateView
+class InterfaceDependenceBulkDeleteView(LoginRequiredMixin, DeleteView):
+    permission_required = "interface.delete_dependence"
+    model = InterfaceDependence
+    success_url = reverse_lazy("interface:interface_dependence_list")
+    success_message = "Record was deleted successfully"
 
-):
+    def get(self, request, *args, **kwargs):
+        try:
+            with transaction.atomic():
+                records = []
+                values = request.GET
+                for key, value in values.items():
+                    records = [int(num.strip('"')) for num in key.strip('[]').split(',')]
+                queryset = self.model.objects.filter(pk__in=records)
+                queryset.delete()
+                messages.success(request, self.success_message)
+        except ProtectedError:
+            messages.error(self.request,
+                           "Cannot delete one or more records because they are referenced through protected foreign keys.")
+
+        return redirect(self.success_url)
+
+
+class InterfaceDropdownView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     success_url = reverse_lazy("interface:references")
     success_message = "Related data requested successfully"
 
@@ -323,7 +423,3 @@ class InterfaceDropdownView(
         self.object.user = request.user
         success_url = self.get_success_url()
         return redirect(success_url)
-
-
-   
-

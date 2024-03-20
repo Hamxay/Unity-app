@@ -101,15 +101,14 @@ class ConnectionDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
 class ConnectionBulkDeleteView(LoginRequiredMixin, DeleteView):
     """Delete multiple Attributes"""
 
-    permission_required = "collection.collection_bulk_delete"
+    permission_required = "connection.connection_bulk_delete"
     model = Connection
-    success_url = reverse_lazy("collection:collection_list")
+    success_url = reverse_lazy("connection:connection_list")
     success_message = "Records were deleted successfully"
 
     def get(self, request, *args, **kwargs):
         try:
             with transaction.atomic():
-                print("hello")
                 records = []
                 values = request.GET
                 for key, value in values.items():
