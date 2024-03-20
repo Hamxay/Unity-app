@@ -1,6 +1,7 @@
 import csv
 import pandas
 from django.core.exceptions import ValidationError
+from django.db import transaction
 from django.db.models import ProtectedError
 from django.http import HttpResponse
 from django.shortcuts import redirect, get_object_or_404
@@ -162,3 +163,26 @@ class ImportClassFromFileView(LoginRequiredMixin, FormView):
         import_class_from_file(file, current_user, self.success_url, self.request)
 
         return redirect(self.get_success_url())
+
+
+class ClassBulkDeleteView(LoginRequiredMixin, DeleteView):
+    """Delete multiple Attributes"""
+
+    permission_required = "class.class_bulk_delete"
+    model = Class
+    success_url = reverse_lazy("class:class_list")
+    success_message = "Records were deleted successfully"
+
+    def get(self, request, *args, **kwargs):
+        try:
+            with transaction.atomic():
+                records = []
+                values = request.GET
+                for key, value in values.items():
+                    records = [int(num.strip('"')) for num in key.strip('[]').split(',')]
+                queryset = self.model.objects.filter(pk__in=records)
+                queryset.delete()
+                messages.success(request, self.success_message)
+        except ProtectedError:
+            messages.error(self.request,"Cannot delete one or more records because they are referenced through protected foreign keys.")
+        return redirect(self.success_url, )

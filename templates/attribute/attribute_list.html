@@ -351,9 +351,7 @@ var table = $('#AttributeTable').DataTable({
             actions += `<div class="form-check">
                 <input class="form-check-input checkbox" type="checkbox" value="${row.code}" id="checkboxID">
                 <label class="form-check-label" for="checkboxID"></label>
-            </div>
-            
-            `
+            </div>`
             actions += `<li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="History">
             <a href="${viewURL.replace('0', row.code)}" class="text-primary d-inline-block">
                 <i class="mdi mdi-history fs-16"></i>

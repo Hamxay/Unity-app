@@ -40,6 +40,9 @@
                                             <i class="ri-file-download-line align-bottom me-1"></i> Download Template
                                         </a>
                                     </div>
+                                    <div class="flex-shrink-0 ml-2" style="margin-left:3px">
+                                        <a id="deleteAllButton" style="display: none;" type="button" class="btn btn-danger add-btn">Delete All</a>
+                                    </div>
                                 </div>
                             </div>
                             <div class="card-body border border-dashed border-end-0 border-start-0">
@@ -180,7 +183,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 <script type="text/javascript">
 var interfaceIdParam = new URLSearchParams(window.location.search).get('InterfaceId');
-
+var recordToDelete = new Set();
 var table = $('#classTable').DataTable( {
     serverSide: true,
     processing: true,
@@ -299,6 +302,10 @@ var table = $('#classTable').DataTable( {
                 <i class="mdi mdi-history fs-16"></i>
             </a>
             </li>`
+            actions += `<div class="form-check">
+                <input class="form-check-input checkbox" type="checkbox" value="${row.Code}" id="checkboxID">
+                <label class="form-check-label" for="checkboxID"></label>
+            </div>`
             actions += `<li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
                 <a href="${editURL.replace('0', row.Code)}" class="text-primary d-inline-block edit-item-btn">
                     <i class="ri-pencil-fill fs-16"></i>
@@ -326,7 +333,53 @@ $(document).ready(function(){
     $('#id_search').on('keyup', function () {
         table.search( this.value ).draw();
     } );
-    
+    $('.checkbox').each(function() {
+        $(this).on('change', function() {
+            var deleteAllButton = $('#deleteAllButton');
+            var atLeastOneChecked = false;
+            $('.checkbox').each(function() {
+                var elements = document.querySelectorAll(".checkbox");
+                    elements.forEach(function(element) {
+                        if(element.checked){
+                            console.log(element.value)
+                            recordToDelete.add(element.value)
+                        }
+                        else{
+                            recordToDelete.delete(element.value)
+                        }
+                    });
+                if ($(this).prop('checked')) {
+                    atLeastOneChecked = true;
+                    return false;
+                }
+            });
+            if (atLeastOneChecked) {
+                deleteAllButton.show();
+            } else {
+                deleteAllButton.hide();
+            }
+        });
+    });
+    $('#deleteAllButton').on('click', function(){
+        var baseUrl = window.location.origin;
+        var recordIds = Array.from(recordToDelete.values());
+        console.log(recordToDelete.values())
+        $.ajax({
+            url: baseUrl + '/class/bulkDelete/' ,
+            data: JSON.stringify(recordIds),
+            method: 'GET',
+            success: function (message) {
+                console.log(message)
+            },
+            error: function (error) {
+                console.error(error)    
+                alert(error);
+            }
+        })
+        .done(function() {
+            location.reload();  // Reload the page
+        });
+    });
 })
 
 // right click feature
@@ -366,9 +419,5 @@ $('#classTable').on('contextmenu', 'tbody tr', function(e) {
         }
     });
 });
-
-
-
-
 </script>
 {% endblock extra_js %}

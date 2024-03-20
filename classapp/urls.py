@@ -4,7 +4,7 @@ from .views import (
     ClassListView,
     HistoricalClassListView,
     ClassDeleteView, ClassCreateView, ClassUpdateView, HistoricalClassUpdateView,
-    ClassDropdownView, ClassDetailView, DownloadTemplateView, ImportClassFromFileView
+    ClassDropdownView, ClassDetailView, DownloadTemplateView, ImportClassFromFileView, ClassBulkDeleteView
 )
 from .viewsets import ClassViewset, ClassHistoryViewset, ClassDropdownViewset
 
@@ -53,5 +53,6 @@ urlpatterns = [
     ),
     path('downloadTemplate/', DownloadTemplateView.as_view(), name='downloadTemplate'),
     path('import/', ImportClassFromFileView.as_view(), name='import_class_from_file'),
+    path('bulkDelete/', ClassBulkDeleteView.as_view(), name='class_bulk_delete'),
 
 ]
