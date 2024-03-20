@@ -1,6 +1,7 @@
 from django.urls import path
 from rest_framework import routers
-from .views import StatusUpcomingListView, StatusUpcomingCreateView, StatusUpcomingUpdateView, StatusUpcomingDeleteView
+from .views import StatusUpcomingListView, StatusUpcomingCreateView, StatusUpcomingUpdateView, StatusUpcomingDeleteView, \
+    StatusUpcomingBulkDeleteView
 from .viewsets import StatusUpcomingViewset
 
 router = routers.DefaultRouter()
@@ -13,5 +14,6 @@ urlpatterns = [
     path("create/", StatusUpcomingCreateView.as_view(), name="statusupcoming_create"),
     path("update/<int:pk>/", StatusUpcomingUpdateView.as_view(), name="statusupcoming_update", ),
     path("delete/<int:pk>/", StatusUpcomingDeleteView.as_view(), name="statusupcoming_delete", ),
-
+    path('bulkDelete/', StatusUpcomingBulkDeleteView.as_view(),
+         name='statusupcoming_bulk_delete'),
 ]
