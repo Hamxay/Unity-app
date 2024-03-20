@@ -110,7 +110,6 @@ class CollectionBulkDeleteView(LoginRequiredMixin, DeleteView):
     def get(self, request, *args, **kwargs):
         try:
             with transaction.atomic():
-                print("hello")
                 records = []
                 values = request.GET
                 for key, value in values.items():

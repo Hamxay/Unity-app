@@ -4,7 +4,7 @@ from .views import (
     LoadPatternCreateView,
     LoadPatternDeleteView,
     LoadPatternListView,
-    LoadPatternUpdateView, LoadPatternDetailView,
+    LoadPatternUpdateView, LoadPatternDetailView, LoadPatternBulkDeleteView,
 )
 from .viewsets import LoadPatternViewset
 
@@ -35,4 +35,7 @@ urlpatterns = [
         LoadPatternDetailView.as_view(),
         name="pattern_detail",
     ),
+    path('loadpattern/bulkDelete/', LoadPatternBulkDeleteView.as_view(),
+         name='pattern_bulk_delete'),
+
 ]
