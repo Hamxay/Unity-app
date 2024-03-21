@@ -90,7 +90,7 @@ class InterfaceCategoryBulkDeleteView(LoginRequiredMixin, DeleteView):
     model = InterfaceCategory
     success_url = reverse_lazy("interface:interface_category_list")
     success_message = "Records were deleted successfully"
-    error_message = "Cannot delete one or more collections because they are referenced through protected foreign keys."
+    error_message = "Cannot delete one or more records because they are referenced through protected foreign keys."
 
     def get(self, request, *args, **kwargs):
         try:
@@ -172,7 +172,7 @@ class InterfaceTypeBulkDeleteView(LoginRequiredMixin, DeleteView):
     model = InterfaceType
     success_url = reverse_lazy("interface:interface_type_list")
     success_message = "Records were deleted successfully"
-    error_message = "Cannot delete one or more collections because they are referenced through protected foreign keys."
+    error_message = "Cannot delete one or more records because they are referenced through protected foreign keys."
 
     def get(self, request, *args, **kwargs):
         try:
@@ -288,7 +288,7 @@ class InterfaceBulkDeleteView(LoginRequiredMixin, DeleteView):
     permission_required = "interface.delete_interface"
     model = Interface
     success_message = "Records were deleted successfully"
-    error_message = "Cannot delete one or more collections because they are referenced through protected foreign keys."
+    error_message = "Cannot delete one or more records because they are referenced through protected foreign keys."
 
     def get(self, request, *args, **kwargs):
         try:
@@ -393,7 +393,7 @@ class InterfaceDependenceBulkDeleteView(LoginRequiredMixin, DeleteView):
     model = InterfaceDependence
     success_url = reverse_lazy("interface:interface_dependence_list")
     success_message = "Records were deleted successfully"
-    error_message = "Cannot delete one or more collections because they are referenced through protected foreign keys."
+    error_message = "Cannot delete one or more records because they are referenced through protected foreign keys."
 
     def get(self, request, *args, **kwargs):
         try:

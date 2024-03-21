@@ -313,14 +313,31 @@ $('.checkbox').each(function() {
             method: 'GET',
             {% comment %} data: recordIds,  {% endcomment %}
             success: function () {
-                // Success handling
+                location.reload();
             },
             error: function (error) {
-                alert("Error deleting records");
+                location.reload();
             }
         })
-        .done(function() {
-            location.reload();
+    });
+    $('#RoleTable tbody').on('change', 'input[type="checkbox"]', function() {
+        var selectedIdsAndNames = [];
+        
+        // Iterate over each checkbox
+        $('#RoleTable tbody input[type="checkbox"]').each(function() {
+            var isChecked = $(this).prop('checked');
+            var row = $(this).closest('tr');
+            var id = row.find('td:eq(1)').text(); // Assuming the ID is in the first column
+            if (isChecked) {
+                recordToDelete.add(id);
+            }
+            else{
+                recordToDelete.delete(id);
+            }   
+        });
+        
+        var selectedChoices = selectedIdsAndNames.map(function(person) {
+            return { value: person.id, label: person.first_name, selected: true };
         });
     });
 })

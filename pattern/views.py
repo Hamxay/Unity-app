@@ -71,7 +71,7 @@ class LoadPatternBulkDeleteView(LoginRequiredMixin, DeleteView):
     model = LoadPattern
     success_url = reverse_lazy("pattern:load_pattern_list")
     success_message = "Records were deleted successfully"
-    error_message = "Cannot delete one or more collections because they are referenced through protected foreign keys."
+    error_message = "Cannot delete one or more records because they are referenced through protected foreign keys."
 
     def get(self, request, *args, **kwargs):
         try:

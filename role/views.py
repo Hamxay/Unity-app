@@ -1,5 +1,6 @@
 from django.db import transaction
 from django.db.models import ProtectedError
+from django.http import JsonResponse
 from django.shortcuts import redirect
 from .models import Role
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
@@ -63,10 +64,11 @@ class RoleDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
 class RoleBulkDeleteView(LoginRequiredMixin, DeleteView):
     """Delete multiple Role"""
 
-    permission_required = "collection.collection_bulk_delete"
+    permission_required = "role.delete_role"
     model = Role
-    success_url = reverse_lazy("collection:collection_list")
+    success_url = reverse_lazy("role:role_list")
     success_message = "Records were deleted successfully"
+    error_message = "Cannot delete one or more records because they are referenced through protected foreign keys."
 
     def get(self, request, *args, **kwargs):
         try:
@@ -78,7 +80,7 @@ class RoleBulkDeleteView(LoginRequiredMixin, DeleteView):
                 queryset = self.model.objects.filter(pk__in=records)
                 queryset.delete()
                 messages.success(request, self.success_message)
+                return JsonResponse({'success': True, 'message': self.success_message})
         except ProtectedError:
-            messages.error(self.request, "Cannot delete one or more records because they are referenced through protected foreign keys.")
-
-        return redirect(self.success_url)
+            messages.error(self.request, self.error_message)
+            return JsonResponse({'success': False, 'message': self.error_message}, status=400)
