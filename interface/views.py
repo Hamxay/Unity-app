@@ -1,5 +1,6 @@
 from django.db import transaction
 from django.db.models import ProtectedError
+from django.http import JsonResponse
 from django.shortcuts import redirect, get_object_or_404
 from django import forms
 from django.views.generic import (
@@ -89,6 +90,7 @@ class InterfaceCategoryBulkDeleteView(LoginRequiredMixin, DeleteView):
     model = InterfaceCategory
     success_url = reverse_lazy("interface:interface_category_list")
     success_message = "Records were deleted successfully"
+    error_message = "Cannot delete one or more collections because they are referenced through protected foreign keys."
 
     def get(self, request, *args, **kwargs):
         try:
@@ -100,8 +102,10 @@ class InterfaceCategoryBulkDeleteView(LoginRequiredMixin, DeleteView):
                 queryset = self.model.objects.filter(pk__in=records)
                 queryset.delete()
                 messages.success(request, self.success_message)
+                return JsonResponse({'success': True, 'message': self.success_message})
         except ProtectedError:
-            messages.error(self.request,"Cannot delete one or more records because they are referenced through protected foreign keys.")
+            messages.error(self.request,self.error_message )
+            return JsonResponse({'success': False, 'message': self.error_message}, status=400)
 
 
 # InterfaceType CRUD
@@ -168,6 +172,7 @@ class InterfaceTypeBulkDeleteView(LoginRequiredMixin, DeleteView):
     model = InterfaceType
     success_url = reverse_lazy("interface:interface_type_list")
     success_message = "Records were deleted successfully"
+    error_message = "Cannot delete one or more collections because they are referenced through protected foreign keys."
 
     def get(self, request, *args, **kwargs):
         try:
@@ -179,11 +184,10 @@ class InterfaceTypeBulkDeleteView(LoginRequiredMixin, DeleteView):
                 queryset = self.model.objects.filter(pk__in=records)
                 queryset.delete()
                 messages.success(request, self.success_message)
+                return JsonResponse({'success': True, 'message': self.success_message})
         except ProtectedError:
-            messages.error(self.request,
-                           "Cannot delete one or more records because they are referenced through protected foreign keys.")
-
-        # return redirect(self.success_url)
+            messages.error(self.request, self.error_message)
+            return JsonResponse({'success': False, 'message': self.error_message}, status=400)
 
 
 class RestoreHistoricalVersionForm(forms.Form):
@@ -283,8 +287,8 @@ class InterfaceBulkDeleteView(LoginRequiredMixin, DeleteView):
 
     permission_required = "interface.delete_interface"
     model = Interface
-    success_url = reverse_lazy("interface:interface_list")
     success_message = "Records were deleted successfully"
+    error_message = "Cannot delete one or more collections because they are referenced through protected foreign keys."
 
     def get(self, request, *args, **kwargs):
         try:
@@ -296,11 +300,10 @@ class InterfaceBulkDeleteView(LoginRequiredMixin, DeleteView):
                 queryset = self.model.objects.filter(pk__in=records)
                 queryset.delete()
                 messages.success(request, self.success_message)
+                return JsonResponse({'success': True, 'message': self.success_message})
         except ProtectedError:
-            messages.error(self.request,
-                           "Cannot delete one or more records because they are referenced through protected foreign keys.")
-
-        # return redirect(self.success_url)
+            messages.error(self.request, self.error_message)
+            return JsonResponse({'success': False, 'message': self.error_message}, status=400)
 
 
 class HistoricalInterfaceListView(ListView):
@@ -389,7 +392,8 @@ class InterfaceDependenceBulkDeleteView(LoginRequiredMixin, DeleteView):
     permission_required = "interface.delete_dependence"
     model = InterfaceDependence
     success_url = reverse_lazy("interface:interface_dependence_list")
-    success_message = "Record was deleted successfully"
+    success_message = "Records were deleted successfully"
+    error_message = "Cannot delete one or more collections because they are referenced through protected foreign keys."
 
     def get(self, request, *args, **kwargs):
         try:
@@ -401,8 +405,10 @@ class InterfaceDependenceBulkDeleteView(LoginRequiredMixin, DeleteView):
                 queryset = self.model.objects.filter(pk__in=records)
                 queryset.delete()
                 messages.success(request, self.success_message)
+                return JsonResponse({'success': True, 'message': self.success_message})
         except ProtectedError:
-            messages.error(self.request, "Cannot delete one or more records because they are referenced through protected foreign keys.")
+            messages.error(self.request, self.error_message)
+            return JsonResponse({'success': False, 'message': self.error_message}, status=400)
 
 
 class InterfaceDropdownView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
