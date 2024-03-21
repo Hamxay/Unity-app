@@ -101,8 +101,8 @@ class AttributeBulkDeleteView(LoginRequiredMixin, DeleteView):
     permission_required = "attribute.attribute_bulk_delete"
     model = Attribute
     success_url = reverse_lazy("attribute:attribute_list")
-    success_message = "Selected Attribute(s) were deleted successfully"
-    error_message = "Cannot delete one or more Attributes because they are referenced through protected foreign keys."
+    success_message = "Selected attributes were deleted successfully."
+    error_message = "Cannot delete one or more attributes because they are referenced through protected foreign keys."
 
     def get(self, request, *args, **kwargs):
         try:

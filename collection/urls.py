@@ -47,6 +47,6 @@ urlpatterns = [
         CollectionDetailView.as_view(),
         name='collection_relations'
     ),
-    path('bulkDelete/', CollectionBulkDeleteView.as_view(), name='attribute_bulk_delete'),
+    path('bulkDelete/', CollectionBulkDeleteView.as_view(), name='collection_bulk_delete'),
 
 ]

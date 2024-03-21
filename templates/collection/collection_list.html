@@ -292,7 +292,7 @@ $(document).ready(function(){
     $('#id_search').on('keyup', function () {
         table.search( this.value ).draw();
     } );
-    $('.checkbox').each(function() {
+    $('.checkbox').on('click', function() {
         $(this).on('change', function() {
             var deleteAllButton = $('#deleteAllButton');
             var atLeastOneChecked = false;
@@ -328,9 +328,9 @@ $(document).ready(function(){
             method: 'GET',
             success: function () {
                 // Success handling
-            },
+            },  
             error: function (error) {
-                alert("Error deleting records");
+                location.reload();
             }
         })
         .done(function() {
