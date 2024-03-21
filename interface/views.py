@@ -186,7 +186,7 @@ class InterfaceTypeBulkDeleteView(LoginRequiredMixin, DeleteView):
             messages.error(self.request,
                            "Cannot delete one or more records because they are referenced through protected foreign keys.")
 
-        return redirect(self.success_url)
+        # return redirect(self.success_url)
 
 
 class RestoreHistoricalVersionForm(forms.Form):
