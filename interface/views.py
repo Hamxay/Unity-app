@@ -85,7 +85,7 @@ class InterfaceCategoryDeleteView(LoginRequiredMixin, SuccessMessageMixin, Delet
 class InterfaceCategoryBulkDeleteView(LoginRequiredMixin, DeleteView):
     """Delete multiple InterfaceCategory"""
 
-    permission_required = "interface.interfacecategory_bulk_delete"
+    permission_required = "interface.delete_interfacecategory"
     model = InterfaceCategory
     success_url = reverse_lazy("interface:interface_category_list")
     success_message = "Records were deleted successfully"
@@ -101,10 +101,7 @@ class InterfaceCategoryBulkDeleteView(LoginRequiredMixin, DeleteView):
                 queryset.delete()
                 messages.success(request, self.success_message)
         except ProtectedError:
-            messages.error(self.request,
-                           "Cannot delete one or more records because they are referenced through protected foreign keys.")
-
-        return redirect(self.success_url)
+            messages.error(self.request,"Cannot delete one or more records because they are referenced through protected foreign keys.")
 
 
 # InterfaceType CRUD
