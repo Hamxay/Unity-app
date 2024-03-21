@@ -384,7 +384,7 @@ $(document).ready(function(){
         attributeTableParams.search = $(this).val();
         table.ajax.reload();
     });
-    $('.checkbox').each(function() {
+    $('.checkbox').on('click',function() {
         $(this).on('change', function() {
             var deleteAllButton = $('#deleteAllButton');
             var atLeastOneChecked = false;
@@ -392,7 +392,6 @@ $(document).ready(function(){
                 var elements = document.querySelectorAll(".checkbox");
                     elements.forEach(function(element) {
                         if(element.checked){
-                            console.log(element.value)
                             recordToDelete.add(element.value)
                         }
                         else{
@@ -418,13 +417,7 @@ $(document).ready(function(){
             url: baseUrl + '/attribute/bulkDelete/' , 
             data: JSON.stringify(recordIds),
             method: 'GET',
-            {% comment %} data: recordIds,  {% endcomment %}
-            success: function () {
-                // Success handling
-            },
-            error: function (error) {
-                alert("Error deleting records");
-            }
+            
         })
         .done(function() { 
             location.reload();

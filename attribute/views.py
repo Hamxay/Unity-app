@@ -1,5 +1,6 @@
 from django.db import transaction
 from django.db.models import ProtectedError
+from django.http import JsonResponse
 from django.shortcuts import redirect
 from django import forms
 from django.views import View
@@ -89,7 +90,8 @@ class AttributeDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
             self.object.delete()
             messages.success(self.request, self.success_message)
         except ProtectedError:
-            messages.error(self.request, "Cannot delete this record because it is referenced through protected foreign keys.")
+            messages.error(self.request,
+                           "Cannot delete this record because it is referenced through protected foreign keys.")
         return redirect(success_url)
 
 
@@ -99,7 +101,8 @@ class AttributeBulkDeleteView(LoginRequiredMixin, DeleteView):
     permission_required = "attribute.attribute_bulk_delete"
     model = Attribute
     success_url = reverse_lazy("attribute:attribute_list")
-    success_message = "Records were deleted successfully"
+    success_message = "Selected Attribute(s) were deleted successfully"
+    error_message = "Cannot delete one or more Attributes because they are referenced through protected foreign keys."
 
     def get(self, request, *args, **kwargs):
         try:
@@ -111,10 +114,10 @@ class AttributeBulkDeleteView(LoginRequiredMixin, DeleteView):
                 queryset = self.model.objects.filter(pk__in=records)
                 queryset.delete()
                 messages.success(request, self.success_message)
+                return JsonResponse({'success': True, 'message': self.success_message})
         except ProtectedError:
-            messages.error(self.request, "Cannot delete one or more records because they are referenced through protected foreign keys.")
-
-        return redirect(self.success_url, )
+            messages.error(self.request, )
+            return JsonResponse({'success': False, 'message': self.error_message}, status=400)
 
 
 class HistoricalAttributeListView(ListView):
