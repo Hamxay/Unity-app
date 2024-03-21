@@ -1,5 +1,6 @@
 from django.db import transaction
 from django.db.models import ProtectedError
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django import forms
 from django.views.generic import (
@@ -110,10 +111,11 @@ class ScheduleDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
 class ScheduleBulkDeleteView(LoginRequiredMixin, DeleteView):
     """Delete multiple Schedule"""
 
-    permission_required = "schedule.schedule_bulk_delete"
+    permission_required = "schedule.delete_schedule"
     model = Schedule
     success_url = reverse_lazy("schedule:schedule_list")
     success_message = "Records were deleted successfully"
+    error_message = "Cannot delete one or more collections because they are referenced through protected foreign keys."
 
     def get(self, request, *args, **kwargs):
         try:
@@ -125,10 +127,10 @@ class ScheduleBulkDeleteView(LoginRequiredMixin, DeleteView):
                 queryset = self.model.objects.filter(pk__in=records)
                 queryset.delete()
                 messages.success(request, self.success_message)
+                return JsonResponse({'success': True, 'message': self.success_message})
         except ProtectedError:
-            messages.error(self.request, "Cannot delete one or more records because they are referenced through protected foreign keys.")
-
-        return redirect(self.success_url)
+            messages.error(self.request, self.error_message)
+            return JsonResponse({'success': False, 'message': self.error_message}, status=400)
 
 
 
