@@ -284,7 +284,7 @@ class InterfaceDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
 class InterfaceBulkDeleteView(LoginRequiredMixin, DeleteView):
     """Delete multiple Interfaces"""
 
-    permission_required = "interface.interface_bulk_delete"
+    permission_required = "interface.delete_interface"
     model = Interface
     success_url = reverse_lazy("interface:interface_list")
     success_message = "Records were deleted successfully"
@@ -303,7 +303,7 @@ class InterfaceBulkDeleteView(LoginRequiredMixin, DeleteView):
             messages.error(self.request,
                            "Cannot delete one or more records because they are referenced through protected foreign keys.")
 
-        return redirect(self.success_url)
+        # return redirect(self.success_url)
 
 
 class HistoricalInterfaceListView(ListView):
