@@ -1,5 +1,6 @@
 from django.db import transaction
 from django.db.models import ProtectedError
+from django.http import JsonResponse
 from django.shortcuts import redirect
 from .models import StatusUpcoming
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
@@ -60,10 +61,11 @@ class StatusUpcomingDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteVi
 class StatusUpcomingBulkDeleteView(LoginRequiredMixin, DeleteView):
     """Delete multiple StatusUpcoming"""
 
-    permission_required = "statusupcoming.statusupcoming_bulk_delete"
+    permission_required = "statusupcoming.delete_statusupcoming"
     model = StatusUpcoming
     success_url = reverse_lazy("statusupcoming:statusupcoming_list")
     success_message = "Records were deleted successfully"
+    error_message = "Cannot delete one or more collections because they are referenced through protected foreign keys."
 
     def get(self, request, *args, **kwargs):
         try:
@@ -75,8 +77,8 @@ class StatusUpcomingBulkDeleteView(LoginRequiredMixin, DeleteView):
                 queryset = self.model.objects.filter(pk__in=records)
                 queryset.delete()
                 messages.success(request, self.success_message)
+                return JsonResponse({'success': True, 'message': self.success_message})
         except ProtectedError:
-            messages.error(self.request, "Cannot delete one or more records because they are referenced through protected foreign keys.")
-
-        return redirect(self.success_url)
+            messages.error(self.request, self.error_message)
+            return JsonResponse({'success': False, 'message': self.error_message}, status=400)
 
