@@ -1,5 +1,6 @@
 from django.db import transaction
 from django.db.models import ProtectedError
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django import forms
 from django.views.generic import (
@@ -99,12 +100,13 @@ class ConnectionDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
 
 
 class ConnectionBulkDeleteView(LoginRequiredMixin, DeleteView):
-    """Delete multiple Attributes"""
+    """Delete multiple Connections"""
 
     permission_required = "connection.connection_bulk_delete"
     model = Connection
     success_url = reverse_lazy("connection:connection_list")
-    success_message = "Records were deleted successfully"
+    error_message = "Cannot delete one or more records because they are referenced through protected foreign keys."
+    success_message = "Selected Connections were deleted successfully"
 
     def get(self, request, *args, **kwargs):
         try:
@@ -116,9 +118,10 @@ class ConnectionBulkDeleteView(LoginRequiredMixin, DeleteView):
                 queryset = self.model.objects.filter(pk__in=records)
                 queryset.delete()
                 messages.success(request, self.success_message)
+                return JsonResponse({'success': True, 'message': self.success_message})
         except ProtectedError:
-            messages.error(self.request, "Cannot delete one or more records because they are referenced through protected foreign keys.")
-        return redirect(self.success_url)
+            messages.error(request, self.error_message)
+            return JsonResponse({'success': False, 'message': self.error_message}, status=400)
 
 
 class HistoricalConnectionListView(ListView):
