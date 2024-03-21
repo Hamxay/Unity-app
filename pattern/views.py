@@ -1,5 +1,6 @@
 from django.db import transaction
 from django.db.models import ProtectedError
+from django.http import JsonResponse
 from django.shortcuts import redirect
 from .models import LoadPattern
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
@@ -8,6 +9,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.utils import timezone
 from django.urls import reverse_lazy
+
 
 # LoadPattern CRUD
 
@@ -57,7 +59,8 @@ class LoadPatternDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView)
             self.object.delete()
             messages.success(self.request, self.success_message)
         except ProtectedError as e:
-            messages.error(self.request, "Cannot delete this record because it is referenced through protected foreign keys.")
+            messages.error(self.request,
+                           "Cannot delete this record because it is referenced through protected foreign keys.")
         return redirect(success_url)
 
 
@@ -68,6 +71,7 @@ class LoadPatternBulkDeleteView(LoginRequiredMixin, DeleteView):
     model = LoadPattern
     success_url = reverse_lazy("pattern:load_pattern_list")
     success_message = "Records were deleted successfully"
+    error_message = "Cannot delete one or more collections because they are referenced through protected foreign keys."
 
     def get(self, request, *args, **kwargs):
         try:
@@ -79,11 +83,10 @@ class LoadPatternBulkDeleteView(LoginRequiredMixin, DeleteView):
                 queryset = self.model.objects.filter(pk__in=records)
                 queryset.delete()
                 messages.success(request, self.success_message)
+                return JsonResponse({'success': True, 'message': self.success_message})
         except ProtectedError:
-            messages.error(self.request, "Cannot delete one or more records because they are referenced through protected foreign keys.")
-
-        return redirect(self.success_url)
-
+            messages.error(self.request, self.error_message)
+            return JsonResponse({'success': False, 'message': self.error_message}, status=400)
 
 
 class LoadPatternDetailView(LoginRequiredMixin, DetailView):
