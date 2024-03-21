@@ -405,10 +405,7 @@ class InterfaceDependenceBulkDeleteView(LoginRequiredMixin, DeleteView):
                 queryset.delete()
                 messages.success(request, self.success_message)
         except ProtectedError:
-            messages.error(self.request,
-                           "Cannot delete one or more records because they are referenced through protected foreign keys.")
-
-        return redirect(self.success_url)
+            messages.error(self.request, "Cannot delete one or more records because they are referenced through protected foreign keys.")
 
 
 class InterfaceDropdownView(LoginRequiredMixin, SuccessMessageMixin, CreateView):

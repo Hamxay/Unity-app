@@ -246,6 +246,41 @@ $(document).ready(function(){
             }
         });
     });
+    // Checkbox functionality
+    $(document).on('click', '.checkbox', function () {
+        var recordToDelete = new Set();
+        $('.checkbox:checked').each(function() {
+            recordToDelete.add($(this).val());
+        });
+    
+        var deleteAllButton = $('#deleteAllButton');
+        if (recordToDelete.size > 0) {
+            deleteAllButton.show();
+        } else {
+            deleteAllButton.hide();
+        }
+    });
+    $('#InterfaceDependenceTable tbody').on('change', 'input[type="checkbox"]', function() {
+        var selectedIdsAndNames = [];
+        
+        // Iterate over each checkbox
+        $('#InterfaceDependenceTable tbody input[type="checkbox"]').each(function() {
+            var isChecked = $(this).prop('checked');
+            var row = $(this).closest('tr');
+            var id = row.find('td:eq(1)').text(); // Assuming the ID is in the first column
+            if (isChecked) {
+                console.log(id)
+                recordToDelete.add(id);
+            }
+            else{
+                recordToDelete.delete(id);
+            }   
+        });
+        
+        var selectedChoices = selectedIdsAndNames.map(function(person) {
+            return { value: person.id, label: person.first_name, selected: true };
+        });
+    });
     $('#deleteAllButton').on('click', function(){
         var baseUrl = window.location.origin;
         var recordIds = Array.from(recordToDelete.values());
@@ -255,15 +290,12 @@ $(document).ready(function(){
             method: 'GET',
             {% comment %} data: recordIds,  {% endcomment %}
             success: function () {
-                // Success handling
+                    location.reload();
             },
             error: function (error) {
-                alert("Error deleting records");
+                location.reload();
             }
         })
-        .done(function() {
-            location.reload();
-        });
     });
 })
 </script>
