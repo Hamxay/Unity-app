@@ -1,9 +1,9 @@
 import csv
 import pandas
 from django.core.exceptions import ValidationError
-from django.db import transaction
+from django.db import transaction, IntegrityError
 from django.db.models import ProtectedError
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, get_object_or_404
 from django import forms
 from django.views import View
@@ -166,12 +166,13 @@ class ImportClassFromFileView(LoginRequiredMixin, FormView):
 
 
 class ClassBulkDeleteView(LoginRequiredMixin, DeleteView):
-    """Delete multiple Attributes"""
+    """Delete multiple Classes"""
 
     permission_required = "class.class_bulk_delete"
     model = Class
     success_url = reverse_lazy("class:class_list")
-    success_message = "Records were deleted successfully"
+    success_message = "Selected classes were deleted successfully."
+    error_message = "Cannot delete one or more records because they are referenced through protected foreign keys."
 
     def get(self, request, *args, **kwargs):
         try:
@@ -183,6 +184,11 @@ class ClassBulkDeleteView(LoginRequiredMixin, DeleteView):
                 queryset = self.model.objects.filter(pk__in=records)
                 queryset.delete()
                 messages.success(request, self.success_message)
+                response = {'success': True, 'message': self.success_message}
         except ProtectedError:
-            messages.error(self.request,"Cannot delete one or more records because they are referenced through protected foreign keys.")
-        return redirect(self.success_url, )
+            messages.error(request, self.error_message)
+            response = {'success': False, 'message': self.error_message}
+        except IntegrityError:
+            messages.error(request, "An error occurred while deleting records.")
+            response = {'success': False, 'message': "An error occurred while deleting records."}
+        return JsonResponse(response)
