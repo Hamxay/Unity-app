@@ -292,31 +292,38 @@ $(document).ready(function(){
     $('#id_search').on('keyup', function () {
         table.search( this.value ).draw();
     } );
-    $('.checkbox').on('click', function() {
-        $(this).on('change', function() {
-            var deleteAllButton = $('#deleteAllButton');
-            var atLeastOneChecked = false;
-            $('.checkbox').each(function() {
-                var elements = document.querySelectorAll(".checkbox");
-                    elements.forEach(function(element) {
-                        if(element.checked){
-                            console.log(element.value)
-                            recordToDelete.add(element.value)
-                        }
-                        else{
-                            recordToDelete.delete(element.value)
-                        }
-                    });
-                if ($(this).prop('checked')) {
-                    atLeastOneChecked = true;
-                    return false;
-                }
-            });
-            if (atLeastOneChecked) {
-                deleteAllButton.show();
-            } else {
-                deleteAllButton.hide();
+    $(document).on('click', '.checkbox', function () {
+        var recordToDelete = new Set();
+        $('.checkbox:checked').each(function() {
+            recordToDelete.add($(this).val());
+        });
+    
+        var deleteAllButton = $('#deleteAllButton');
+        if (recordToDelete.size > 0) {
+            deleteAllButton.show();
+        } else {
+            deleteAllButton.hide();
+        }
+    });
+    $('#classTable tbody').on('change', 'input[type="checkbox"]', function() {
+        var selectedIdsAndNames = [];
+        
+        // Iterate over each checkbox
+        $('#classTable tbody input[type="checkbox"]').each(function() {
+            var isChecked = $(this).prop('checked');
+            var row = $(this).closest('tr');
+            var id = row.find('td:eq(1)').text(); // Assuming the ID is in the first column
+            if (isChecked) {
+                console.log(id)
+                recordToDelete.add(id);
             }
+            else{
+                recordToDelete.delete(id);
+            }   
+        });
+        
+        var selectedChoices = selectedIdsAndNames.map(function(person) {
+            return { value: person.id, label: person.first_name, selected: true };
         });
     });
     $('#deleteAllButton').on('click', function(){
@@ -327,7 +334,7 @@ $(document).ready(function(){
             data: JSON.stringify(recordIds),
             method: 'GET',
             success: function () {
-                // Success handling
+                location.reload();
             },  
             error: function (error) {
                 location.reload();
