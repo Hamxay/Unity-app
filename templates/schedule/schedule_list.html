@@ -428,12 +428,11 @@ $('.checkbox').each(function() {
             url: baseUrl + '/schedule/bulkDelete/' ,
             data: JSON.stringify(recordIds),
             method: 'GET',
-            {% comment %} data: recordIds,  {% endcomment %}
             success: function () {
-                // Success handling
+                location.reload();
             },
             error: function (error) {
-                alert("Error deleting records");
+                location.reload();
             }
         })
         .done(function() {
