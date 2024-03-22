@@ -312,32 +312,18 @@ $(document).ready(function(){
     $('#id_search').on('keyup', function () {
         table.search( this.value ).draw();
     } );
-        $('.checkbox').each(function() {
-        $(this).on('change', function() {
-            var deleteAllButton = $('#deleteAllButton');
-            var atLeastOneChecked = false;
-            $('.checkbox').each(function() {
-                var elements = document.querySelectorAll(".checkbox");
-                    elements.forEach(function(element) {
-                        if(element.checked){
-                            console.log(element.value)
-                            recordToDelete.add(element.value)
-                        }
-                        else{
-                            recordToDelete.delete(element.value)
-                        }
-                    });
-                if ($(this).prop('checked')) {
-                    atLeastOneChecked = true;
-                    return false;
-                }
-            });
-            if (atLeastOneChecked) {
-                deleteAllButton.show();
-            } else {
-                deleteAllButton.hide();
-            }
+    $(document).on('click', '.checkbox', function () {
+        var recordToDelete = new Set();
+        $('.checkbox:checked').each(function() {
+            recordToDelete.add($(this).val());
         });
+    
+        var deleteAllButton = $('#deleteAllButton');
+        if (recordToDelete.size > 0) {
+            deleteAllButton.show();
+        } else {
+            deleteAllButton.hide();
+        }
     });
     $('#deleteAllButton').on('click', function(){
         var baseUrl = window.location.origin;
