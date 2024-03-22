@@ -269,32 +269,32 @@ $(document).ready(function(){
     $('#id_search').on('keyup', function () {
         table.search( this.value ).draw();
     } );
+    $('.checkbox').each(function() {
+    $(this).on('change', function() {
+        var deleteAllButton = $('#deleteAllButton');
+        var atLeastOneChecked = false;
         $('.checkbox').each(function() {
-        $(this).on('change', function() {
-            var deleteAllButton = $('#deleteAllButton');
-            var atLeastOneChecked = false;
-            $('.checkbox').each(function() {
-                var elements = document.querySelectorAll(".checkbox");
-                    elements.forEach(function(element) {
-                        if(element.checked){
-                            console.log(element.value)
-                            recordToDelete.add(element.value)
-                        }
-                        else{
-                            recordToDelete.delete(element.value)
-                        }
-                    });
-                if ($(this).prop('checked')) {
-                    atLeastOneChecked = true;
-                    return false;
-                }
-            });
-            if (atLeastOneChecked) {
-                deleteAllButton.show();
-            } else {
-                deleteAllButton.hide();
+            var elements = document.querySelectorAll(".checkbox");
+                elements.forEach(function(element) {
+                    if(element.checked){
+                        console.log(element.value)
+                        recordToDelete.add(element.value)
+                    }
+                    else{
+                        recordToDelete.delete(element.value)
+                    }
+                });
+            if ($(this).prop('checked')) {
+                atLeastOneChecked = true;
+                return false;
             }
         });
+        if (atLeastOneChecked) {
+            deleteAllButton.show();
+        } else {
+            deleteAllButton.hide();
+        }
+    });
     });
     $('#deleteAllButton').on('click', function(){
         var baseUrl = window.location.origin;
@@ -303,7 +303,6 @@ $(document).ready(function(){
             url: baseUrl + '/interface/type/bulkDelete/' ,
             data: JSON.stringify(recordIds),
             method: 'GET',
-            {% comment %} data: recordIds,  {% endcomment %}
             success: function () {
                 location.reload();
             },
