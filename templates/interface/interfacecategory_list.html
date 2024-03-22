@@ -258,7 +258,18 @@ function showAlert(code) {
 }
 
 
-
+$(document).on('click', '.checkbox', function () {
+    var recordToDelete = new Set();
+    $('.checkbox:checked').each(function() {
+        recordToDelete.add($(this).val());
+    });
+    var deleteAllButton = $('#deleteAllButton');
+    if (recordToDelete.size > 0) {
+        deleteAllButton.show();
+    } else {
+        deleteAllButton.hide();
+    }
+});
 $('#InterfaceCategoryTable').on('contextmenu', 'tbody tr', function(e) {
     e.preventDefault();
     var interfaceCategoryData = table.row(this).data();
@@ -337,15 +348,12 @@ $(document).ready(function(){
             method: 'GET',
             {% comment %} data: recordIds,  {% endcomment %}
             success: function () {
-                // Success handling
+                location.reload();
             },
             error: function (error) {
-                alert("Error deleting records");
+                location.reload();
             }
         })
-        .done(function() {
-            location.reload();
-        });
     });
 })
 </script>

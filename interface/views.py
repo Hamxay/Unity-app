@@ -1,4 +1,4 @@
-from django.db import transaction
+from django.db import transaction, IntegrityError
 from django.db.models import ProtectedError
 from django.http import JsonResponse
 from django.shortcuts import redirect, get_object_or_404
@@ -102,10 +102,14 @@ class InterfaceCategoryBulkDeleteView(LoginRequiredMixin, DeleteView):
                 queryset = self.model.objects.filter(pk__in=records)
                 queryset.delete()
                 messages.success(request, self.success_message)
-                return JsonResponse({'success': True, 'message': self.success_message})
+                response = {'success': True, 'message': self.success_message}
         except ProtectedError:
-            messages.error(self.request,self.error_message )
-            return JsonResponse({'success': False, 'message': self.error_message}, status=400)
+            messages.error(request, self.error_message)
+            response = {'success': False, 'message': self.error_message}
+        except IntegrityError:
+            messages.error(request, "An error occurred while deleting records.")
+            response = {'success': False, 'message': "An error occurred while deleting records."}
+        return JsonResponse(response)
 
 
 # InterfaceType CRUD
