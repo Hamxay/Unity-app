@@ -64,7 +64,7 @@ class LoadPatternDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView)
         return redirect(success_url)
 
 
-class LoadPatternBulkDeleteView(LoginRequiredMixin, DeleteView):    
+class LoadPatternBulkDeleteView(LoginRequiredMixin, DeleteView):
     """Delete multiple Attributes"""
 
     permission_required = "pattern.pattern_bulk_delete"
