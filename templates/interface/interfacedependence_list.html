@@ -186,16 +186,15 @@ var table = $('#InterfaceDependenceTable').DataTable( {
             let deleteURL = "{% url 'interface:interface_dependence_delete' pk=0 %}"
             
             let actions =  `<ul class="list-inline hstack gap-2 mb-0">`
-            actions += `<div class="form-check">
-                <input class="form-check-input checkbox" type="checkbox" value="${row.code}" id="checkboxID">
-                <label class="form-check-label" for="checkboxID"></label>
-            </div>`
             actions += `<li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
                 <a href="${editURL.replace('0', row.code)}" class="text-primary d-inline-block edit-item-btn">
                     <i class="ri-pencil-fill fs-16"></i>
                 </a>
             </li>`
-        
+            actions += `<div class="form-check">
+                <input class="form-check-input checkbox" type="checkbox" value="${row.code}" id="checkboxID">
+                <label class="form-check-label" for="checkboxID"></label>
+            </div>`
             actions += `<li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
             <a class="delete-btn text-danger d-inline-block remove-item-btn" data-bs-toggle="modal" href="#deleteOrder" data-url="${deleteURL.replace('0', row.code)}">
             <i class="ri-delete-bin-5-fill fs-16"></i>
