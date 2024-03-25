@@ -79,7 +79,7 @@ class InterfaceCategoryDeleteView(LoginRequiredMixin, SuccessMessageMixin, Delet
             messages.success(self.request, self.success_message)
         except ProtectedError as e:
             messages.error(self.request,
-                           "Cannot delete this record because it is referenced through protected foreign keys.")
+                           "Cannot delete this record because it is referenced through to the table of Interface")
         return redirect(success_url)
 
 
@@ -90,7 +90,7 @@ class InterfaceCategoryBulkDeleteView(LoginRequiredMixin, DeleteView):
     model = InterfaceCategory
     success_url = reverse_lazy("interface:interface_category_list")
     success_message = "Records were deleted successfully"
-    error_message = "Cannot delete one or more records because they are referenced through protected foreign keys."
+    error_message = "Cannot delete this record because it is referenced through to the table of Interface"
 
     def get(self, request, *args, **kwargs):
         try:
@@ -160,7 +160,7 @@ class InterfaceTypeDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteVie
             messages.success(self.request, self.success_message)
         except ProtectedError as e:
             messages.error(self.request,
-                           "Cannot delete this record because it is referenced through protected foreign keys.")
+                           "Cannot delete this record because it is referenced to the table of Interface")
         return redirect(success_url)
 
 
@@ -176,7 +176,7 @@ class InterfaceTypeBulkDeleteView(LoginRequiredMixin, DeleteView):
     model = InterfaceType
     success_url = reverse_lazy("interface:interface_type_list")
     success_message = "Records were deleted successfully"
-    error_message = "Cannot delete one or more records because they are referenced through protected foreign keys."
+    error_message = "Cannot delete one or more records because they are referenced to the table of Interface."
 
     def get(self, request, *args, **kwargs):
         try:
@@ -282,7 +282,7 @@ class InterfaceDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
             messages.success(self.request, self.success_message)
         except ProtectedError as e:
             messages.error(self.request,
-                           "Cannot delete this record because it is referenced through protected foreign keys.")
+                           "Cannot delete this record because it is referenced to the tables of Interface Dependence, Collection and Class.")
         return redirect(success_url)
 
 
@@ -292,7 +292,7 @@ class InterfaceBulkDeleteView(LoginRequiredMixin, DeleteView):
     permission_required = "interface.delete_interface"
     model = Interface
     success_message = "Records were deleted successfully"
-    error_message = "Cannot delete one or more records because they are referenced through protected foreign keys."
+    error_message = "Cannot delete one or more records because they are referenced to the tables of Interface Dependence, Collection and Class."
 
     def get(self, request, *args, **kwargs):
         try:

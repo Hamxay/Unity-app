@@ -104,7 +104,7 @@ class ScheduleDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
             messages.success(self.request, self.success_message)
         except ProtectedError as e:
             messages.error(self.request,
-                           "Cannot delete this record because it is referenced through protected foreign keys.")
+                           "Cannot delete this record because it is referenced to the table of Interface.")
         return redirect(success_url)
 
 
@@ -115,7 +115,7 @@ class ScheduleBulkDeleteView(LoginRequiredMixin, DeleteView):
     model = Schedule
     success_url = reverse_lazy("schedule:schedule_list")
     success_message = "Records were deleted successfully"
-    error_message = "Cannot delete one or more collections because they are referenced through protected foreign keys."
+    error_message = "Cannot delete one or more collections because they are referenced to the table of Interface."
 
     def get(self, request, *args, **kwargs):
         try:

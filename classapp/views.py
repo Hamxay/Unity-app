@@ -93,7 +93,7 @@ class ClassDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
             self.object.delete()
             messages.success(self.request, self.success_message)
         except ProtectedError as e:
-            messages.error(self.request, "Cannot delete this record because it is referenced through protected foreign keys.")
+            messages.error(self.request, "Cannot delete this record because it is referenced to the tables of Attribute and Task.")
         return redirect(success_url)
 
 
@@ -172,7 +172,7 @@ class ClassBulkDeleteView(LoginRequiredMixin, DeleteView):
     model = Class
     success_url = reverse_lazy("class:class_list")
     success_message = "Selected classes were deleted successfully."
-    error_message = "Cannot delete one or more records because they are referenced through protected foreign keys."
+    error_message = "Cannot delete this record because it is referenced to the tables of Attribute and Task."
 
     def get(self, request, *args, **kwargs):
         try:

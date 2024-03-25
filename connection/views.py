@@ -95,7 +95,7 @@ class ConnectionDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
             self.object.delete()
             messages.success(self.request, self.success_message)
         except ProtectedError:
-            messages.error(self.request, "Cannot delete this record because it is referenced through protected foreign keys.")
+            messages.error(self.request, "Cannot delete this record because it is referenced to the table of Interface.")
         return redirect(success_url)
 
 
@@ -105,7 +105,7 @@ class ConnectionBulkDeleteView(LoginRequiredMixin, DeleteView):
     permission_required = "connection.connection_bulk_delete"
     model = Connection
     success_url = reverse_lazy("connection:connection_list")
-    error_message = "Cannot delete one or more records because they are referenced through protected foreign keys."
+    error_message = "Cannot delete one or more records because they are referenced to the table of Interface."
     success_message = "Selected Connections were deleted successfully"
 
     def get(self, request, *args, **kwargs):

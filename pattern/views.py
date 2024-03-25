@@ -60,18 +60,18 @@ class LoadPatternDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView)
             messages.success(self.request, self.success_message)
         except ProtectedError as e:
             messages.error(self.request,
-                           "Cannot delete this record because it is referenced through protected foreign keys.")
+                           "Cannot delete this record because it is referenced to the table of Task.")
         return redirect(success_url)
 
 
-class LoadPatternBulkDeleteView(LoginRequiredMixin, DeleteView):
+class LoadPatternBulkDeleteView(LoginRequiredMixin, DeleteView):    
     """Delete multiple Attributes"""
 
     permission_required = "pattern.pattern_bulk_delete"
     model = LoadPattern
     success_url = reverse_lazy("pattern:load_pattern_list")
     success_message = "Records were deleted successfully"
-    error_message = "Cannot delete one or more records because they are referenced through protected foreign keys."
+    error_message = "Cannot delete one or more records because they are referenced to the table of Task."
 
     def get(self, request, *args, **kwargs):
         try:

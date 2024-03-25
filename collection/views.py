@@ -97,7 +97,7 @@ class CollectionDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
             messages.success(self.request, self.success_message)
         except ProtectedError:
             messages.error(self.request,
-                           "Cannot delete this record because it is referenced through protected foreign keys.")
+                           "Cannot delete this record because it is referenced to the table of Task and Role Collection Access.")
         return redirect(success_url)
 
 
@@ -108,7 +108,7 @@ class CollectionBulkDeleteView(LoginRequiredMixin, DeleteView):
     model = Collection
     success_url = reverse_lazy("collection:collection_list")
     success_message = "Selected collections were deleted successfully."
-    error_message = "Cannot delete one or more collections because they are referenced through protected foreign keys."
+    error_message = "Cannot delete this record because it is referenced to the tables of Task and Role Collection Access."
 
     def get(self, request, *args, **kwargs):
         try:
