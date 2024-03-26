@@ -89,7 +89,7 @@
                   <a href="{% url 'interface:interface_type_list' %}" class="nav-link"><i class="mdi mdi-note"></i>Interface Type</a>
                 </li>
                 <li class="nav-item">
-                  <a href="{% url 'interface:interface_list' %}" class="nav-link"><i class="mdi mdi-note"></i>Interface</a>
+                  <a href="{% url 'interface:interface_list' %}" id="interface" class="nav-link"><i class="mdi mdi-note"></i>Interface</a>
                 </li>
                 <li class="nav-item">
                   <a href="{% url 'interface:interface_dependence_list' %}" class="nav-link"><i class="mdi mdi-note"></i>Interface Dependence</a>
@@ -145,28 +145,32 @@
 <!-- Vertical Overlay -->
 <div class="vertical-overlay"></div>
 {% endblock %}
-<!--<script>-->
-<!--var currentUrl = window.location.href;-->
-<!--var temp;-->
-<!--var rootWord = currentUrl.split('/')[3];-->
-<!--if (rootWord == 'interface' && ['dependence', 'type', 'category'].includes(currentUrl.split('/')[4])) {-->
-<!--  temp = currentUrl.split('/')[4];-->
-<!--  rootWord = rootWord + currentUrl.split('/')[4];-->
-<!--}-->
-<!--var listItems = document.querySelectorAll('.navbar-nav .nav-item');-->
-<!--listItems.forEach(function(listItem) {-->
-<!--    var link = listItem.querySelector('.nav-link');-->
-<!--    var href = link.getAttribute('href');-->
-<!--    console.log(href.split('/'))-->
-
-<!--    var hrefRootWord = href.split('/')[1];-->
-<!--    if (href, href.split('/').includes(temp)){-->
-<!--      link.classList.add('active');-->
-<!--      return;-->
-<!--    }-->
-<!--    else if (hrefRootWord === rootWord) {-->
-<!--      link.classList.add('active');-->
-<!--    }-->
-<!--});-->
-
-<!--</script>-->
+<script>
+var currentUrl = window.location.href;
+var temp;
+var rootWord = currentUrl.split('/')[3];
+if (rootWord == 'interface' && ['dependence', 'type', 'category'].includes(currentUrl.split('/')[4])) {
+  temp = currentUrl.split('/')[4];
+  rootWord = rootWord + currentUrl.split('/')[4];
+}
+var listItems = document.querySelectorAll('.navbar-nav .nav-item');
+listItems.forEach(function(listItem) {
+    var link = listItem.querySelector('.nav-link');
+    var href = link.getAttribute('href');
+    //  console.log(href.split('/'))
+    var hrefRootWord = href.split('/')[1];
+    if (href, href.split('/').includes(temp)){
+      link.classList.add('active');
+      return;
+    }
+    else if (hrefRootWord === rootWord) {
+      if(rootWord=='interface' && !['dependence', 'type', 'category'].includes(currentUrl.split('/')[4])){
+        var link = document.getElementById('interface');
+        if (link) {
+            link.classList.add('active');
+        }
+      }
+      link.classList.add('active');
+    }
+});
+</script>
