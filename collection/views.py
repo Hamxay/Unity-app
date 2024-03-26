@@ -53,8 +53,8 @@ class CollectionCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     success_url = reverse_lazy("collection:collection_list")
     success_message = "Collection was added successfully"
     error_url = reverse_lazy("collection:collection_create")
-    error_message = ("A collection with the same combination of name and interface Code already exists."
-                     " Please enter a unique combination.")
+    error_message = ("A collection name should be unique in the scope of interface."
+                     " Please enter a unique name.")
 
     def form_valid(self, form):
         form.instance.created_by = self.request.user

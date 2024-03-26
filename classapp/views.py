@@ -57,8 +57,8 @@ class ClassCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     success_url = reverse_lazy("class:class_list")
     success_message = "Class was added successfully"
     error_url = reverse_lazy("class:class_create")
-    error_message = ("A class with the same combination of name and interface already exists."
-                     " Please enter a unique combination.")
+    error_message = ("A class name should be unique in the scope of interface."
+                     " Please enter a unique name.")
 
     def form_valid(self, form):
         form.instance.created_by = self.request.user
