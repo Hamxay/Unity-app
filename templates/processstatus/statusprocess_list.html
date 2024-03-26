@@ -27,7 +27,7 @@
                                     <div class="flex-shrink-0">
                                         <a role="button"
                                             id="create-btn"
-                                            href="{% url 'statusupcoming:statusupcoming_create' %}"
+                                            href="{% url 'processstatus:processstatus_create' %}"
                                             class="btn btn-danger add-btn">
                                             <i class="ri-add-line align-bottom me-1"></i> Create Status
                                         </a>
@@ -167,7 +167,7 @@ var table = $('#statusupcomingtable').DataTable( {
     processing: true,
     order: [[2, 'desc']],
     "ajax": {
-        "url": "/api/statusupcoming/?format=datatables"
+        "url": "/api/processstatus/?format=datatables"
     },
     "dom": 'lrtip',
     "columnDefs": [
@@ -217,8 +217,8 @@ var table = $('#statusupcomingtable').DataTable( {
         render: ( data, type, row ) => {
 
                 if (isSuperuser) {
-                    let editURL = "{% url 'statusupcoming:statusupcoming_update' pk=0 %}"
-                    let deleteURL = "{% url 'statusupcoming:statusupcoming_delete' pk=0 %}"
+                    let editURL = "{% url 'processstatus:processstatus_update' pk=0 %}"
+                    let deleteURL = "{% url 'processstatus:processstatus_delete' pk=0 %}"
                     let actions = `<ul class="list-inline hstack gap-2 mb-0">`;
                     actions += `<li class="list-inline-item edit" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Edit">
                         <a href="${editURL.replace('0', row.code)}" class="text-primary d-inline-block edit-item-btn">
@@ -294,7 +294,7 @@ $(document).ready(function(){
         var baseUrl = window.location.origin;
         var recordIds = Array.from(recordToDelete.values());
         $.ajax({
-            url: baseUrl + '/statusupcoming/bulkDelete/' ,
+            url: baseUrl + '/processstatus/bulkDelete/' ,
             data: JSON.stringify(recordIds),
             method: 'GET',
             {% comment %} data: recordIds,  {% endcomment %}
