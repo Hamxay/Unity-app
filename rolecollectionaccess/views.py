@@ -25,11 +25,17 @@ class RoleCollectionAccessCreateView(LoginRequiredMixin, SuccessMessageMixin, Cr
     form_class = RoleCollectionAccessForm
     success_url = reverse_lazy("rolecollectionaccess:rolecollectionaccess_list")
     success_message = "Record was created successfully"
+    error_url = reverse_lazy("rolecollectionaccess:rolecollectionaccess_create")
+    error_message = ("A role collection access with the same combination of collection and role already exists. "
+                     "Please enter a unique  combination.")
 
     def form_valid(self, form):
         form.instance.created_by = self.request.user
         return super().form_valid(form)
 
+    def form_invalid(self, form):
+        messages.error(self.request, self.error_message)
+        return redirect(self.error_url)
 
 class RoleCollectionAccessUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     permission_required = "rolecollectionaccess.change_rolecollectionaccess"

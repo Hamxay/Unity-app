@@ -30,3 +30,7 @@ class RoleCollectionAccess(BaseModel):
 
     def __str__(self):
         return str(self.code)
+
+    class Meta:
+        unique_together = [["collectionId", "RoleId"]]
+
