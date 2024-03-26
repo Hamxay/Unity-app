@@ -49,7 +49,7 @@ class Schedule(BaseModel):
         (5, '5 - Last'),
     ]
     Code = models.BigAutoField(primary_key=True)
-    Name = models.CharField(max_length=128)
+    Name = models.CharField(max_length=128, unique=True)
     Frequency = models.IntegerField(choices=FREQUENCY_CHOICES)
     FrequencyInterval = models.IntegerField()
     FrequencyRelativeInterval = models.IntegerField(choices=FREQUENCY_RELATIVE_INTERVAL_CHOICES)
