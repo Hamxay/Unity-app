@@ -55,3 +55,8 @@ class Attribute(BaseModel):
         finally:
             del self.skip_history_when_saving
         return ret
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['class_id', 'target_name'], name='unique_target_name_in_class')
+        ]

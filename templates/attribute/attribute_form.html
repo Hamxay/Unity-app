@@ -29,6 +29,7 @@
                 {% endblock pagetitle %}
                 <form action="" method="post" id="AttributeForm">
                     {% csrf_token %}
+                    {% include "partials/messages.html" %}
                     <div class="row">
                         <div class="col-lg-8 offset-lg-2">
                             <div class="card">

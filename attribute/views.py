@@ -53,11 +53,17 @@ class AttributeCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Attribute
     success_url = reverse_lazy("attribute:attribute_list")
     success_message = "Attribute was added successfully"
+    error_url = reverse_lazy("attribute:attribute_create")
+    error_message = ("The target name of an attribute should be unique in the scope of class."
+                     " Please enter a unique target name.")
 
     def form_valid(self, form):
         form.instance.created_by = self.request.user
         return super().form_valid(form)
 
+    def form_invalid(self, form):
+        messages.error(self.request, self.error_message)
+        return redirect(self.error_url)
 
 class AttributeUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     """Update Attribute"""
