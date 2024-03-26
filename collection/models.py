@@ -39,6 +39,11 @@ class Collection(BaseModel):
 
     history = HistoricalRecords(bases=[HistoricalModel])
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['interfaceid', 'name'], name='unique_collection_name_in_interface')
+        ]
+
     def save_without_historical_record(self, *args, **kwargs):
         self.skip_history_when_saving = True
         try:
