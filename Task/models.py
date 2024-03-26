@@ -48,6 +48,12 @@ class Task(BaseModel):
 
     class Meta:
         db_table = 'Task'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['CollectionId', 'Name'],
+                name='unique_task_name_in_collection'
+            )
+        ]
 
     # Create your models here.
     history = HistoricalRecords(bases=[HistoricalModel])

@@ -62,10 +62,17 @@ class TaskCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     form_class = TaskForm
     success_url = reverse_lazy("Task:Task_list")
     success_message = "Task was added successfully"
+    error_url = reverse_lazy("Task:Task_create")
+    error_message = ("A task with the same combination of name and collection Code already exists."
+                     " Please enter a unique combination.")
 
     def form_valid(self, form):
         form.instance.created_by = self.request.user
         return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, self.error_message)
+        return redirect(self.error_url)
 
 
 class TaskUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
@@ -99,9 +106,9 @@ class TaskDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
             self.object.delete()
             messages.success(self.request, self.success_message)
         except ProtectedError:
-            messages.error(self.request, "Cannot delete this record because it is referenced through protected foreign keys.")
+            messages.error(self.request,
+                           "Cannot delete this record because it is referenced through protected foreign keys.")
         return redirect(success_url)
-
 
 
 class TaskBulkDeleteView(LoginRequiredMixin, DeleteView):
@@ -127,7 +134,6 @@ class TaskBulkDeleteView(LoginRequiredMixin, DeleteView):
         except ProtectedError:
             messages.error(self.request, self.error_message)
             return JsonResponse({'success': False, 'message': self.error_message}, status=400)
-
 
 
 class HistoricalTaskListView(ListView):
