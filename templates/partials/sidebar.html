@@ -149,13 +149,11 @@
 var currentUrl = window.location.href;
 var temp;
 var rootWord = currentUrl.split('/')[3];
-console.log(currentUrl.split('/')[4]);
 if (rootWord == 'interface' && ['dependence', 'type', 'category'].includes(currentUrl.split('/')[4])) {
   temp = currentUrl.split('/')[4];
   rootWord = rootWord + currentUrl.split('/')[4];
 }
 else if (currentUrl.split('/')[3] == 'kpi' ){
-  console.log('idfsh')
   if (currentUrl.split('/')[4] == 'kpi_sub_group'){
     var link = document.getElementById('kpi_sub_group');
     if (link) {
@@ -163,7 +161,6 @@ else if (currentUrl.split('/')[3] == 'kpi' ){
       }
   }
   else if (currentUrl.split('/')[4] == 'kpi_group'){
-    console.log("ghjuig")
     var link = document.getElementById('kpi_group');
     if (link) {
       link.classList.add('active');
@@ -241,8 +238,7 @@ else{
   listItems.forEach(function(listItem) {
     var link = listItem.querySelector('.nav-link');
     var href = link.getAttribute('href');
-    //  console.log(href.split('/'))
-    var hrefRootWord = href.split('/')[1];
+      var hrefRootWord = href.split('/')[1];
     if (href, href.split('/').includes(temp)){
       link.classList.add('active');
       return;
