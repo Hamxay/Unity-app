@@ -259,7 +259,6 @@ function showAlert(code) {
 
 
 $(document).on('click', '.checkbox', function () {
-    var recordToDelete = new Set();
     $('.checkbox:checked').each(function() {
         recordToDelete.add($(this).val());
     });
