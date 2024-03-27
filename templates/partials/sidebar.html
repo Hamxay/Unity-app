@@ -39,13 +39,13 @@
                   <a href="{% url 'frequency:frequency_list' %}" class="nav-link"><i class="mdi mdi-signal-distance-variant"></i>Frequency</a>
                 </li>
                 <li class="nav-item">
-                  <a href="{% url 'kpi:kpi_group_list' %}" class="nav-link"><i class="mdi mdi-finance"></i>KPI Group</a>
+                  <a href="{% url 'kpi:kpi_group_list' %}" id = 'kpi_group'class="nav-link"><i class="mdi mdi-finance"></i>KPI Group</a>
                 </li>
                 <li class="nav-item">
-                  <a href="{% url 'kpi:kpi_sub_group_list' %}" class="nav-link"><i class="mdi mdi-finance"></i>KPI Sub Group</a>
+                  <a href="{% url 'kpi:kpi_sub_group_list' %}" id = 'kpi_sub_group' class="nav-link"><i class="mdi mdi-finance"></i>KPI Sub Group</a>
                 </li>
                 <li class="nav-item">
-                  <a href="{% url 'kpi:kpi_list' %}" class="nav-link"><i class="mdi mdi-finance"></i>KPI</a>
+                  <a href="{% url 'kpi:kpi_list' %}" id = 'kpi' class="nav-link"><i class="mdi mdi-finance"></i>KPI</a>
                 </li>
                 <li class="nav-item">
                   <a href="{% url 'status:status_group_list' %}" class="nav-link"><i class="mdi mdi-list-status"></i>Status Group</a>
@@ -118,19 +118,19 @@
             <div class="collapse show menu-dropdown" id="logsmodel">
               <ul class="nav nav-sm flex-column">
             <li class="nav-item">
-              <a href="{% url 'logs:APIIngestionBatchStatusLog_list' %}" class="nav-link"><i class="mdi mdi-view-list"></i>API Ingestion Batch Status Logs</a>
+              <a href="{% url 'logs:APIIngestionBatchStatusLog_list' %}" id='APIIngestionBatchStatusLog' class="nav-link"><i class="mdi mdi-view-list"></i>API Ingestion Batch Status Logs</a>
             </li>
             <li class="nav-item">
-              <a href="{% url 'logs:CheckpointLogLog_list' %}" class="nav-link"><i class="mdi mdi-view-list"></i>Check Point Logs</a>
+              <a href="{% url 'logs:CheckpointLogLog_list' %}" id='CheckpointLog' class="nav-link"><i class="mdi mdi-view-list"></i>Check Point Logs</a>
             </li>
             <li class="nav-item">
-              <a href="{% url 'logs:AuditLog_list' %}" class="nav-link"><i class="mdi mdi-view-list"></i>Audit Logs</a>
+              <a href="{% url 'logs:AuditLog_list' %}" id='AuditLog' class="nav-link"><i class="mdi mdi-view-list"></i>Audit Logs</a>
             </li>
             <li class="nav-item">
-              <a href="{% url 'logs:RunLog_list' %}" class="nav-link"><i class="mdi mdi-view-list"></i>Run Logs</a>
+              <a href="{% url 'logs:RunLog_list' %}" id='RunLog' class="nav-link"><i class="mdi mdi-view-list"></i>Run Logs</a>
             </li>
             <li class="nav-item">
-              <a href="{% url 'logs:RunStepLog_list' %}" class="nav-link"><i class="mdi mdi-view-list"></i>RunStep Logs</a>
+              <a href="{% url 'logs:RunStepLog_list' %}" id='RunStepLog ' class="nav-link"><i class="mdi mdi-view-list"></i>RunStep Logs</a>
             </li>
           </ul>
             </div>
@@ -149,12 +149,68 @@
 var currentUrl = window.location.href;
 var temp;
 var rootWord = currentUrl.split('/')[3];
+console.log(currentUrl.split('/')[4]);
 if (rootWord == 'interface' && ['dependence', 'type', 'category'].includes(currentUrl.split('/')[4])) {
   temp = currentUrl.split('/')[4];
   rootWord = rootWord + currentUrl.split('/')[4];
 }
-var listItems = document.querySelectorAll('.navbar-nav .nav-item');
-listItems.forEach(function(listItem) {
+else if (currentUrl.split('/')[3] == 'kpi' ){
+  console.log('idfsh')
+  if (currentUrl.split('/')[4] == 'kpi_sub_group'){
+    var link = document.getElementById('kpi_sub_group');
+    if (link) {
+      link.classList.add('active');
+      }
+  }
+  else if (currentUrl.split('/')[4] == 'kpi_group'){
+    console.log("ghjuig")
+    var link = document.getElementById('kpi_group');
+    if (link) {
+      link.classList.add('active');
+      }
+    }
+  else if (currentUrl.split('/')[4] == 'kpi'){
+    var link = document.getElementById('kpi');
+    if (link) {
+      link.classList.add('active');
+      }
+  }
+}
+else if (currentUrl.split('/')[3] == 'logs'){
+  if (currentUrl.split('/')[4] == 'AuditLog'){
+    var link = document.getElementById('AuditLog');
+      if (link) {
+        link.classList.add('active');
+        }
+    }
+    else if (currentUrl.split('/')[4] == 'APIIngestionBatchStatusLog'){
+      var link = document.getElementById('APIIngestionBatchStatusLog');
+        if (link) {
+          link.classList.add('active');
+          }
+      }
+    else if (currentUrl.split('/')[4] == 'CheckpointLog'){
+      var link = document.getElementById('CheckpointLog');
+        if (link) {
+          link.classList.add('active');
+          }
+      }
+      else if (currentUrl.split('/')[4] == 'RunLog'){
+        var link = document.getElementById('RunLog');
+          if (link) {
+            link.classList.add('active');
+            }
+        }
+      else if (currentUrl.split('/')[4] == 'RunStepLog'){
+        var link = document.getElementById('RunStepLog');
+          if (link) {
+            link.classList.add('active');
+            }
+        }
+}
+else{
+  var listItems = document.querySelectorAll('.navbar-nav .nav-item');
+  listItems.forEach(function(listItem) {
     var link = listItem.querySelector('.nav-link');
     var href = link.getAttribute('href');
     //  console.log(href.split('/'))
@@ -173,4 +229,6 @@ listItems.forEach(function(listItem) {
       link.classList.add('active');
     }
 });
+}
+
 </script>
