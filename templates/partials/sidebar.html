@@ -51,7 +51,7 @@
                   <a href="{% url 'status:status_group_list' %}" class="nav-link"><i class="mdi mdi-list-status"></i>Status Group</a>
                 </li>
                 <li class="nav-item">
-                  <a href="{% url 'status:status_list' %}" class="nav-link"><i class="mdi mdi-list-status"></i>Status</a>
+                  <a href="{% url 'status:status_list' %}" class="nav-link" ><i class="mdi mdi-list-status"></i>Status</a>
                 </li>
                 <li class="nav-item">
                   <a href="{% url 'status:status_criteria_list' %}" class="nav-link"><i class="mdi mdi-list-status"></i>Status Criteria</a>
@@ -220,7 +220,21 @@ else if(currentUrl.split('/')[3] == 'trend'){
         if (link) {
           link.classList.add('active');
           }
-      }
+    }
+}
+else if(currentUrl.split('/')[3] == 'status'){
+  if (currentUrl.split('/')[4] == 'status_group'){
+    var link = document.getElementById('status_group');
+      if (link) {
+        link.classList.add('active');
+        }
+    }
+    else if (currentUrl.split('/')[4] == 'status'){
+      var link = document.getElementById('status');
+        if (link) {
+          link.classList.add('active');
+          }
+    }
 }
 else{
   var listItems = document.querySelectorAll('.navbar-nav .nav-item');
