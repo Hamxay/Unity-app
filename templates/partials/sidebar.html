@@ -60,10 +60,10 @@
                   <a href="{% url 'targets:targets_list' %}" class="nav-link"><i class="mdi mdi-target"></i>Targets</a>
                 </li>
                 <li class="nav-item">
-                  <a href="{% url 'trend:trend_list' %}" class="nav-link"><i class="mdi mdi-trending-up"></i>Trend</a>
+                  <a href="{% url 'trend:trend_list' %}" id = 'trend'class="nav-link"><i class="mdi mdi-trending-up"></i>Trend</a>
                 </li>
                 <li class="nav-item">
-                  <a href="{% url 'trend:trend_criteria_list' %}" class="nav-link"><i class="mdi mdi-trending-up"></i>Trend Criteria</a>
+                  <a href="{% url 'trend:trend_criteria_list' %}" id = 'trend_criteria'class="nav-link"><i class="mdi mdi-trending-up"></i>Trend Criteria</a>
                 </li>
               </ul>
             </div>
@@ -207,6 +207,20 @@ else if (currentUrl.split('/')[3] == 'logs'){
             link.classList.add('active');
             }
         }
+}
+else if(currentUrl.split('/')[3] == 'trend'){
+  if (currentUrl.split('/')[4] == 'trend_criteria'){
+    var link = document.getElementById('trend_criteria');
+      if (link) {
+        link.classList.add('active');
+        }
+    }
+    else if (currentUrl.split('/')[4] == 'trend'){
+      var link = document.getElementById('trend');
+        if (link) {
+          link.classList.add('active');
+          }
+      }
 }
 else{
   var listItems = document.querySelectorAll('.navbar-nav .nav-item');
