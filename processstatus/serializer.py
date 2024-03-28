@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import StatusUpcoming
+from .models import StatusProcess as StatusUpcoming
 
 
 class StatusUpcomingSerializer(serializers.ModelSerializer):

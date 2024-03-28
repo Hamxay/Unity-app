@@ -26,7 +26,7 @@ class BaseModel(models.Model):
 
 class Connection(BaseModel):
     code = models.BigAutoField(primary_key=True)
-    name = models.CharField(max_length=128)
+    name = models.CharField(max_length=128, unique=True)
     description = models.CharField(max_length=250, blank=True, null=True)
     connection_string = models.TextField(blank=True, null=True)
 

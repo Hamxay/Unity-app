@@ -21,13 +21,13 @@ class BaseModel(models.Model):
         ordering = ["-created_date"]
 
 
-class StatusUpcoming(BaseModel):
+class StatusProcess(BaseModel):
     code = models.BigAutoField(primary_key=True)
-    name = models.CharField(max_length=250, blank=False, null=False)
+    name = models.CharField(max_length=250, blank=False, null=False, unique=True)
     description = models.TextField(max_length=500, blank=True, null=True)
 
     class Meta:
-        db_table = "StatusUpcoming"
+        db_table = "StatusProcess"
 
     def __str__(self):
         return self.name

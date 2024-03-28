@@ -28,6 +28,7 @@ class Role(BaseModel):
 
     class Meta:
         db_table = "Role"
+        unique_together = [["name", "ad_group_name"]]
         constraints = [
             models.UniqueConstraint(fields=["code"], name="UQ__Role__Code"),
         ]

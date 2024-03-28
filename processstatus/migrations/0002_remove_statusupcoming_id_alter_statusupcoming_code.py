@@ -6,16 +6,16 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('statusupcoming', '0001_initial'),
+        ('processstatus', '0001_initial'),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='statusupcoming',
+            model_name='processstatus',
             name='id',
         ),
         migrations.AlterField(
-            model_name='statusupcoming',
+            model_name='processstatus',
             name='code',
             field=models.BigAutoField(primary_key=True, serialize=False),
         ),

@@ -23,7 +23,7 @@ class BaseModel(models.Model):
 
 class LoadPattern(BaseModel):
     code = models.BigAutoField(primary_key=True)
-    name = models.CharField(max_length=128)
+    name = models.CharField(max_length=128, unique=True)
     description = models.CharField(max_length=250, null=True, blank=True)
 
     def __str__(self):

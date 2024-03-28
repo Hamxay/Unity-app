@@ -29,7 +29,7 @@ class BaseModel(models.Model):
 
 class InterfaceCategory(BaseModel):
     code = models.BigAutoField(primary_key=True)
-    name = models.CharField(max_length=128)
+    name = models.CharField(max_length=128, unique=True)
     description = models.CharField(max_length=250, null=True, blank=True)
 
     class Meta:
@@ -46,7 +46,7 @@ class InterfaceCategory(BaseModel):
 
 class InterfaceType(BaseModel):
     code = models.BigAutoField(primary_key=True)
-    name = models.CharField(max_length=128)
+    name = models.CharField(max_length=128, unique=True)
     description = models.CharField(max_length=250, null=True, blank=True)
 
     class Meta:
@@ -71,7 +71,7 @@ class Interface(BaseModel):
     interface_type_id = models.ForeignKey(InterfaceType, on_delete=models.PROTECT)
     schedule_id = models.ForeignKey(scheduleModel.Schedule, on_delete=models.PROTECT)
     connection_id = models.ForeignKey(connectionModel.Connection, on_delete=models.PROTECT)
-    name = models.CharField(max_length=128)
+    name = models.CharField(max_length=128, unique=True)
     description = models.CharField(max_length=250, blank=True, null=True)
     priority = models.IntegerField()
     max_concurrent_sessions = models.IntegerField(blank=True, null=True)

@@ -44,7 +44,11 @@ class Class(BaseModel):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=["Code"], name="UQ__Class__A25C5AA76C840088")
+            models.UniqueConstraint(fields=["Code"], name="UQ__Class__A25C5AA76C840088"),
+            models.UniqueConstraint(
+                fields=['InterfaceId', 'Name'],
+                name='unique_class_name_in_interface'
+            )
         ]
         ordering = ["-created_date"]
 

@@ -1,5 +1,5 @@
 from rest_framework import viewsets
-from .models import StatusUpcoming
+from .models import StatusProcess as StatusUpcoming
 from .serializer import StatusUpcomingSerializer
 
 

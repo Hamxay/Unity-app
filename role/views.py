@@ -1,4 +1,4 @@
-from django.db import transaction
+from django.db import transaction, IntegrityError
 from django.db.models import ProtectedError
 from django.http import JsonResponse
 from django.shortcuts import redirect
@@ -22,11 +22,22 @@ class RoleCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Role
     fields = ["code", "name", "ad_group_name"]
     success_url = reverse_lazy("role:role_list")
+    error_url = reverse_lazy("role:role_create")
     success_message = "Record was created successfully"
+    error_message = ("A role with the same combination of name and AD Group already exists. Please enter a unique "
+                     "combination.")
 
     def form_valid(self, form):
-        form.instance.created_by = self.request.user
-        return super().form_valid(form)
+        try:
+            form.instance.created_by = self.request.user
+            return super().form_valid(form)
+        except IntegrityError:
+            form.add_error(None, "Combination of the name and AD Group should be unique.")
+            return self.form_invalid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, self.error_message)
+        return redirect(self.error_url)
 
 
 class RoleUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):

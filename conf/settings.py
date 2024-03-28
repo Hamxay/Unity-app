@@ -85,7 +85,7 @@ INSTALLED_APPS = [
     "role",
     "Task",
     "rolecollectionaccess",
-    "statusupcoming",
+    "processstatus",
     "schedule",
 ]
 

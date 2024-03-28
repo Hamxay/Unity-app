@@ -56,10 +56,17 @@ class ClassCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Class
     success_url = reverse_lazy("class:class_list")
     success_message = "Class was added successfully"
+    error_url = reverse_lazy("class:class_create")
+    error_message = ("A class name should be unique in the scope of interface."
+                     " Please enter a unique name.")
 
     def form_valid(self, form):
         form.instance.created_by = self.request.user
         return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, self.error_message)
+        return redirect(self.error_url)
 
 
 class ClassUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):

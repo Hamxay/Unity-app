@@ -34,7 +34,7 @@ from pattern.urls import router as pattern_router
 from role.urls import router as role_router
 from Task.urls import router as Task_router
 from rolecollectionaccess.urls import router as rolecollectionaccess_router
-from statusupcoming.urls import router as statusupcoming_router
+from processstatus.urls import router as processstatus_router
 from schedule.urls import router as schedule_router
 
 
@@ -59,7 +59,7 @@ router.registry.extend(pattern_router.registry)
 router.registry.extend(role_router.registry)
 router.registry.extend(Task_router.registry)
 router.registry.extend(rolecollectionaccess_router.registry)
-router.registry.extend(statusupcoming_router.registry)
+router.registry.extend(processstatus_router.registry)
 router.registry.extend(schedule_router.registry)
 
 urlpatterns = [
@@ -86,6 +86,6 @@ urlpatterns = [
     path("api/", include(router.urls)),
     path("Task/", include("Task.urls")),
     path("rolecollectionaccess/", include("rolecollectionaccess.urls")),
-    path("statusupcoming/", include("statusupcoming.urls")),
+    path("processstatus/", include("processstatus.urls")),
     path("schedule/",include("schedule.urls")),
 ]

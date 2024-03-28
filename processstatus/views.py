@@ -2,7 +2,7 @@ from django.db import transaction
 from django.db.models import ProtectedError
 from django.http import JsonResponse
 from django.shortcuts import redirect
-from .models import StatusUpcoming
+from .models import StatusProcess as StatusUpcoming
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -13,15 +13,15 @@ from django.urls import reverse_lazy
 
 # RoleCollectionAccess CRUD
 class StatusUpcomingListView(LoginRequiredMixin, ListView):
-    permission_required = 'statusupcoming.view_statusupcoming'
+    permission_required = 'processstatus.view_processstatus'
     model = StatusUpcoming
 
 
 class StatusUpcomingCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
-    permission_required = "statusupcoming.add_statusupcoming"
+    permission_required = "processstatus.add_processstatus"
     model = StatusUpcoming
     fields = ["code", "name", "description"]
-    success_url = reverse_lazy("statusupcoming:statusupcoming_list")
+    success_url = reverse_lazy("processstatus:processstatus_list")
     success_message = "Record was created successfully"
 
     def form_valid(self, form):
@@ -30,10 +30,10 @@ class StatusUpcomingCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateVi
 
 
 class StatusUpcomingUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
-    permission_required = "statusupcoming.change_statusupcoming"
+    permission_required = "processstatus.change_processstatus"
     model = StatusUpcoming
     fields = ["code", "name", "description"]
-    success_url = reverse_lazy("statusupcoming:statusupcoming_list")
+    success_url = reverse_lazy("processstatus:processstatus_list")
     success_message = "Record was updated successfully"
 
     def form_valid(self, form):
@@ -42,9 +42,9 @@ class StatusUpcomingUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateVi
 
 
 class StatusUpcomingDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
-    permission_required = "statusupcoming.delete_statusupcoming"
+    permission_required = "processstatus.delete_processstatus"
     model = StatusUpcoming
-    success_url = reverse_lazy("statusupcoming:statusupcoming_list")
+    success_url = reverse_lazy("processstatus:processstatus_list")
     success_message = "Record was deleted successfully"
 
     def get(self, request, *args, **kwargs):
@@ -61,9 +61,9 @@ class StatusUpcomingDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteVi
 class StatusUpcomingBulkDeleteView(LoginRequiredMixin, DeleteView):
     """Delete multiple StatusUpcoming"""
 
-    permission_required = "statusupcoming.delete_statusupcoming"
+    permission_required = "processstatus.delete_processstatus"
     model = StatusUpcoming
-    success_url = reverse_lazy("statusupcoming:statusupcoming_list")
+    success_url = reverse_lazy("processstatus:processstatus_list")
     success_message = "Records were deleted successfully"
     error_message = "Cannot delete one or more collections because they are referenced through protected foreign keys."
 
