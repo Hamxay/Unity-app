@@ -2,7 +2,7 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% block title %}
-    Create Status
+    Create Process  Status
 {% endblock title %}
 {% block extra_css %}
     <!-- Plugins css -->
@@ -19,9 +19,9 @@
             <div class="container-fluid">
                 {% block pagetitle %}
                     {% if object %}
-                        {% include "partials/page-title.html" with pagetitle="Role" title="Update Status" %}
+                        {% include "partials/page-title.html" with pagetitle="Role" title="Update Process Status" %}
                     {% else %}
-                        {% include "partials/page-title.html" with pagetitle="Role" title="Create Status" %}
+                        {% include "partials/page-title.html" with pagetitle="Role" title="Create Process Status" %}
                     {% endif %}
                 {% endblock pagetitle %}
                 <form action="" method="post" id="StatusUpcomingForm">
