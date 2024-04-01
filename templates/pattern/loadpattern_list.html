@@ -225,7 +225,7 @@ var table = $('#LoadPatternTable').DataTable( {
                         </a>
                     </li>`;
                     actions += `<div class="form-check">
-                        <input class="form-check-input checkbox" type="checkbox" value="${row.code}" id="checkboxID">
+                        <input class="form-check-input checkbox" type="checkbox" value="${row.Code}" id="checkboxID">
                         <label class="form-check-label" for="checkboxID"></label>
                     </div>`
                     actions += `<li class="list-inline-item" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Remove">
@@ -306,7 +306,7 @@ $(document).ready(function(){
         var selectedIdsAndNames = [];
         
         // Iterate over each checkbox
-        $('#InterfaceTypeTable tbody input[type="checkbox"]').each(function() {
+        $('#LoadPatternTable tbody input[type="checkbox"]').each(function() {
             var isChecked = $(this).prop('checked');
             var row = $(this).closest('tr');
             var id = row.find('td:eq(1)').text(); // Assuming the ID is in the first column
