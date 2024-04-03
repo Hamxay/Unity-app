@@ -63,16 +63,15 @@ class TaskCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     success_url = reverse_lazy("Task:Task_list")
     success_message = "Task was added successfully"
     error_url = reverse_lazy("Task:Task_create")
-    error_message = ("A task with the same combination of name and collection Code already exists."
-                     " Please enter a unique combination.")
+    error_message = "Task name should be unique in the scope of collection Code"
+    # template_name =
 
     def form_valid(self, form):
         form.instance.created_by = self.request.user
         return super().form_valid(form)
 
     def form_invalid(self, form):
-        messages.error(self.request, self.error_message)
-        return redirect(self.error_url)
+        return render(request=self.request, template_name='Task/task_form.html', context={'form': form})
 
 
 class TaskUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):

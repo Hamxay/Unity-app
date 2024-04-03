@@ -4,7 +4,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.db import transaction
 from django.db.models import ProtectedError
 from django.http import JsonResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
@@ -34,8 +34,8 @@ class RoleCollectionAccessCreateView(LoginRequiredMixin, SuccessMessageMixin, Cr
         return super().form_valid(form)
 
     def form_invalid(self, form):
-        messages.error(self.request, self.error_message)
-        return redirect(self.error_url)
+        return render(request=self.request, template_name='rolecollectionaccess/rolecollectionaccess_form.html', context={'form': form})
+
 
 class RoleCollectionAccessUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     permission_required = "rolecollectionaccess.change_rolecollectionaccess"

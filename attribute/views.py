@@ -1,7 +1,7 @@
 from django.db import transaction
 from django.db.models import ProtectedError
 from django.http import JsonResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django import forms
 from django.views import View
 from django.views.generic import (
@@ -62,8 +62,8 @@ class AttributeCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         return super().form_valid(form)
 
     def form_invalid(self, form):
-        messages.error(self.request, self.error_message)
-        return redirect(self.error_url)
+        return render(request=self.request, template_name='attribute/attribute_form.html', context={'form': form})
+
 
 class AttributeUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     """Update Attribute"""

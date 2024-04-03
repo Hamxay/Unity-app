@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from django.db import transaction, IntegrityError
 from django.db.models import ProtectedError
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import redirect, get_object_or_404, render
 from django import forms
 from django.views import View
 from django.views.generic import (
@@ -65,8 +65,7 @@ class ClassCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         return super().form_valid(form)
 
     def form_invalid(self, form):
-        messages.error(self.request, self.error_message)
-        return redirect(self.error_url)
+        return render(request=self.request, template_name='classapp/class_form.html', context={'form': form})
 
 
 class ClassUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):

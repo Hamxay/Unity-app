@@ -1,7 +1,7 @@
 from django.db import transaction
 from django.db.models import ProtectedError
 from django.http import JsonResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django import forms
 from django.views.generic import (
     ListView,
@@ -61,8 +61,8 @@ class CollectionCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         return super().form_valid(form)
 
     def form_invalid(self, form):
-        messages.error(self.request, self.error_message)
-        return redirect(self.error_url)
+        return render(request=self.request, template_name='collection/collection_form.html', context={'form': form})
+    
 
 class CollectionUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     """Update Collection"""
