@@ -37,6 +37,7 @@ class RoleCollectionAccessCreateView(LoginRequiredMixin, SuccessMessageMixin, Cr
         messages.error(self.request, self.error_message)
         return redirect(self.error_url)
 
+
 class RoleCollectionAccessUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     permission_required = "rolecollectionaccess.change_rolecollectionaccess"
     model = RoleCollectionAccess

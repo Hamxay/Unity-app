@@ -103,101 +103,6 @@
 {% block extra_content %}
 {% endblock extra_content %}
 {% block extra_js %}
-<script>
-    var bool = true;
-    document.getElementById("id_FrequencyInterval").disabled = true;
-    function updateFrequencyInterval() {
-        if (bool){
-            document.getElementById("id_FrequencyInterval").disabled = false;
-            bool = false;
-        }
-        var frequencySelect = document.getElementById("id_Frequency");
-        var frequencyIntervalContainer = document.getElementById("frequencyIntervalContainer");
-        frequencyIntervalContainer.innerHTML = '';
-        var selectedFrequency = frequencySelect.value;
-        switch (selectedFrequency) {
-            case '0': // Once
-                addTextfield('Default to zero', '0');
-                break;
-            case '1': // Daily
-                addTextfield('Default to 1234567', '1234567');
-                break;
-            case '2': // Weekly
-                addWeekdayOptions();
-                break;
-            case '3': // Monthly
-                addDayOptions();
-                break;
-            case '4': // Monthly Relative
-                addRelativeOptions();
-                break;
-        }
-    }
-    function addTextfield(placeholder, defaultValue) {
-        var inputField = document.createElement("input");
-        inputField.type = "text";
-        inputField.id = "frequencyInterval";
-        inputField.name = "FrequencyInterval";
-        inputField.placeholder = placeholder;
-        inputField.value = defaultValue;
-        inputField.className = "form-control";
-        appendHeading("Frequency Interval*");
-        document.getElementById("frequencyIntervalContainer").appendChild(inputField);
-    }
-    function addWeekdayOptions() {
-        var dropdown = document.createElement("select");
-        dropdown.id = "frequencyInterval";
-        dropdown.name = "FrequencyInterval";
-        dropdown.className = "form-control";
-        for (var i = 1; i <= 7; i++) {
-            var option = document.createElement("option");
-            option.value = i;
-            option.text = getDayName(i);
-            dropdown.appendChild(option);
-        }
-        appendHeading("Frequency Interval*");
-        document.getElementById("frequencyIntervalContainer").appendChild(dropdown);
-    }
-    function addDayOptions() {
-        var dropdown = document.createElement("select");
-        dropdown.id = "frequencyInterval";
-        dropdown.name = "FrequencyInterval";
-        dropdown.className = "form-control";
-        for (var i = 1; i <= 31; i++) {
-            var option = document.createElement("option");
-            option.value = i;
-            option.text = i;
-            dropdown.appendChild(option);
-        }
-        appendHeading("Frequency Interval*");
-        document.getElementById("frequencyIntervalContainer").appendChild(dropdown);
-    }
-    function addRelativeOptions() {
-        var dropdown = document.createElement("select");
-        dropdown.id = "frequencyInterval";
-        dropdown.name = "FrequencyInterval";
-        dropdown.className = "form-control";
-        var relativeOptions = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Weekday', 'Weekend'];
-        for (var i = 0; i < relativeOptions.length; i++) {
-            var option = document.createElement("option");
-            option.value = i + 1; // Values start from 1
-            option.text = relativeOptions[i];
-            dropdown.appendChild(option);
-        }
-        appendHeading("Frequency Interval*");
-        document.getElementById("frequencyIntervalContainer").appendChild(dropdown);
-    }
-    function getDayName(dayNumber) {
-        var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-        return days[dayNumber - 1];
-    }
-    function appendHeading(headingText) {
-        var headingElement = document.createElement("label");
-        headingElement.className = "form-label";
-        headingElement.innerHTML = headingText;
-        document.getElementById("frequencyIntervalContainer").appendChild(headingElement);
-    }
-</script>
     <!-- ckeditor -->
     <script src="{% static 'libs/@ckeditor/ckeditor5-build-classic/build/ckeditor.js'%}"></script>
     <!-- dropzone js -->
@@ -209,33 +114,158 @@
     <!-- for the script of select2-->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
+        var bool = true;
+        document.getElementById("id_FrequencyInterval").disabled = true;
+        function updateFrequencyInterval(frequencyValue = $('#id_Frequency').val(), frequencyIntervalValue = $('#id_FrequencyInterval').val()) {
+            var frequencySelect = $('#id_Frequency');
+            var frequencyIntervalContainer = $('#frequencyIntervalContainer');
+            frequencyIntervalContainer.empty();
+            switch (frequencyValue) {
+                case '0': // Once
+                    var defaultValue = frequencyIntervalValue ? frequencyIntervalValue : '0';
+                    addTextfield('Default to zero', defaultValue);
+                    break;
+                case '1': // Daily
+                    var defaultValue = frequencyIntervalValue ? frequencyIntervalValue : '1234567';
+                    addTextfield('Default to 1234567', defaultValue);
+                    break;
+                case '2': // Weekly
+                    addWeekdayOptions();
+                    break;
+                case '3': // Monthly
+                    addDayOptions();
+                    break;
+                case '4': // Monthly Relative
+                    addRelativeOptions();
+                    break;
+            }
+            function addTextfield(placeholder, defaultValue) {
+                var inputField = $('<input>', {
+                    type: 'text',
+                    id: 'frequencyInterval',
+                    name: 'FrequencyInterval',
+                    placeholder: placeholder,
+                    value: defaultValue,
+                    class: 'form-control'
+                });
+                appendHeading("Frequency Interval*");
+                frequencyIntervalContainer.append(inputField);
+            }
+            function addWeekdayOptions() {
+                var dropdown = $('<select>', {
+                    id: 'frequencyInterval',
+                    name: 'FrequencyInterval',
+                    class: 'form-control'
+                });
+                var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                for (var i = 0; i < days.length; i++) {
+                    var option = $('<option>', {
+                        value: i,
+                        text: getDayName(i + 1)
+                    });
+                    
+                    // If frequencyIntervalValue matches the current value being added, select it
+                    if (frequencyIntervalValue && (i) == frequencyIntervalValue) {
+                        option.attr('selected', true);
+                    }
+                    dropdown.append(option);
+                }
+                appendHeading("Frequency Interval*");
+                frequencyIntervalContainer.append(dropdown);
+            }
+            
+            function addDayOptions() {
+                var dropdown = $('<select>', {
+                    id: 'frequencyInterval',
+                    name: 'FrequencyInterval',
+                    class: 'form-control'
+                });
+                for (var i = 1; i <= 31; i++) {
+                    var option = $('<option>', {
+                        value: i,
+                        text: i
+                    });
+                    // If frequencyIntervalValue matches the current value being added, select it
+                    if (frequencyIntervalValue && i == frequencyIntervalValue) {
+                        option.attr('selected', true);
+                    }
+                    dropdown.append(option);
+                }
+                appendHeading("Frequency Interval*");
+                frequencyIntervalContainer.append(dropdown);
+            }
+            
+            function addRelativeOptions() {
+                var dropdown = $('<select>', {
+                    id: 'frequencyInterval',
+                    name: 'FrequencyInterval',
+                    class: 'form-control'
+                });
+                var relativeOptions = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Weekday', 'Weekend'];
+                for (var i = 0; i < relativeOptions.length; i++) {
+                    var option = $('<option>', {
+                        value: i,
+                        text: relativeOptions[i]
+                    });
+                    // If frequencyIntervalValue matches the current value being added, select it
+                    if (frequencyIntervalValue && (i) == frequencyIntervalValue) {
+                        option.attr('selected', true);
+                    }
+                    dropdown.append(option);
+                }
+                appendHeading("Frequency Interval*");
+                frequencyIntervalContainer.append(dropdown);
+            }
+            
+        
+            function getDayName(dayNumber) {
+                var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                return days[dayNumber - 1];
+            }
+        
+            function appendHeading(headingText) {
+                var headingElement = $('<label>', {
+                    class: 'form-label',
+                    html: headingText
+                });
+                frequencyIntervalContainer.append(headingElement);
+            }
+        }
+        
         $(document).ready(function() {
+            // Initialize select2 for id_Frequency
             $('#id_Frequency').select2({
                 placeholder: 'Select an Option',
                 minimumResultsForSearch: Infinity
             });
+        
+            // Check if id_Frequency has a value and id_FrequencyInterval has a value
+            if ($('#id_Frequency').val() && $('#id_FrequencyInterval').val()) {
+                updateFrequencyInterval($('#id_Frequency').val(), $('#id_FrequencyInterval').val());
+            } else {
+                $('#id_FrequencyInterval').select2({
+                    placeholder: 'Select Frequency first',
+                    minimumResultsForSearch: Infinity
+                });
+            }
+            
+            // Attach change event listener to id_Frequency
             $('#id_Frequency').on('change', function () {
                 updateFrequencyInterval();
             });
-        });
-        $(document).ready(function() {
-            $('#id_FrequencyInterval').select2({
-                placeholder: 'Select Frequency first',
-                minimumResultsForSearch: Infinity
+            
+            $('#id_FrequencyInterval').on('change', function () {
+                //updateFrequencyInterval();
+                console.log(document.getElementById("id_FrequencyInterval").value);
             });
-        });
-        $(document).ready(function() {
-            $('#id_FrequencyRelativeInterval').select2({
+        
+            // Initialize select2 for id_FrequencyInterval, id_FrequencyRelativeInterval, and id_FrequencySubDayType
+            $('#id_FrequencyRelativeInterval, #id_FrequencySubDayType').select2({
                 placeholder: 'Select an Option',
                 minimumResultsForSearch: Infinity
             });
         });
-        $(document).ready(function() {
-            $('#id_FrequencySubDayType').select2({
-                placeholder: 'Select an Option',
-                minimumResultsForSearch: Infinity
-            });
-        });
+        
     </script>
 {% endblock extra_js %}
 
