@@ -143,6 +143,7 @@ var table = $('#InterfaceDependenceTable').DataTable( {
     },
     {
         targets: 2,
+        searchable: false,
         defaultContent: "-",
         render: (data)=>{
         return data.code +' - '+ data.name
@@ -150,6 +151,7 @@ var table = $('#InterfaceDependenceTable').DataTable( {
     },
     {
         targets: 3,
+        searchable: false,
         defaultContent: "-",
         render: (data)=>{
         return data.code +' - '+ data.name
@@ -157,22 +159,26 @@ var table = $('#InterfaceDependenceTable').DataTable( {
     },
     {
         targets: 4,
+        searchable: false,
         render: (data, type, row)=>{
             return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
         }
     },
     {
         targets: 5,
+        searchable: false,
         defaultContent: "-"
     },
     {
         targets: 6,
+        searchable: false,
         render: (data, type, row)=>{
             return moment.utc(row.created_date).format('MMM DD, YYYY hh:mm A');
         }
     },
     {
         targets: 7,
+        searchable: false,
         defaultContent: "-"
     },
     {

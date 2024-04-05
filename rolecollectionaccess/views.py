@@ -37,6 +37,7 @@ class RoleCollectionAccessCreateView(LoginRequiredMixin, SuccessMessageMixin, Cr
         return render(request=self.request, template_name='rolecollectionaccess/rolecollectionaccess_form.html', context={'form': form})
 
 
+
 class RoleCollectionAccessUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     permission_required = "rolecollectionaccess.change_rolecollectionaccess"
     model = RoleCollectionAccess
