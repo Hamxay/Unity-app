@@ -25,6 +25,7 @@ class BaseModel(models.Model):
 class Report(BaseModel):
     name = models.CharField(max_length=250, blank=False, null=False)
     date_dimension_name = models.CharField(max_length=250, blank=False, null=False)
+    date_key = models.CharField(max_length=250, blank=False, null=False)
 
     def __str__(self) -> str:
         return self.name
