@@ -24,3 +24,6 @@ source venv/bin/activate
 ###### Start the development server:
 
 `python manage.py runserver`
+
+
+<!-- Security scan triggered at 2025-09-01 23:40:10 -->
