@@ -1,5 +1,4 @@
 .venv
-.env
 venv
 env
 __pycache__/# Byte-compiled / optimized / DLL files
@@ -70,6 +69,7 @@ media/*
 
 # Flask stuff:
 instance/
+temp_auto_push.bat
 .webassets-cache
 
 # Scrapy stuff:
@@ -109,7 +109,6 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
 .venv
 env/
 venv/
@@ -137,10 +136,12 @@ dmypy.json
 .pyre/
 
 .DS_Store
-.vscode
 .dccache
 
 tests/
 
 .idea/
-*/.idea/
+*/.idea/.gitignore
+temp_interactive_push.bat
+config.bat
+node_modules
