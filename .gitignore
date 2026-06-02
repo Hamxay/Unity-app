@@ -69,7 +69,6 @@ media/*
 
 # Flask stuff:
 instance/
-temp_auto_push.bat
 .webassets-cache
 
 # Scrapy stuff:
@@ -142,6 +141,4 @@ tests/
 
 .idea/
 */.idea/.gitignore
-temp_interactive_push.bat
-config.bat
 node_modules
