@@ -142,5 +142,4 @@ tests/
 
 .idea/
 */.idea/
-config.bat
 node_modules
